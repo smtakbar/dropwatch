@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T21:49:08.630Z",
+ "updated": "2026-10-21T22:46:29.580Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -208,8 +208,8 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T21:49:08.630Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 827kB, json-ld yes, next-data yes",
+   "checkedAt": "2026-10-21T22:46:29.580Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 780kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -236,17 +236,17 @@
     ]
    ],
    "offers": [],
-   "compareAt": "2026-10-21T09:52:25.985Z",
+   "compareAt": "2026-10-21T22:46:29.580Z",
    "compareLog": [
-    "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
-    "Officeworks: no result links (page \"Human Verification\", 9kB)",
+    "Amazon AU: 3 result(s), none matched with a readable price",
+    "Officeworks: 3 result(s), none matched with a readable price",
     "Harvey Norman: no result links (page \"no title\", 1kB)",
     "The Good Guys: 3 result(s), none matched with a readable price",
-    "Big W: 3 result(s), none matched with a readable price",
+    "Big W: page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.bigw.com.au/product/hugg",
     "Kmart: no result links (page \"Access Denied\", 0kB)",
-    "Woolworths: no result links (page \"Access Denied\", 0kB)",
-    "Coles: no result links (page \"Search remington all 1 titanium grooming system | \", 363kB)",
-    "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
+    "Woolworths: no result links (page \"remington all 1 titanium grooming system - Woolwor\", 741kB)",
+    "Coles: no result links (page \"Search remington all 1 titanium grooming system | \", 355kB)",
+    "eBay AU: 3 result(s), none matched with a readable price"
    ],
    "insight": {
     "lowest": 23,
@@ -260,7 +260,7 @@
     "confidence": "low",
     "basis": "seasonal"
    },
-   "checkedAt": "2026-10-21T21:49:08.630Z",
+   "checkedAt": "2026-10-21T22:46:29.580Z",
    "error": null,
    "via": "fetch:json-ld"
   },
@@ -293,7 +293,7 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T21:49:08.630Z",
+   "checkedAt": "2026-10-21T22:46:29.580Z",
    "error": "Searching stores for this product…",
    "via": null
   }
