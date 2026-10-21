@@ -27,10 +27,12 @@ export function detectFromUrl(raw) {
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 const CUR = { AU: "AUD", US: "USD", GB: "GBP", CA: "CAD", DE: "EUR", FR: "EUR", JP: "JPY", IN: "INR", SG: "SGD", NZ: "NZD", AE: "AED", BR: "BRL", KR: "KRW" };
 const num = (v) => { if (v == null) return; const n = parseFloat(String(v).replace(/[^0-9.]/g, "")); return Number.isFinite(n) && n > 0 ? n : undefined; };
-function* walk(n, depth = 0) {
+// Keys that hold OTHER products/sizes (variants, recommendations); never read prices from inside them.
+const SKIP = /^(variations|bySizes|related\w*|similar\w*|recommend\w*|carousel\w*|upsell\w*|crossSell\w*)$/i;
+function* walk(n, depth = 0, skip = false) {
   if (depth > 40) return;
-  if (Array.isArray(n)) { for (const x of n) yield* walk(x, depth + 1); return; }
-  if (n && typeof n === "object") { yield n; for (const k of Object.keys(n)) yield* walk(n[k], depth + 1); }
+  if (Array.isArray(n)) { for (const x of n) yield* walk(x, depth + 1, skip); return; }
+  if (n && typeof n === "object") { yield n; for (const k of Object.keys(n)) if (!(skip && SKIP.test(k))) yield* walk(n[k], depth + 1, skip); }
 }
 function fromOffers(offers) {
   for (const o of Array.isArray(offers) ? offers : [offers]) {
@@ -66,7 +68,7 @@ export function parseHtml(html, country) {
   const nd = html.match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i)?.[1];
   if (!price && nd) {
     try {
-      for (const n of walk(JSON.parse(nd))) {
+      for (const n of walk(JSON.parse(nd), 0, true)) {
         const v = typeof n.pricing?.now === "number" ? n.pricing.now : typeof n.currentPrice === "number" ? n.currentPrice : typeof n.salePrice === "number" ? n.salePrice : undefined;
         if (v > 0) { price = v; name ??= typeof n.name === "string" ? n.name : undefined; via = "next-data"; break; }
       }
