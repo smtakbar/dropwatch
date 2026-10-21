@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T03:38:40.328Z",
+ "updated": "2026-10-21T03:40:46.010Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -168,5 +168,22 @@
   "ZWG": 26.6124,
   "ZWL": 26.6124
  },
- "items": []
+ "items": [
+  {
+   "id": "e87669c9",
+   "url": "https://www.coles.com.au/product/mountain-dew-energized-soft-drink-375ml-24-pack-1310386",
+   "name": "Mountain Dew",
+   "retailer": "coles.com.au",
+   "storeCountry": "AU",
+   "targetPrice": null,
+   "targetCurrency": null,
+   "currency": null,
+   "price": null,
+   "lowest": null,
+   "lastAlerted": null,
+   "history": [],
+   "checkedAt": "2026-10-21T03:40:46.010Z",
+   "error": "Could not find a price on this page (store may render prices with JavaScript or block bots)"
+  }
+ ]
 }
