@@ -178,15 +178,10 @@
    "targetPrice": null,
    "targetCurrency": null,
    "currency": "AUD",
-   "price": 4,
-   "lowest": 4,
+   "price": null,
+   "lowest": null,
    "lastAlerted": null,
-   "history": [
-    [
-     "2026-10-21T09:09:36.082Z",
-     4
-    ]
-   ],
+   "history": [],
    "checkedAt": "2026-10-21T09:10:58.173Z",
    "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 828kB, json-ld yes, next-data yes",
    "via": null
