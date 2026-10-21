@@ -29,9 +29,11 @@ jobs:
         run: node scripts/check.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug dump (temporary)
+        run: node scripts/debug.mjs || true
       - name: Commit data
         run: |
           git config user.name "dropwatch-bot"
           git config user.email "dropwatch-bot@users.noreply.github.com"
-          git add docs/data.json
+          git add docs/data.json docs/debug.json
           git diff --cached --quiet || (git commit -m "Update prices" && git pull --rebase && git push)
