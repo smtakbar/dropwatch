@@ -1,0 +1,80 @@
+[
+ {
+  "url": "https://www.coles.com.au/product/mountain-dew-energized-soft-drink-375ml-24-pack-1310386",
+  "status": 200,
+  "hits": [
+   {
+    "path": ".props.pageProps.product.variations.bySizes[0]",
+    "name": "Energised Soft Drink Bottle",
+    "size": "1.25L",
+    "brand": "Mountain Dew",
+    "pricing": {
+     "now": 4,
+     "was": null,
+     "saveAmount": null,
+     "saveStatement": null,
+     "unit": {
+      "quantity": 1,
+      "ofMeasureQuantity": 1,
+      "ofMeasureUnits": "L",
+      "price": 3.2,
+      "ofMeasureType": null,
+      "isWeighted": false,
+      "isIncremental": false
+     },
+     "comparable": "$3.20/ 1L",
+     "promotionType": "SPECIAL",
+     "onlineSpecial": false,
+     "multiBuyPromotion": {
+      "type": "MultibuyMultiSku",
+      "id": "731263909",
+      "minQuantity": 2,
+      "reward": 2.4,
+      "unitPriceDisplay": "$1.92/ 1L",
+      "instruction": "2 FOR $4.80"
+     },
+     "priceDescription": "Any 2 $4.80",
+     "savePercent": 0,
+     "specialType": "MULTI_SAVE",
+     "offerDescription": "Pick any 2 for $4.80"
+    }
+   },
+   {
+    "path": ".props.pageProps.initialState.digitalGraphQLApi.queries.GetProductDetails({\"productId\":\"1310386\",\"storeId\":\"COL:7674\",\"useV2NipAndAllergens\":true}).data.product.variations.bySizes[0]",
+    "name": "Energised Soft Drink Bottle",
+    "size": "1.25L",
+    "brand": "Mountain Dew",
+    "pricing": {
+     "now": 4,
+     "was": null,
+     "saveAmount": null,
+     "saveStatement": null,
+     "unit": {
+      "quantity": 1,
+      "ofMeasureQuantity": 1,
+      "ofMeasureUnits": "L",
+      "price": 3.2,
+      "ofMeasureType": null,
+      "isWeighted": false,
+      "isIncremental": false
+     },
+     "comparable": "$3.20/ 1L",
+     "promotionType": "SPECIAL",
+     "onlineSpecial": false,
+     "multiBuyPromotion": {
+      "type": "MultibuyMultiSku",
+      "id": "731263909",
+      "minQuantity": 2,
+      "reward": 2.4,
+      "unitPriceDisplay": "$1.92/ 1L",
+      "instruction": "2 FOR $4.80"
+     },
+     "priceDescription": "Any 2 $4.80",
+     "savePercent": 0,
+     "specialType": "MULTI_SAVE",
+     "offerDescription": "Pick any 2 for $4.80"
+    }
+   }
+  ]
+ }
+]
