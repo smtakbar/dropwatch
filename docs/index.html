@@ -80,7 +80,7 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
     <span class="row"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-save">Save &amp; add</button></span></div>
   </div>
 </div></div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" style="max-width:90vw"></div>
 <script>
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
 const flag=id=>(COUNTRIES.find(c=>c[0]===id)||[])[2]||"";
@@ -94,7 +94,7 @@ const repo=window.REPO||(location.hostname.endsWith(".github.io")?location.hostn
 const issueUrl=(t,q="")=>repo?`https://github.com/${repo}/issues/new?template=${t}${q}`:"#";
 const $=id=>document.getElementById(id);
 const tok=()=>{try{return localStorage.getItem("gh_token")||""}catch{return""}};
-function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),4500)}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),12000)}
 let pending="";
 function openModal(url){ pending=url||pending; $("modal").classList.add("on"); const need=!tok(); const o=repo.split("/")[0]; $("m-tokenlink").href=`https://github.com/settings/personal-access-tokens/new?name=DropWatch&description=${encodeURIComponent("Add/remove products from the DropWatch page")}&target_name=${encodeURIComponent(o)}&expires_in=365&issues=write`; $("m-skip").href=issueUrl("track.yml","&link="+encodeURIComponent(pending)); $("m-repo").textContent=repo.split("/")[1]||"this repo"; $("m-track").style.display=need?"none":"block"; $("m-token").style.display=need?"block":"none"; if(!need){$("m-url").value=pending;$("m-url").focus()} }
 function closeModal(){$("modal").classList.remove("on")}
@@ -112,9 +112,11 @@ $("m-save").onclick=async()=>{
 };
 async function sendIssue(title,body){
   const r=await fetch(`https://api.github.com/repos/${repo}/issues`,{method:"POST",headers:{Authorization:"Bearer "+tok(),Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({title,body})}).catch(()=>null);
-  if(!r)return"Network error.";
-  if(r.status===401||r.status===403||r.status===404){try{localStorage.removeItem("gh_token")}catch{} return"Token rejected. Add it again."}
-  return r.ok?"":"GitHub error "+r.status;
+  if(!r)return"Network error. Check your connection.";
+  if(r.ok)return"";
+  if(r.status===401){try{localStorage.removeItem("gh_token")}catch{} return"GitHub says the token is invalid or expired. Create a new one."}
+  if(r.status===403||r.status===404)return`GitHub refused (${r.status}). Your token must have Repository access = Only select repositories → ${repo.split("/")[1]}, and Issues = Read and write. Re-create it, then paste it again.`;
+  return"GitHub error "+r.status;
 }
 $("m-go").onclick=async()=>{
   const url=$("m-url").value.trim(); if(!url)return;
