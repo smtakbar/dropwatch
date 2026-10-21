@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T11:48:09.035Z",
+ "updated": "2026-10-21T11:59:06.633Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -207,8 +207,8 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T11:48:09.035Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 827kB, json-ld yes, next-data yes",
+   "checkedAt": "2026-10-21T11:59:06.633Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 828kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -255,9 +255,36 @@
     "confidence": "low",
     "basis": "seasonal"
    },
-   "checkedAt": "2026-10-21T11:48:09.035Z",
+   "checkedAt": "2026-10-21T11:59:06.633Z",
    "error": null,
    "via": "fetch:json-ld"
+  },
+  {
+   "id": "d0d503c0",
+   "url": "",
+   "name": "Marvis Sweet & Sour Rhubarb Toothpaste 75 ml",
+   "retailer": null,
+   "storeCountry": "AU",
+   "image": null,
+   "targetPrice": null,
+   "targetCurrency": null,
+   "currency": null,
+   "price": null,
+   "lowest": null,
+   "lastAlerted": null,
+   "history": [],
+   "offers": [],
+   "compareAt": null,
+   "compareLog": [
+    "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
+    "JB Hi-Fi: 3 result(s), none matched with a readable price",
+    "Officeworks: 3 result(s), none matched with a readable price",
+    "Harvey Norman: no result links (page \"no title\", 1kB)"
+   ],
+   "insight": null,
+   "checkedAt": "2026-10-21T11:59:06.633Z",
+   "error": "No store results yet",
+   "via": null
   }
  ]
 }
