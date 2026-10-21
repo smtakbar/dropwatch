@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T03:40:46.010Z",
+ "updated": "2026-10-21T04:47:03.203Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -182,7 +182,7 @@
    "lowest": null,
    "lastAlerted": null,
    "history": [],
-   "checkedAt": "2026-10-21T03:40:46.010Z",
+   "checkedAt": "2026-10-21T04:47:03.203Z",
    "error": "Could not find a price on this page (store may render prices with JavaScript or block bots)"
   }
  ]
