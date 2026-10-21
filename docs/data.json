@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T12:59:35.350Z",
+ "updated": "2026-10-21T13:53:53.156Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -207,7 +207,7 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T12:59:35.350Z",
+   "checkedAt": "2026-10-21T13:53:53.156Z",
    "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 779kB, json-ld yes, next-data yes",
    "via": null
   },
@@ -221,13 +221,17 @@
    "targetPrice": null,
    "targetCurrency": null,
    "currency": "AUD",
-   "price": 29,
-   "lowest": 29,
+   "price": 23,
+   "lowest": 23,
    "lastAlerted": null,
    "history": [
     [
      "2026-10-21T09:52:25.985Z",
      29
+    ],
+    [
+     "2026-10-21T13:53:53.156Z",
+     23
     ]
    ],
    "offers": [],
@@ -244,18 +248,18 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": {
-    "lowest": 29,
+    "lowest": 23,
     "highest": 29,
-    "avg": 29,
-    "points": 1,
+    "avg": 26,
+    "points": 2,
     "days": 0,
     "bestMonth": "Nov",
-    "predictedLow": 24.65,
+    "predictedLow": 22.1,
     "verdict": "Close to its lowest price",
     "confidence": "low",
     "basis": "seasonal"
    },
-   "checkedAt": "2026-10-21T12:59:35.350Z",
+   "checkedAt": "2026-10-21T13:53:53.156Z",
    "error": null,
    "via": "fetch:json-ld"
   },
@@ -288,7 +292,7 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T12:59:35.350Z",
+   "checkedAt": "2026-10-21T13:53:53.156Z",
    "error": "Searching stores for this product…",
    "via": null
   }
