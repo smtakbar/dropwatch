@@ -137,3 +137,43 @@ export const fmt = (a, c) => {
   try { return new Intl.NumberFormat("en-AU", { style: "currency", currency: c, minimumFractionDigits: z ? 0 : 2, maximumFractionDigits: z ? 0 : 2 }).format(a); }
   catch { return `${c} ${a.toFixed(z ? 0 : 2)}`; }
 };
+
+// ---- Price insight: history + seasonal sale calendar -> "buy now or wait" and predicted lowest month ----
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// Typical extra discount vs. a normal month, by calendar month (0 = Jan). Southern-hemisphere EOFY (Jun) and Prime Day (Jul) included.
+const SEASON = { AU: [0.08, 0.02, 0, 0, 0, 0.07, 0.07, 0, 0, 0.02, 0.15, 0.1], DEFAULT: [0.08, 0.02, 0, 0, 0, 0.02, 0.07, 0, 0, 0.02, 0.15, 0.1] };
+const median = (a) => { const s = [...a].sort((x, y) => x - y); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+
+export function insight(history, price, country, now = new Date()) {
+  const pts = (history ?? []).map(([t, p]) => [Date.parse(t), p]).filter(([t, p]) => Number.isFinite(t) && p > 0);
+  if (!price || pts.length < 1) return null;
+  const vals = pts.map((x) => x[1]);
+  const lowest = Math.min(...vals), highest = Math.max(...vals), avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const spanDays = (pts.at(-1)[0] - pts[0][0]) / 864e5;
+  const cal = SEASON[country] ?? SEASON.DEFAULT;
+  const baseline = median(vals);
+  const cm = now.getUTCMonth();
+  // Observed lowest month only counts once we have >= 60 days of data.
+  let bestMonth, basis;
+  if (spanDays >= 60) {
+    const byMonth = {};
+    for (const [t, p] of pts) { const m = new Date(t).getUTCMonth(); byMonth[m] = Math.min(byMonth[m] ?? Infinity, p); }
+    const [m] = Object.entries(byMonth).sort((a, b) => a[1] - b[1])[0];
+    bestMonth = +m; basis = "observed";
+  } else {
+    let m = 0; for (let i = 1; i < 12; i++) if (cal[i] > cal[m]) m = i;
+    // Choose the next big sale month at/after now.
+    const order = Array.from({ length: 12 }, (_, i) => (cm + i) % 12);
+    bestMonth = order.sort((a, b) => cal[b] - cal[a] || order.indexOf(a) - order.indexOf(b))[0]; basis = "seasonal";
+  }
+  const predictedLow = +Math.min(lowest, baseline * (1 - Math.max(...cal))).toFixed(2);
+  const vsLow = price / lowest - 1;
+  const monthsAway = (bestMonth - cm + 12) % 12;
+  let verdict;
+  if (vsLow <= 0.01 && pts.length >= 3) verdict = "Lowest price seen: good time to buy";
+  else if (vsLow <= 0.05) verdict = "Close to its lowest price";
+  else if (monthsAway <= 1 && cal[bestMonth] > 0.05) verdict = `Wait: ${MONTHS[bestMonth]} sales are near`;
+  else verdict = `Usually cheaper around ${MONTHS[bestMonth]}`;
+  const confidence = spanDays >= 90 ? "high" : spanDays >= 30 ? "medium" : "low";
+  return { lowest, highest, avg: +avg.toFixed(2), points: pts.length, days: Math.round(spanDays), bestMonth: MONTHS[bestMonth], predictedLow, verdict, confidence, basis };
+}

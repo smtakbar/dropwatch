@@ -27,18 +27,54 @@ button,select,input{font:inherit;font-size:14px;color:var(--text)}
 .name{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 select{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:6px 10px}
 .empty{grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text2)}
+
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hero h1{font-size:18px;font-weight:600;flex:1 1 100%}
+.hero input{flex:1 1 280px}
+input[type=text],input[type=password]{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;width:100%}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+.modal.on{display:flex}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;width:100%;max-width:460px}
+.box h2{font-size:17px;margin-bottom:12px}.box label{display:block;font-size:12px;color:var(--text2);margin:10px 0 4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.stat{background:var(--surface2);border-radius:8px;padding:6px 8px}.stat b{display:block;font-size:13px;font-variant-numeric:tabular-nums}
+.verdict{font-size:12px;font-weight:500;margin:6px 0;padding:6px 8px;border-radius:8px;background:var(--surface2)}
+.verdict.good{background:var(--green-bg);color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}td,th{padding:5px 4px;border-top:1px solid var(--border);text-align:left}th{color:var(--text2);font-weight:500}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+.cheap{color:var(--green);font-weight:600}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:13px;display:none;z-index:30}
+.toast.on{display:block}
 </style>
 </head>
 <body>
 <div class="top">
   <div class="logo">drop<b>watch</b></div><div class="sp"></div>
   <select id="region" aria-label="Region"></select>
-  <a class="btn" id="add" href="#" target="_blank" rel="noopener">+ Track product</a>
+  <button class="btn" id="add">+ Track product</button>
 </div>
 <div class="wrap">
+  <div class="hero"><h1>Paste a product link. We track the price, compare other stores and tell you when to buy.</h1>
+    <input type="text" id="quick" placeholder="https://… any store, any country"><button class="btn" id="quickGo">Track</button></div>
   <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span></div>
   <div class="grid" id="grid"></div>
 </div>
+<div class="modal" id="modal"><div class="box">
+  <div id="m-track">
+    <h2>Track a product</h2>
+    <label for="m-url">Product link (any store, any country)</label><input type="text" id="m-url" placeholder="https://www.example.com/product/…">
+    <label for="m-name">Name (optional)</label><input type="text" id="m-name" placeholder="Leave blank to use the page title">
+    <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
+  </div>
+  <div id="m-token" style="display:none">
+    <h2>One-time setup</h2>
+    <p class="muted" style="margin-bottom:8px">To add products from this page, paste a GitHub token limited to this one repository with <b>Issues: Read and write</b>. It is stored only in this browser.</p>
+    <p class="muted"><a id="m-tokenlink" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a token</a> → Repository access: Only select repositories → this repo → Permissions → Issues: Read and write.</p>
+    <label for="m-tok">Token</label><input type="password" id="m-tok" autocomplete="off">
+    <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-save">Save token</button></div>
+  </div>
+</div></div>
+<div class="toast" id="toast"></div>
 <script>
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
 const flag=id=>(COUNTRIES.find(c=>c[0]===id)||[])[2]||"";
@@ -50,7 +86,39 @@ const ago=iso=>{if(!iso)return"never";const m=Math.round((Date.now()-Date.parse(
 // Works on https://OWNER.github.io/REPO/ . For a custom domain set window.REPO="OWNER/REPO" before this script.
 const repo=window.REPO||(location.hostname.endsWith(".github.io")?location.hostname.split(".")[0]+"/"+location.pathname.split("/")[1]:"");
 const issueUrl=(t,q="")=>repo?`https://github.com/${repo}/issues/new?template=${t}${q}`:"#";
-document.getElementById("add").href=issueUrl("track.yml");
+const $=id=>document.getElementById(id);
+const tok=()=>{try{return localStorage.getItem("gh_token")||""}catch{return""}};
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),4500)}
+function openModal(url){ $("modal").classList.add("on"); const need=!tok(); $("m-track").style.display=need?"none":"block"; $("m-token").style.display=need?"block":"none"; if(!need){$("m-url").value=url||"";$("m-url").focus()} }
+function closeModal(){$("modal").classList.remove("on")}
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeModal);
+$("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+$("add").onclick=()=>openModal("");
+$("quickGo").onclick=()=>{const v=$("quick").value.trim();if(v)openModal(v)};
+$("quick").onkeydown=e=>{if(e.key==="Enter")$("quickGo").click()};
+$("m-save").onclick=async()=>{
+  const t=$("m-tok").value.trim(); if(!t||!repo)return;
+  const r=await fetch(`https://api.github.com/repos/${repo}`,{headers:{Authorization:"Bearer "+t}}).catch(()=>null);
+  if(!r||!r.ok){toast("That token can't access "+repo+". Check the repository and permissions.");return}
+  try{localStorage.setItem("gh_token",t)}catch{toast("Browser blocked storage; token not saved.");return}
+  $("m-tok").value="";openModal("");
+};
+async function sendIssue(title,body){
+  const r=await fetch(`https://api.github.com/repos/${repo}/issues`,{method:"POST",headers:{Authorization:"Bearer "+tok(),Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({title,body})}).catch(()=>null);
+  if(!r)return"Network error.";
+  if(r.status===401||r.status===403||r.status===404){try{localStorage.removeItem("gh_token")}catch{} return"Token rejected. Add it again."}
+  return r.ok?"":"GitHub error "+r.status;
+}
+$("m-go").onclick=async()=>{
+  const url=$("m-url").value.trim(); if(!url)return;
+  $("m-go").disabled=true;
+  const err=await sendIssue("track: "+url.slice(0,80),`### Product link\n\n${url}\n\n### Name\n\n${$("m-name").value.trim()||"_No response_"}`);
+  $("m-go").disabled=false;
+  if(err){toast(err);openModal(url);return}
+  closeModal();$("quick").value="";$("m-name").value="";toast("Added. It shows up here in about a minute.");
+};
+async function removeItem(id){ if(!tok()){openModal("");return} if(!confirm("Stop tracking this product?"))return; const err=await sendIssue("remove: "+id,`### Item ID\n\n${id}`); toast(err||"Removing… gone in about a minute."); }
+window.removeItem=removeItem;
 
 let region="AU";try{region=localStorage.getItem("region")||"AU"}catch{}
 const sel=document.getElementById("region");
@@ -71,25 +139,35 @@ function render(){
   const hits=DATA.items.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
   document.getElementById("meta").textContent=`${DATA.items.length} tracked · ${hits} at target · updated ${ago(DATA.updated)}`;
   const g=document.getElementById("grid");
-  if(!DATA.items.length){g.innerHTML=`<div class="empty">Nothing tracked yet. Click “+ Track product”.</div>`;return}
+  if(!DATA.items.length){g.innerHTML=`<div class="empty">Nothing tracked yet. Paste a link above to start.</div>`;return}
   g.innerHTML=DATA.items.map(i=>{
     const hit=i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r);
+    const L=v=>v!=null?fmt(conv(v,i.currency,cur,r),cur):"–";
     const local=i.price!=null?conv(i.price,i.currency,cur,r):null;
     const foreign=i.currency&&i.currency!==cur;
-    const tgt=i.targetPrice!=null?fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur):"none";
+    const ins=i.insight;
+    const good=ins&&/Lowest|Close/.test(ins.verdict);
+    const offers=[{store:i.retailer,url:i.url,price:i.price,currency:i.currency,own:true},...(i.offers||[])].filter(o=>o.price!=null)
+      .map(o=>({...o,v:conv(o.price,o.currency||i.currency,cur,r)})).sort((x,y)=>x.v-y.v);
+    const tbl=offers.length>1?`<table><tr><th>Store</th><th class="r">Price</th><th></th></tr>${offers.map((o,k)=>`<tr><td>${esc(o.store)}${o.own?" (tracked)":""}</td><td class="r ${k===0?"cheap":""}">${fmt(o.v,cur)}</td><td class="r"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Open</a></td></tr>`).join("")}</table>`:
+      `<div class="muted" style="margin-top:6px">${i.compareAt?"No matching listings found at other stores yet.":"Comparing other stores…"}</div>`;
     return`<div class="card ${hit?"hit":""}">
       <div class="row" style="justify-content:space-between;align-items:flex-start">
         <div style="min-width:0"><div class="name" title="${esc(i.name)}">${esc(i.name)}</div>
-        <div class="muted">${flag(i.storeCountry)} ${esc(i.retailer)} · checked ${ago(i.checkedAt)} · id ${esc(i.id)}</div></div>
+        <div class="muted">${flag(i.storeCountry)} ${esc(i.retailer)} · checked ${ago(i.checkedAt)}</div></div>
         ${hit?'<span class="pill">Target hit</span>':""}
       </div>
       <div style="margin:10px 0 6px">${local!=null?`<span class="price">${fmt(local,cur)}</span>${foreign?` <span class="muted">(${fmt(i.price,i.currency)} at store)</span>`:""}`:'<span class="muted">No price yet</span>'}</div>
+      ${ins?`<div class="verdict ${good?"good":""}">${esc(ins.verdict)}</div>
+      <div class="stats"><div class="stat"><span class="muted">Lowest seen</span><b>${L(ins.lowest)}</b></div><div class="stat"><span class="muted">Average</span><b>${L(ins.avg)}</b></div><div class="stat"><span class="muted">Likely low (${esc(ins.bestMonth)})</span><b>${L(ins.predictedLow)}</b></div></div>
+      <div class="muted">Prediction: ${ins.basis==="observed"?"from this product's price history":"typical sale seasons"} · confidence ${esc(ins.confidence)} (${ins.points} reading${ins.points===1?"":"s"} over ${ins.days} day${ins.days===1?"":"s"})</div>`:""}
       ${spark(i.history)}
+      ${tbl}
       ${i.error?`<div class="err">${esc(i.error)}</div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
-        <span class="muted">Target: <b style="color:var(--text)">${tgt}</b></span>
+        <span class="muted">${i.targetPrice!=null?`Target: <b style="color:var(--text)">${fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur)}</b>`:"Auto alerts on new lows"}</span>
         <span class="row"><a class="btn ghost small" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer">Open</a>
-        <a class="btn ghost small" href="${issueUrl("remove.yml","&id="+encodeURIComponent(i.id))}" target="_blank" rel="noopener">Remove</a></span>
+        <button class="btn ghost small" onclick="removeItem('${esc(i.id)}')">Remove</button></span>
       </div></div>`}).join("");
 }
 fetch("data.json?"+Date.now()).then(r=>r.json()).then(d=>{DATA=d;render()}).catch(()=>{document.getElementById("grid").innerHTML='<div class="empty">Could not load data.json</div>'});

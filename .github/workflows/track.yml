@@ -18,6 +18,7 @@ jobs:
       github.event.issue.user.login == github.repository_owner &&
       (startsWith(github.event.issue.title, 'track:') || startsWith(github.event.issue.title, 'remove:'))
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,6 +29,8 @@ jobs:
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
+      - name: Install browser driver
+        run: npm install --no-save --no-audit --no-fund playwright-core
       - name: Check prices
         run: node scripts/check.mjs
         env:

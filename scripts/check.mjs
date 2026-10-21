@@ -1,7 +1,8 @@
 // Reads watchlist.json, scrapes every item, updates docs/data.json,
 // and opens a GitHub issue (which emails you) when a target price is hit.
 import fs from "node:fs";
-import { scrapeProduct, detectFromUrl, getRates, convert, fmt } from "./lib.mjs";
+import { scrapeProduct, detectFromUrl, getRates, convert, fmt, insight } from "./lib.mjs";
+import { compareItem, openBrowser } from "./compare.mjs";
 
 const WATCH = process.env.WATCHLIST ?? "watchlist.json";
 const DATA = process.env.DATAFILE ?? "docs/data.json";
@@ -15,6 +16,8 @@ export async function run() {
   const now = new Date().toISOString();
   const alerts = [];
   const items = [];
+  const COMPARE_EVERY_MS = 12 * 3600e3;
+  let br = null, brTried = false;
 
   for (const w of watch) {
     const p = prevById[w.id] ?? {};
@@ -25,7 +28,7 @@ export async function run() {
       retailer: d?.retailer ?? null, storeCountry: d?.country ?? null,
       targetPrice: w.target ?? null, targetCurrency: w.currency ?? null,
       currency: p.currency ?? null, price: p.price ?? null, lowest: p.lowest ?? null,
-      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], checkedAt: now, error: null, via: null,
+      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], offers: p.offers ?? [], compareAt: p.compareAt ?? null, compareLog: p.compareLog ?? [], insight: null, checkedAt: now, error: null, via: null,
     };
     if (!r.price) {
       it.error = r.error ?? "Unknown error";
@@ -39,15 +42,28 @@ export async function run() {
       it.history = it.history.slice(-300);
 
       const target = it.targetPrice != null ? convert(it.targetPrice, it.targetCurrency ?? it.currency, it.currency, rates) : null;
-      const hit = target != null && r.price <= target;
+      // No target set: alert on a new all-time low (>=3% under the previous low, once there is some history).
+      const prevLow = p.lowest ?? null;
+      const autoHit = target == null && prevLow != null && it.history.length >= 3 && r.price <= prevLow * 0.97;
+      const hit = (target != null && r.price <= target) || autoHit;
       if (hit && (it.lastAlerted == null || r.price < it.lastAlerted)) {
-        alerts.push({ it, target });
+        alerts.push({ it, target: target ?? prevLow, auto: autoHit });
         it.lastAlerted = r.price;
-      } else if (!hit) it.lastAlerted = null;
+      } else if (!hit && target != null) it.lastAlerted = null;
+      it.insight = insight(it.history, r.price, it.storeCountry);
+    }
+    // Same product at other stores (every 12h, or right after it is added).
+    if (!it.compareAt || Date.parse(now) - Date.parse(it.compareAt) > COMPARE_EVERY_MS) {
+      if (!brTried) { brTried = true; br = await openBrowser(); }
+      if (br && (it.name || "").length > 3) {
+        const c = await compareItem(br.ctx, it);
+        it.offers = c.offers; it.compareLog = c.log; it.compareAt = now;
+      } else it.compareLog = [br ? "no product name yet" : "browser unavailable"];
     }
     items.push(it);
   }
 
+  await br?.browser.close().catch(() => {});
   fs.writeFileSync(DATA, JSON.stringify({ updated: now, rates, items }, null, 1));
   await notify(alerts);
   const failed = items.filter((i) => i.error).length;
@@ -57,9 +73,9 @@ export async function run() {
 
 async function notify(alerts) {
   const repo = process.env.GITHUB_REPOSITORY, token = process.env.GITHUB_TOKEN, owner = process.env.GITHUB_REPOSITORY_OWNER;
-  for (const { it, target } of alerts) {
-    const title = `Price drop: ${it.name.slice(0, 80)} is now ${fmt(it.price, it.currency)}`;
-    const body = `@${owner ?? "you"} your target was hit.\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- Your target: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
+  for (const { it, target, auto } of alerts) {
+    const title = `${auto ? "New low" : "Price drop"}: ${it.name.slice(0, 80)} is now ${fmt(it.price, it.currency)}`;
+    const body = `@${owner ?? "you"} ${auto ? "this is a new lowest price." : "your target was hit."}\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- ${auto ? "Previous low" : "Your target"}: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
     if (!repo || !token) { console.log("[alert]", title); continue; }
     const res = await fetch(`https://api.github.com/repos/${repo}/issues`, {
       method: "POST",
