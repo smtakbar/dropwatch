@@ -90,7 +90,7 @@ export async function compareItem(ctx, item, { minSim = 0.6, perStore = 3 } = {}
       const sUrl = store.search.replace("{q}", q);
       const html = await render(ctx, sUrl);
       const links = candidates(html, sUrl, store.link, perStore);
-      if (!links.length) { log.push(`${store.name}: no result links`); continue; }
+      if (!links.length) { const t = html.match(/<title[^>]*>([^<]*)/i)?.[1]?.trim().slice(0, 50); log.push(`${store.name}: no result links (page "${t ?? "no title"}", ${Math.round(html.length / 1024)}kB)`); continue; }
       let best = null;
       for (const l of links) {
         const r = parseHtml(await render(ctx, l), country);
