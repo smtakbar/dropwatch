@@ -24,6 +24,7 @@ export function apply(title, body, list) {
     return { list: next, reply: next.length < list.length ? `Removed \`${id}\`.` : `No item with id \`${id}\`.`, changed: next.length < list.length };
   }
   const name = (f["name"] || "").trim();
+  if (/(github_pat_|ghp_|gho_|ghs_)/i.test(body)) return { list, reply: "Rejected: that looked like a secret token.", changed: false };
   const country = /^[A-Z]{2}$/.test((f["country"] || "").trim()) ? f["country"].trim() : "AU";
   const d = detectFromUrl(f["product link"] ?? "");
   if (!d && name.length < 3) return { list, reply: "Enter a product link or a product name. Nothing was added.", changed: false };

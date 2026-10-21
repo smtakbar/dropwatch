@@ -153,6 +153,7 @@ function renderPending(){
 }
 $("m-go").onclick=async()=>{
   const v=$("m-url").value.trim(); if(!v)return;
+  if(/^(github_pat_|ghp_|gho_|ghs_)/i.test(v)){toast("That looks like a GitHub token, not a product. Paste tokens in the setup box only.");return}
   const link=isLink(v), nm=link?$("m-name").value.trim():v;
   const ctry=(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[0];
   $("m-go").disabled=true;
