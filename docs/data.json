@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T09:52:25.985Z",
+ "updated": "2026-10-21T10:02:20.786Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -206,8 +206,8 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T09:52:25.985Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 780kB, json-ld yes, next-data yes",
+   "checkedAt": "2026-10-21T10:02:20.786Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 827kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -253,9 +253,37 @@
     "confidence": "low",
     "basis": "seasonal"
    },
-   "checkedAt": "2026-10-21T09:52:25.985Z",
+   "checkedAt": "2026-10-21T10:02:20.786Z",
    "error": null,
    "via": "fetch:json-ld"
+  },
+  {
+   "id": "d846cb3d",
+   "url": "https://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/",
+   "name": "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",
+   "retailer": "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",
+   "storeCountry": null,
+   "targetPrice": null,
+   "targetCurrency": null,
+   "currency": null,
+   "price": null,
+   "lowest": null,
+   "lastAlerted": null,
+   "history": [],
+   "offers": [],
+   "compareAt": "2026-10-21T10:02:20.786Z",
+   "compareLog": [
+    "Amazon US: 1 result(s), none matched with a readable price",
+    "Best Buy: no result links (page \"github pat 11csm5qky06uakselxwyaz igjbixkngspwix7f\", 710kB)",
+    "Walmart: no result links (page \"Robot or human?\", 17kB)",
+    "Target: no result links (page \"\"github pat 11csm5qky06uakselxwyaz igjbixkngspwix7\", 198kB)",
+    "Newegg: no result links (page \"Just a moment...\", 29kB)",
+    "eBay US: no result links (page \"Error Page | eBay\", 2kB)"
+   ],
+   "insight": null,
+   "checkedAt": "2026-10-21T10:02:20.786Z",
+   "error": "No price found. fetch failed (fetch failed); browser failed: page.goto: net::ERR_NAME_NOT_RESOLVED at https://github_pat_11csm5qky06uakselxwyaz_igjbixk",
+   "via": null
   }
  ]
 }
