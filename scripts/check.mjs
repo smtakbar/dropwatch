@@ -25,11 +25,12 @@ export async function run() {
       retailer: d?.retailer ?? null, storeCountry: d?.country ?? null,
       targetPrice: w.target ?? null, targetCurrency: w.currency ?? null,
       currency: p.currency ?? null, price: p.price ?? null, lowest: p.lowest ?? null,
-      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], checkedAt: now, error: null,
+      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], checkedAt: now, error: null, via: null,
     };
     if (!r.price) {
       it.error = r.error ?? "Unknown error";
     } else {
+      it.via = r.via ?? null;
       it.currency = r.currency ?? p.currency ?? "USD";
       it.price = r.price;
       it.lowest = p.lowest == null ? r.price : Math.min(p.lowest, r.price);

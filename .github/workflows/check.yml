@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: "17 * * * *"   # hourly
   workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: [watchlist.json, "scripts/**", ".github/workflows/check.yml"]
 
 permissions:
   contents: write
@@ -20,6 +23,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install browser driver (fallback for JS-rendered stores)
+        run: npm install --no-save --no-audit --no-fund playwright-core
       - name: Check prices
         run: node scripts/check.mjs
         env:
