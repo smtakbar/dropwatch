@@ -1,0 +1,11 @@
+name: Stop tracking a product
+description: Remove an item from the watchlist
+title: "remove: "
+body:
+  - type: input
+    id: id
+    attributes:
+      label: Item ID
+      description: Shown on each card in the dashboard
+    validations:
+      required: true

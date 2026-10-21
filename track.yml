@@ -1,0 +1,47 @@
+name: Track or remove product
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dropwatch
+  cancel-in-progress: false
+
+jobs:
+  track:
+    # Only the repo owner can change the watchlist.
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      (startsWith(github.event.issue.title, 'track:') || startsWith(github.event.issue.title, 'remove:'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Update watchlist
+        run: node scripts/track.mjs
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+      - name: Check prices
+        run: node scripts/check.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit
+        run: |
+          git config user.name "dropwatch-bot"
+          git config user.email "dropwatch-bot@users.noreply.github.com"
+          git add watchlist.json docs/data.json
+          git diff --cached --quiet || (git commit -m "Update watchlist" && git pull --rebase && git push)
+      - name: Reply and close issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$NUM" --body-file reply.md
+          gh issue close "$NUM"

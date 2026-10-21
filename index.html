@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DropWatch</title>
+<style>
+:root{--bg:#f6f5f1;--surface:#fff;--surface2:#f1f0ea;--border:#e4e2d9;--border2:#cfcdc2;--text:#1a1a18;--text2:#5f5e58;--text3:#8d8b82;--green:#3b6d11;--green-bg:#eaf3de;--red:#a32d2d}
+@media(prefers-color-scheme:dark){:root{--bg:#161614;--surface:#1f1f1c;--surface2:#292926;--border:#33332f;--border2:#45453f;--text:#f2f1ec;--text2:#b0aea4;--text3:#7d7b72;--green:#8fc25a;--green-bg:#26361a;--red:#f09595}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+button,select,input{font:inherit;font-size:14px;color:var(--text)}
+.top{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+.logo{font-size:19px;font-weight:300;letter-spacing:-.5px}.logo b{font-weight:700}.sp{flex:1}
+.btn{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:8px 14px;font-weight:500;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-block}
+.btn.ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);font-weight:400}
+.btn.small{padding:4px 9px;font-size:12px}
+.wrap{max-width:1000px;margin:0 auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.card.hit{border:2px solid #639922}
+.row{display:flex;gap:8px;align-items:center}
+.muted{color:var(--text2);font-size:12px}
+.price{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.pill{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--green-bg);color:var(--green)}
+.err{color:var(--red);font-size:12px;margin-top:6px}
+.name{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+select{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:6px 10px}
+.empty{grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text2)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">drop<b>watch</b></div><div class="sp"></div>
+  <select id="region" aria-label="Region"></select>
+  <a class="btn" id="add" href="#" target="_blank" rel="noopener">+ Track product</a>
+</div>
+<div class="wrap">
+  <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span></div>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
+const flag=id=>(COUNTRIES.find(c=>c[0]===id)||[])[2]||"";
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const conv=(a,f,t,r)=>(f===t||!r[f]||!r[t])?a:a/r[f]*r[t];
+const fmt=(a,c)=>{const z=c==="JPY"||c==="KRW";try{return new Intl.NumberFormat("en-AU",{style:"currency",currency:c,minimumFractionDigits:z?0:2,maximumFractionDigits:z?0:2}).format(a)}catch{return c+" "+a.toFixed(z?0:2)}};
+const ago=iso=>{if(!iso)return"never";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"just now":m<60?m+"m ago":m<1440?Math.round(m/60)+"h ago":Math.round(m/1440)+"d ago"};
+
+// Works on https://OWNER.github.io/REPO/ . For a custom domain set window.REPO="OWNER/REPO" before this script.
+const repo=window.REPO||(location.hostname.endsWith(".github.io")?location.hostname.split(".")[0]+"/"+location.pathname.split("/")[1]:"");
+const issueUrl=(t,q="")=>repo?`https://github.com/${repo}/issues/new?template=${t}${q}`:"#";
+document.getElementById("add").href=issueUrl("track.yml");
+
+let region="AU";try{region=localStorage.getItem("region")||"AU"}catch{}
+const sel=document.getElementById("region");
+sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${c[3]})</option>`).join("");
+sel.value=region;
+sel.onchange=()=>{region=sel.value;try{localStorage.setItem("region",region)}catch{}render()};
+
+function spark(h){
+  if(!h||h.length<2)return"";
+  const v=h.map(x=>x[1]),w=260,ht=40,mn=Math.min(...v),mx=Math.max(...v),sp=mx-mn||1;
+  const p=v.map((y,i)=>`${(i/(v.length-1))*w},${ht-4-((y-mn)/sp)*(ht-8)}`).join(" ");
+  return`<svg viewBox="0 0 ${w} ${ht}" width="100%" height="${ht}" preserveAspectRatio="none"><polyline points="${p}" fill="none" stroke="#185fa5" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+}
+
+let DATA={items:[],rates:{}};
+function render(){
+  const me=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=me[3],r=DATA.rates||{};
+  const hits=DATA.items.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
+  document.getElementById("meta").textContent=`${DATA.items.length} tracked · ${hits} at target · updated ${ago(DATA.updated)}`;
+  const g=document.getElementById("grid");
+  if(!DATA.items.length){g.innerHTML=`<div class="empty">Nothing tracked yet. Click “+ Track product”.</div>`;return}
+  g.innerHTML=DATA.items.map(i=>{
+    const hit=i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r);
+    const local=i.price!=null?conv(i.price,i.currency,cur,r):null;
+    const foreign=i.currency&&i.currency!==cur;
+    const tgt=i.targetPrice!=null?fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur):"none";
+    return`<div class="card ${hit?"hit":""}">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div style="min-width:0"><div class="name" title="${esc(i.name)}">${esc(i.name)}</div>
+        <div class="muted">${flag(i.storeCountry)} ${esc(i.retailer)} · checked ${ago(i.checkedAt)} · id ${esc(i.id)}</div></div>
+        ${hit?'<span class="pill">Target hit</span>':""}
+      </div>
+      <div style="margin:10px 0 6px">${local!=null?`<span class="price">${fmt(local,cur)}</span>${foreign?` <span class="muted">(${fmt(i.price,i.currency)} at store)</span>`:""}`:'<span class="muted">No price yet</span>'}</div>
+      ${spark(i.history)}
+      ${i.error?`<div class="err">${esc(i.error)}</div>`:""}
+      <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
+        <span class="muted">Target: <b style="color:var(--text)">${tgt}</b></span>
+        <span class="row"><a class="btn ghost small" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer">Open</a>
+        <a class="btn ghost small" href="${issueUrl("remove.yml","&id="+encodeURIComponent(i.id))}" target="_blank" rel="noopener">Remove</a></span>
+      </div></div>`}).join("");
+}
+fetch("data.json?"+Date.now()).then(r=>r.json()).then(d=>{DATA=d;render()}).catch(()=>{document.getElementById("grid").innerHTML='<div class="empty">Could not load data.json</div>'});
+render();
+</script>
+</body>
+</html>
