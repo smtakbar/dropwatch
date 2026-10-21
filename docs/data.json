@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T08:52:01.306Z",
+ "updated": "2026-10-21T09:09:36.082Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -177,13 +177,19 @@
    "storeCountry": "AU",
    "targetPrice": null,
    "targetCurrency": null,
-   "currency": null,
-   "price": null,
-   "lowest": null,
+   "currency": "AUD",
+   "price": 4,
+   "lowest": 4,
    "lastAlerted": null,
-   "history": [],
-   "checkedAt": "2026-10-21T08:52:01.306Z",
-   "error": "Could not find a price on this page (store may render prices with JavaScript or block bots)"
+   "history": [
+    [
+     "2026-10-21T09:09:36.082Z",
+     4
+    ]
+   ],
+   "checkedAt": "2026-10-21T09:09:36.082Z",
+   "error": null,
+   "via": "fetch:next-data"
   }
  ]
 }
