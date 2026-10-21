@@ -40,6 +40,7 @@ input[type=text],input[type=password]{background:var(--surface2);border:1px soli
 .stat{background:var(--surface2);border-radius:8px;padding:6px 8px}.stat b{display:block;font-size:13px;font-variant-numeric:tabular-nums}
 .verdict{font-size:12px;font-weight:500;margin:6px 0;padding:6px 8px;border-radius:8px;background:var(--surface2)}
 .verdict.good{background:var(--green-bg);color:var(--green)}
+a{color:inherit}.link{color:#185fa5;font-weight:500}
 table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}td,th{padding:5px 4px;border-top:1px solid var(--border);text-align:left}th{color:var(--text2);font-weight:500}
 td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 .cheap{color:var(--green);font-weight:600}
@@ -67,11 +68,16 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
     <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
   </div>
   <div id="m-token" style="display:none">
-    <h2>One-time setup</h2>
-    <p class="muted" style="margin-bottom:8px">To add products from this page, paste a GitHub token limited to this one repository with <b>Issues: Read and write</b>. It is stored only in this browser.</p>
-    <p class="muted"><a id="m-tokenlink" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a token</a> → Repository access: Only select repositories → this repo → Permissions → Issues: Read and write.</p>
-    <label for="m-tok">Token</label><input type="password" id="m-tok" autocomplete="off">
-    <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-save">Save token</button></div>
+    <h2>One-time setup (1 minute)</h2>
+    <p class="muted" style="margin-bottom:10px">Adding products from this page needs a GitHub token. Your link is saved and will be added right after.</p>
+    <ol class="muted" style="padding-left:18px;line-height:1.7">
+      <li><a class="link" id="m-tokenlink" href="#" target="_blank" rel="noopener">Open the token page</a> (opens pre-filled)</li>
+      <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick <b id="m-repo">this repo</b></li>
+      <li>Click <b>Generate token</b>, copy it, paste below</li>
+    </ol>
+    <label for="m-tok">Token</label><input type="password" id="m-tok" autocomplete="off" placeholder="github_pat_…">
+    <div class="row" style="margin-top:16px;justify-content:space-between"><a class="link" id="m-skip" href="#" target="_blank" rel="noopener">Skip: add via GitHub instead</a>
+    <span class="row"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-save">Save &amp; add</button></span></div>
   </div>
 </div></div>
 <div class="toast" id="toast"></div>
@@ -89,9 +95,10 @@ const issueUrl=(t,q="")=>repo?`https://github.com/${repo}/issues/new?template=${
 const $=id=>document.getElementById(id);
 const tok=()=>{try{return localStorage.getItem("gh_token")||""}catch{return""}};
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),4500)}
-function openModal(url){ $("modal").classList.add("on"); const need=!tok(); $("m-track").style.display=need?"none":"block"; $("m-token").style.display=need?"block":"none"; if(!need){$("m-url").value=url||"";$("m-url").focus()} }
+let pending="";
+function openModal(url){ pending=url||pending; $("modal").classList.add("on"); const need=!tok(); const o=repo.split("/")[0]; $("m-tokenlink").href=`https://github.com/settings/personal-access-tokens/new?name=DropWatch&description=${encodeURIComponent("Add/remove products from the DropWatch page")}&target_name=${encodeURIComponent(o)}&expires_in=365&issues=write`; $("m-skip").href=issueUrl("track.yml","&link="+encodeURIComponent(pending)); $("m-repo").textContent=repo.split("/")[1]||"this repo"; $("m-track").style.display=need?"none":"block"; $("m-token").style.display=need?"block":"none"; if(!need){$("m-url").value=pending;$("m-url").focus()} }
 function closeModal(){$("modal").classList.remove("on")}
-document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeModal);
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{pending="";closeModal()});
 $("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
 $("add").onclick=()=>openModal("");
 $("quickGo").onclick=()=>{const v=$("quick").value.trim();if(v)openModal(v)};
@@ -101,7 +108,7 @@ $("m-save").onclick=async()=>{
   const r=await fetch(`https://api.github.com/repos/${repo}`,{headers:{Authorization:"Bearer "+t}}).catch(()=>null);
   if(!r||!r.ok){toast("That token can't access "+repo+". Check the repository and permissions.");return}
   try{localStorage.setItem("gh_token",t)}catch{toast("Browser blocked storage; token not saved.");return}
-  $("m-tok").value="";openModal("");
+  $("m-tok").value="";openModal(pending);if(pending)$("m-go").click();
 };
 async function sendIssue(title,body){
   const r=await fetch(`https://api.github.com/repos/${repo}/issues`,{method:"POST",headers:{Authorization:"Bearer "+tok(),Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({title,body})}).catch(()=>null);
@@ -115,7 +122,7 @@ $("m-go").onclick=async()=>{
   const err=await sendIssue("track: "+url.slice(0,80),`### Product link\n\n${url}\n\n### Name\n\n${$("m-name").value.trim()||"_No response_"}`);
   $("m-go").disabled=false;
   if(err){toast(err);openModal(url);return}
-  closeModal();$("quick").value="";$("m-name").value="";toast("Added. It shows up here in about a minute.");
+  closeModal();pending="";$("quick").value="";$("m-name").value="";toast("Added. It shows up here in about a minute.");
 };
 async function removeItem(id){ if(!tok()){openModal("");return} if(!confirm("Stop tracking this product?"))return; const err=await sendIssue("remove: "+id,`### Item ID\n\n${id}`); toast(err||"Removing… gone in about a minute."); }
 window.removeItem=removeItem;
