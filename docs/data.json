@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T20:48:37.378Z",
+ "updated": "2026-10-21T21:49:08.630Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -190,25 +190,26 @@
      "price": 47,
      "currency": "AUD",
      "title": "Mountain Dew Cans 375mL 30 Pack",
+     "image": "https://s3-ap-southeast-2.amazonaws.com/wc-prod-pim/JPEG_1000x1000/SH10007191_mountain_dew_cans_375ml_30_pack.jpg",
      "similarity": 1
     }
    ],
-   "compareAt": "2026-10-21T09:34:10.449Z",
+   "compareAt": "2026-10-21T21:49:08.630Z",
    "compareLog": [
     "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
     "JB Hi-Fi: 3 result(s), none matched with a readable price",
     "Officeworks: 47 AUD (sim 1)",
     "Harvey Norman: no result links (page \"no title\", 1kB)",
     "The Good Guys: 3 result(s), none matched with a readable price",
-    "Big W: page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.bigw.com.au/product/hugg",
+    "Big W: 3 result(s), none matched with a readable price",
     "Kmart: no result links (page \"Access Denied\", 0kB)",
-    "Woolworths: no result links (page \"mountain dew - Woolworths Online\", 787kB)",
+    "Woolworths: no result links (page \"mountain dew - Woolworths Online\", 775kB)",
     "Coles: 2 result(s), none matched with a readable price",
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T20:48:37.378Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 831kB, json-ld yes, next-data yes",
+   "checkedAt": "2026-10-21T21:49:08.630Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 827kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -259,7 +260,7 @@
     "confidence": "low",
     "basis": "seasonal"
    },
-   "checkedAt": "2026-10-21T20:48:37.378Z",
+   "checkedAt": "2026-10-21T21:49:08.630Z",
    "error": null,
    "via": "fetch:json-ld"
   },
@@ -292,7 +293,7 @@
     "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
    ],
    "insight": null,
-   "checkedAt": "2026-10-21T20:48:37.378Z",
+   "checkedAt": "2026-10-21T21:49:08.630Z",
    "error": "Searching stores for this product…",
    "via": null
   }
