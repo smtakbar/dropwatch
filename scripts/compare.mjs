@@ -79,12 +79,12 @@ async function render(ctx, url) {
 }
 
 /** Returns { offers: [{store,url,price,currency,title,similarity}], log: [string] } */
-export async function compareItem(ctx, item, { minSim = 0.6, perStore = 3 } = {}) {
+export async function compareItem(ctx, item, { minSim = 0.6, perStore = 3, maxStores = 99 } = {}) {
   const country = item.storeCountry ?? "US";
   const own = detectFromUrl(item.url)?.retailer;
   const q = encodeURIComponent(queryFor(item.name));
   const offers = [], log = [];
-  for (const store of STORES[country] ?? STORES.US) {
+  for (const store of (STORES[country] ?? STORES.US).slice(0, maxStores)) {
     if (own && store.name.toLowerCase().replace(/[^a-z]/g, "").includes(own.toLowerCase().replace(/[^a-z]/g, ""))) continue;
     try {
       const sUrl = store.search.replace("{q}", q);
@@ -93,11 +93,11 @@ export async function compareItem(ctx, item, { minSim = 0.6, perStore = 3 } = {}
       if (!links.length) { const t = html.match(/<title[^>]*>([^<]*)/i)?.[1]?.trim().slice(0, 50); log.push(`${store.name}: no result links (page "${t ?? "no title"}", ${Math.round(html.length / 1024)}kB)`); continue; }
       let best = null;
       for (const l of links) {
-        const r = parseHtml(await render(ctx, l), country);
+        const r = parseHtml(await render(ctx, l), country, l);
         if (!r.price) continue;
         const sim = similarity(item.name, r.name);
         if (sim >= minSim && (!best || sim > best.similarity || (sim === best.similarity && r.price < best.price)))
-          best = { store: store.name, url: l, price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), similarity: +sim.toFixed(2) };
+          best = { store: store.name, url: l, price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), image: r.image ?? null, similarity: +sim.toFixed(2) };
       }
       if (best) { offers.push(best); log.push(`${store.name}: ${best.price} ${best.currency} (sim ${best.similarity})`); }
       else log.push(`${store.name}: ${links.length} result(s), none matched with a readable price`);

@@ -6,6 +6,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: write
 
 concurrency:
   group: dropwatch
@@ -35,6 +36,7 @@ jobs:
         run: node scripts/check.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QUICK: "1"
       - name: Commit
         run: |
           git config user.name "dropwatch-bot"
@@ -45,5 +47,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUM: ${{ github.event.issue.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           gh issue close "$NUM"
+          gh workflow run check.yml --repo "$GITHUB_REPOSITORY" || true

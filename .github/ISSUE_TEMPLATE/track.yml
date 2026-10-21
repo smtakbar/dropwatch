@@ -7,13 +7,11 @@ body:
     attributes:
       label: Product link
       description: Any store, any country
-    validations:
-      required: true
   - type: input
     id: name
     attributes:
       label: Name
-      description: Optional. Leave blank to use the page title.
+      description: Product name. Required if there is no link; helps find the same product at other stores.
   - type: input
     id: target
     attributes:
@@ -24,4 +22,10 @@ body:
     attributes:
       label: Target currency
       options: [AUD, USD, GBP, EUR, CAD, JPY, INR, SGD, NZD, AED, BRL, KRW]
+      default: 0
+  - type: dropdown
+    id: country
+    attributes:
+      label: Country
+      options: [AU, US, GB, CA, DE, FR, JP, IN, SG, NZ, AE, BR, KR]
       default: 0

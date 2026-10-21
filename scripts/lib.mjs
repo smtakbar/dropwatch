@@ -44,14 +44,15 @@ function fromOffers(offers) {
 }
 
 /** Extract name/price/currency from HTML. Order: JSON-LD, meta tags, __NEXT_DATA__ JSON. */
-export function parseHtml(html, country) {
-  let name, price, currency, via;
+export function parseHtml(html, country, base = "https://example.com") {
+  let name, price, currency, via, image;
   for (const b of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
     try {
       for (const n of walk(JSON.parse(b[1].trim()))) {
         const t = n["@type"];
         if (t === "Product" || (Array.isArray(t) && t.includes("Product"))) {
           name ??= typeof n.name === "string" ? n.name : undefined;
+          image ??= [].concat(n.image ?? []).map((x) => (typeof x === "string" ? x : x?.url)).find(Boolean);
           if (!price) { const r = fromOffers(n.offers); price = r.price; currency = r.currency; if (price) via = "json-ld"; }
         }
       }
@@ -74,9 +75,11 @@ export function parseHtml(html, country) {
       }
     } catch {}
   }
+  image ??= meta("og:image") ?? meta("twitter:image");
+  if (image) { try { image = new URL(image.replace(/&amp;/g, "&"), base).toString(); } catch { image = undefined; } }
   name ??= meta("og:title") ?? html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim();
   currency ??= CUR[country];
-  return { name, price, currency, via, diag: { bytes: html.length, title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim().slice(0, 60), jsonld: /ld\+json/i.test(html), nextData: !!nd } };
+  return { name, price, currency, via, image, diag: { bytes: html.length, title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim().slice(0, 60), jsonld: /ld\+json/i.test(html), nextData: !!nd } };
 }
 
 async function fetchPage(url) {
@@ -109,17 +112,17 @@ async function browserPage(url) {
 export async function scrapeProduct(url) {
   const country = detectFromUrl(url)?.country;
   const f = await fetchPage(url);
-  let r = f.html ? parseHtml(f.html, country) : null;
-  if (r?.price) return { name: r.name, price: r.price, currency: r.currency, via: "fetch:" + r.via };
+  let r = f.html ? parseHtml(f.html, country, url) : null;
+  if (r?.price) return { name: r.name, price: r.price, currency: r.currency, image: r.image, via: "fetch:" + r.via };
 
   const b = await browserPage(url);
-  const rb = b.html ? parseHtml(b.html, country) : null;
-  if (rb?.price) return { name: rb.name ?? r?.name, price: rb.price, currency: rb.currency, via: "browser:" + rb.via };
+  const rb = b.html ? parseHtml(b.html, country, url) : null;
+  if (rb?.price) return { name: rb.name ?? r?.name, price: rb.price, currency: rb.currency, image: rb.image ?? r?.image, via: "browser:" + rb.via };
 
   const d = (rb ?? r)?.diag;
   const fetchNote = f.err ? `fetch failed (${f.err})` : f.status !== 200 ? `fetch HTTP ${f.status}` : "fetch HTTP 200";
   const pageNote = d ? `, page "${d.title ?? "no title"}", ${Math.round(d.bytes / 1024)}kB, json-ld ${d.jsonld ? "yes" : "no"}, next-data ${d.nextData ? "yes" : "no"}` : "";
-  return { name: rb?.name ?? r?.name, error: `No price found. ${fetchNote}${pageNote}${b.note ? "; " + b.note : ""}` };
+  return { name: rb?.name ?? r?.name, image: rb?.image ?? r?.image, error: `No price found. ${fetchNote}${pageNote}${b.note ? "; " + b.note : ""}` };
 }
 
 /** rates = units per 1 USD */

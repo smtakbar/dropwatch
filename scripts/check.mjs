@@ -22,14 +22,15 @@ export async function run() {
   for (const w of watch) {
     const p = prevById[w.id] ?? {};
     const d = detectFromUrl(w.url);
-    const r = await scrapeProduct(w.url);
+    const r = w.url ? await scrapeProduct(w.url) : { name: w.name, error: "Searching stores for this product…" };
     const it = {
-      id: w.id, url: w.url, name: w.name || r.name || d?.retailer || w.url,
-      retailer: d?.retailer ?? null, storeCountry: d?.country ?? null,
+      id: w.id, url: w.url, name: w.name || r.name || d?.retailer || w.url, url: w.url,
+      retailer: d?.retailer ?? p.retailer ?? null, storeCountry: d?.country ?? w.country ?? null, image: p.image ?? null,
       targetPrice: w.target ?? null, targetCurrency: w.currency ?? null,
       currency: p.currency ?? null, price: p.price ?? null, lowest: p.lowest ?? null,
       lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], offers: p.offers ?? [], compareAt: p.compareAt ?? null, compareLog: p.compareLog ?? [], insight: null, checkedAt: now, error: null, via: null,
     };
+    if (r.image) it.image = r.image;
     if (!r.price) {
       it.error = r.error ?? "Unknown error";
     } else {
@@ -54,11 +55,25 @@ export async function run() {
     }
     // Same product at other stores (every 12h, or right after it is added).
     if (!it.compareAt || Date.parse(now) - Date.parse(it.compareAt) > COMPARE_EVERY_MS) {
-      if (!brTried) { brTried = true; br = await openBrowser(); }
-      if (br && (it.name || "").length > 3) {
-        const c = await compareItem(br.ctx, it);
-        it.offers = c.offers; it.compareLog = c.log; it.compareAt = now;
-      } else it.compareLog = [br ? "no product name yet" : "browser unavailable"];
+      const quick = process.env.QUICK === "1";
+      if (quick && w.url) { /* link items: price first, comparison runs in the follow-up full check */ }
+      else {
+        if (!brTried) { brTried = true; br = await openBrowser(); }
+        if (br && (it.name || "").length > 3) {
+          const c = await compareItem(br.ctx, it, { maxStores: quick ? 4 : 99 });
+          it.offers = c.offers; it.compareLog = c.log; it.compareAt = quick ? null : now;
+          if (!w.url && c.offers.length) {
+            // Name-only item: its headline price is the cheapest store found.
+            const best = [...c.offers].sort((a, b) => convert(a.price, a.currency, "USD", rates) - convert(b.price, b.currency, "USD", rates))[0];
+            it.url = best.url; it.retailer = best.store; it.currency = best.currency; it.price = best.price; it.image = it.image ?? best.image;
+            it.error = null; it.lowest = Math.min(p.lowest ?? best.price, best.price);
+            const last = it.history.at(-1);
+            if (!last || last[1] !== best.price || Date.parse(now) - Date.parse(last[0]) > 86400000) it.history.push([now, best.price]);
+            it.insight = insight(it.history, best.price, it.storeCountry);
+          } else if (!w.url) it.error = "No store results yet";
+          it.image = it.image ?? c.offers.find((o) => o.image)?.image ?? null;
+        } else it.compareLog = [br ? "no product name yet" : "browser unavailable"];
+      }
     }
     items.push(it);
   }
