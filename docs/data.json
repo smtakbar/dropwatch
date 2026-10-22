@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T05:42:12.534Z",
+ "updated": "2026-10-22T05:45:49.214Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -207,8 +207,8 @@
    "advice": null,
    "matchName": "Mountain Dew Energized Soft Drink 375ml",
    "inStock": null,
-   "checkedAt": "2026-10-22T05:42:12.534Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 773kB, json-ld yes, next-data yes",
+   "checkedAt": "2026-10-22T05:45:49.214Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 774kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -280,7 +280,7 @@
    },
    "matchName": "Remington All-in",
    "inStock": true,
-   "checkedAt": "2026-10-22T05:42:12.534Z",
+   "checkedAt": "2026-10-22T05:45:49.214Z",
    "error": null,
    "via": "fetch:json-ld"
   },
@@ -322,7 +322,7 @@
    "advice": null,
    "matchName": "Marvis Sweet & Sour Rhubarb Toothpaste 75 ml",
    "inStock": null,
-   "checkedAt": "2026-10-22T05:42:12.534Z",
+   "checkedAt": "2026-10-22T05:45:49.214Z",
    "error": "Searching stores for this product…",
    "via": null
   }
