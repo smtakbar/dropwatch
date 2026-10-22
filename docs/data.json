@@ -234,17 +234,7 @@
      23
     ]
    ],
-   "offers": [
-    {
-     "store": "target.com.au",
-     "url": "https://www.target.com.au/p/remington-5-in-1-titanium-multi-grooming-kit/73073840",
-     "price": 29,
-     "currency": "AUD",
-     "title": "Remington 5 in 1 Titanium Multi Grooming Kit",
-     "image": "https://assets.target.com.au/asset/eb6ef15f-3b55-48d8-856f-3a557ac3ef1b/thumbnail/webimage-73073840-IMG-000.png",
-     "similarity": 0.63
-    }
-   ],
+   "offers": [],
    "compareAt": "2026-10-22T05:34:55.890Z",
    "compareLog": [
     "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
@@ -275,19 +265,7 @@
     "confidence": "low",
     "basis": "seasonal"
    },
-   "advice": {
-    "action": "buy",
-    "headline": "Buy now",
-    "reason": "It is within 6% of the lowest price we have seen.",
-    "best": {
-     "store": "JB Hi-Fi",
-     "url": "https://www.jbhifi.com.au/products/remington-all-in-1-titanium-grooming-system?store=161",
-     "price": 23,
-     "currency": "AUD",
-     "own": true,
-     "saving": 0
-    }
-   },
+   "advice": null,
    "matchName": "Remington All-in",
    "inStock": true,
    "checkedAt": "2026-10-22T05:34:55.890Z",

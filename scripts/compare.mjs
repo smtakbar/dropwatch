@@ -104,7 +104,7 @@ async function render(ctx, url) {
 }
 
 /** Returns { offers: [{store,url,price,currency,title,similarity}], log: [string] } */
-export async function compareItem(ctx, item, { minSim = 0.6, perStore = 2, maxStores = 99, discover = false } = {}) {
+export async function compareItem(ctx, item, { minSim = 0.8, perStore = 2, maxStores = 99, discover = false } = {}) {
   const country = item.storeCountry ?? "US";
   const own = detectFromUrl(item.url)?.retailer;
   const ref = matchTitle(item);
@@ -151,7 +151,7 @@ export async function openBrowser() {
 }
 
 /** Any store on the web: searches the open web for the product, then reads each result page. */
-export async function discoverOffers(ctx, item, known, { minSim = 0.6, max = 8 } = {}) {
+export async function discoverOffers(ctx, item, known, { minSim = 0.8, max = 8 } = {}) {
   const country = item.storeCountry ?? "US", offers = [], log = [];
   const skip = new Set(known.map((h) => h.replace(/^www\./, "")));
   const q = encodeURIComponent(queryFor(matchTitle(item)) + " buy price") + "&kl=" + ({ AU: "au-en", US: "us-en", GB: "uk-en", CA: "ca-en", IN: "in-en", DE: "de-de", FR: "fr-fr", JP: "jp-jp", SG: "sg-en", NZ: "nz-en" }[country] ?? "wt-wt");
@@ -180,7 +180,7 @@ export async function discoverOffers(ctx, item, known, { minSim = 0.6, max = 8 }
 }
 
 /** Optional: Google Shopping results through SerpApi (set SERPAPI_KEY). Trusted retailers only. */
-export async function serpOffers(item, { minSim = 0.6 } = {}) {
+export async function serpOffers(item, { minSim = 0.8 } = {}) {
   const key = process.env.SERPAPI_KEY;
   if (!key) return { offers: [], log: [] };
   const country = item.storeCountry ?? "AU", ref = matchTitle(item);
