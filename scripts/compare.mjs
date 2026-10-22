@@ -50,13 +50,15 @@ STORES.AE.push(S("Amazon AE", "https://www.amazon.ae/s?k={q}", "/(?:[^/\"?]+/)?d
 STORES.BR.push(S("Amazon BR", "https://www.amazon.com.br/s?k={q}", "/(?:[^/\"?]+/)?dp/[A-Z0-9]{10}"));
 
 const STOP = new Set(["buy", "the", "and", "with", "for", "online", "pack", "new", "from", "at", "in", "of", "a", "an", "coles", "jb", "hi", "fi", "amazon", "au", "com"]);
-export const tokens = (s = "") => (String(s).toLowerCase().replace(/\|.*$/, "").match(/[a-z0-9]+/g) ?? []).filter((t) => !STOP.has(t));
+export const tokens = (s = "") => (String(s).toLowerCase().replace(/\|.*$/, "").replace(/(\d)\s+(ml|g|kg|l|oz|pack|pk|mg)\b/g, "$1$2").match(/[a-z0-9]+/g) ?? []).filter((t) => !STOP.has(t));
 export const queryFor = (name) => tokens(name).slice(0, 7).join(" ");
 
 /** How much of the tracked product's title (incl. numbers like 375ml/24) appears in the candidate. 0..1 */
 export function similarity(a, b) {
   const A = tokens(a), B = new Set(tokens(b));
   if (!A.length) return 0;
+  // Sizes and counts (75ml, 375ml, 24...) must all match, otherwise it is a different product.
+  if (A.filter((t) => /\d/.test(t)).some((t) => !B.has(t))) return 0;
   return A.filter((t) => B.has(t)).length / A.length;
 }
 
@@ -130,7 +132,7 @@ export async function openBrowser() {
 export async function discoverOffers(ctx, item, known, { minSim = 0.6, max = 8 } = {}) {
   const country = item.storeCountry ?? "US", offers = [], log = [];
   const skip = new Set(known.map((h) => h.replace(/^www\./, "")));
-  const q = encodeURIComponent(queryFor(item.name) + " buy price");
+  const q = encodeURIComponent(queryFor(item.name) + " buy price") + "&kl=" + ({ AU: "au-en", US: "us-en", GB: "uk-en", CA: "ca-en", IN: "in-en", DE: "de-de", FR: "fr-fr", JP: "jp-jp", SG: "sg-en", NZ: "nz-en" }[country] ?? "wt-wt");
   let html = "";
   try { html = await render(ctx, `https://html.duckduckgo.com/html/?q=${q}`); } catch (e) { return { offers, log: [`web search: ${String(e?.message ?? e).split("\n")[0].slice(0, 70)}`] }; }
   const urls = [];
