@@ -38,14 +38,14 @@ function fromOffers(offers) {
   for (const o of Array.isArray(offers) ? offers : [offers]) {
     if (!o) continue;
     const price = num(o.price ?? o.lowPrice ?? o.priceSpecification?.price);
-    if (price) return { price, currency: o.priceCurrency ?? o.priceSpecification?.priceCurrency };
+    if (price) return { price, currency: o.priceCurrency ?? o.priceSpecification?.priceCurrency, inStock: o.availability == null ? undefined : !/OutOfStock|SoldOut|Discontinued/i.test(String(o.availability)) };
   }
   return {};
 }
 
 /** Extract name/price/currency from HTML. Order: JSON-LD, meta tags, __NEXT_DATA__ JSON. */
 export function parseHtml(html, country, base = "https://example.com") {
-  let name, price, currency, via, image;
+  let name, price, currency, via, image, inStock;
   for (const b of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
     try {
       for (const n of walk(JSON.parse(b[1].trim()))) {
@@ -53,7 +53,7 @@ export function parseHtml(html, country, base = "https://example.com") {
         if (t === "Product" || (Array.isArray(t) && t.includes("Product"))) {
           name ??= typeof n.name === "string" ? n.name : undefined;
           image ??= [].concat(n.image ?? []).map((x) => (typeof x === "string" ? x : x?.url)).find(Boolean);
-          if (!price) { const r = fromOffers(n.offers); price = r.price; currency = r.currency; if (price) via = "json-ld"; }
+          if (!price) { const r = fromOffers(n.offers); price = r.price; currency = r.currency; inStock = r.inStock; if (price) via = "json-ld"; }
         }
       }
     } catch {}
@@ -79,7 +79,7 @@ export function parseHtml(html, country, base = "https://example.com") {
   if (image) { try { image = new URL(image.replace(/&amp;/g, "&"), base).toString(); } catch { image = undefined; } }
   name ??= meta("og:title") ?? html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim();
   currency ??= CUR[country];
-  return { name, price, currency, via, image, diag: { bytes: html.length, title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim().slice(0, 60), jsonld: /ld\+json/i.test(html), nextData: !!nd } };
+  return { name, price, currency, via, image, inStock, diag: { bytes: html.length, title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim().slice(0, 60), jsonld: /ld\+json/i.test(html), nextData: !!nd } };
 }
 
 async function fetchPage(url) {
@@ -113,11 +113,11 @@ export async function scrapeProduct(url) {
   const country = detectFromUrl(url)?.country;
   const f = await fetchPage(url);
   let r = f.html ? parseHtml(f.html, country, url) : null;
-  if (r?.price) return { name: r.name, price: r.price, currency: r.currency, image: r.image, via: "fetch:" + r.via };
+  if (r?.price) return { name: r.name, price: r.price, currency: r.currency, image: r.image, inStock: r.inStock, via: "fetch:" + r.via };
 
   const b = await browserPage(url);
   const rb = b.html ? parseHtml(b.html, country, url) : null;
-  if (rb?.price) return { name: rb.name ?? r?.name, price: rb.price, currency: rb.currency, image: rb.image ?? r?.image, via: "browser:" + rb.via };
+  if (rb?.price) return { name: rb.name ?? r?.name, price: rb.price, currency: rb.currency, image: rb.image ?? r?.image, inStock: rb.inStock, via: "browser:" + rb.via };
 
   const d = (rb ?? r)?.diag;
   const fetchNote = f.err ? `fetch failed (${f.err})` : f.status !== 200 ? `fetch HTTP ${f.status}` : "fetch HTTP 200";
@@ -179,4 +179,29 @@ export function insight(history, price, country, now = new Date()) {
   else verdict = `Usually cheaper around ${MONTHS[bestMonth]}`;
   const confidence = spanDays >= 90 ? "high" : spanDays >= 30 ? "medium" : "low";
   return { lowest, highest, avg: +avg.toFixed(2), points: pts.length, days: Math.round(spanDays), bestMonth: MONTHS[bestMonth], predictedLow, verdict, confidence, basis };
+}
+
+// ---- Buy / wait advice, including the cheapest store across everything we found ----
+export function advise(it, rates, now = new Date()) {
+  const ins = it.insight;
+  if (!it.price || !ins) return null;
+  const cal = SEASON[it.storeCountry] ?? SEASON.DEFAULT, cm = now.getUTCMonth();
+  const usd = (p, c) => convert(p, c ?? it.currency, "USD", rates);
+  const all = [{ store: it.retailer, url: it.url, price: it.price, currency: it.currency, own: true }, ...(it.offers ?? [])].filter((o) => o.price > 0);
+  const bestO = all.reduce((a, b) => (usd(b.price, b.currency) < usd(a.price, a.currency) ? b : a));
+  const saving = 1 - usd(bestO.price, bestO.currency) / usd(it.price, it.currency);
+  const best = { store: bestO.store, url: bestO.url, price: bestO.price, currency: bestO.currency, own: !!bestO.own, saving: +Math.max(0, saving).toFixed(3) };
+  const vsLow = it.price / ins.lowest - 1;
+  let saleIn = null;
+  for (let k = 1; k <= 2; k++) if (cal[(cm + k) % 12] >= 0.07) { saleIn = k; break; }
+  const nextSale = saleIn ? MONTHS[(cm + saleIn) % 12] : null;
+  let action, headline, reason;
+  if (it.inStock === false) { action = "wait"; headline = "Wait: out of stock"; reason = "The store lists it as unavailable right now."; }
+  else if (ins.points >= 3 && vsLow <= 0.02) { action = "buy"; headline = "Buy now"; reason = "This is the lowest price we have seen for it."; }
+  else if (saving >= 0.05) { action = "buy"; headline = `Buy now at ${best.store}`; reason = `${best.store} is ${Math.round(saving * 100)}% cheaper than your tracked store.`; }
+  else if (saleIn && vsLow > 0.02) { action = "wait"; headline = `Wait for ${nextSale} sales`; reason = `Prices usually dip then. A likely low is around ${fmt(ins.predictedLow, it.currency)}.`; }
+  else if (vsLow <= 0.06) { action = "buy"; headline = "Buy now"; reason = "It is within 6% of the lowest price we have seen."; }
+  else if (ins.points >= 5) { action = "wait"; headline = "Wait for a drop"; reason = `It is ${Math.round(vsLow * 100)}% above its lowest price.`; }
+  else { action = "maybe"; headline = "Buy if you need it now"; reason = "We have too little price history to say it will get cheaper."; }
+  return { action, headline, reason, best };
 }

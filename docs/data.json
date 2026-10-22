@@ -194,7 +194,7 @@
      "similarity": 1
     }
    ],
-   "compareAt": "2026-10-21T21:49:08.630Z",
+   "compareAt": null,
    "compareLog": [
     "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
     "JB Hi-Fi: 3 result(s), none matched with a readable price",
@@ -236,7 +236,7 @@
     ]
    ],
    "offers": [],
-   "compareAt": "2026-10-21T22:46:29.580Z",
+   "compareAt": null,
    "compareLog": [
     "Amazon AU: 3 result(s), none matched with a readable price",
     "Officeworks: 3 result(s), none matched with a readable price",
@@ -279,7 +279,7 @@
    "lastAlerted": null,
    "history": [],
    "offers": [],
-   "compareAt": "2026-10-22T00:58:50.652Z",
+   "compareAt": null,
    "compareLog": [
     "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
     "JB Hi-Fi: 3 result(s), none matched with a readable price",
@@ -294,7 +294,7 @@
    ],
    "insight": null,
    "checkedAt": "2026-10-22T04:47:27.385Z",
-   "error": "Searching stores for this product…",
+   "error": "Searching stores for this product\u2026",
    "via": null
   }
  ]

@@ -1,7 +1,7 @@
 // Reads watchlist.json, scrapes every item, updates docs/data.json,
 // and opens a GitHub issue (which emails you) when a target price is hit.
 import fs from "node:fs";
-import { scrapeProduct, detectFromUrl, getRates, convert, fmt, insight } from "./lib.mjs";
+import { scrapeProduct, detectFromUrl, getRates, convert, fmt, insight, advise } from "./lib.mjs";
 import { compareItem, openBrowser } from "./compare.mjs";
 
 const WATCH = process.env.WATCHLIST ?? "watchlist.json";
@@ -28,9 +28,10 @@ export async function run() {
       retailer: d?.retailer ?? p.retailer ?? null, storeCountry: d?.country ?? w.country ?? null, image: p.image ?? null,
       targetPrice: w.target ?? null, targetCurrency: w.currency ?? null,
       currency: p.currency ?? null, price: p.price ?? null, lowest: p.lowest ?? null,
-      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], offers: p.offers ?? [], compareAt: p.compareAt ?? null, compareLog: p.compareLog ?? [], insight: null, checkedAt: now, error: null, via: null,
+      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], offers: p.offers ?? [], compareAt: p.compareAt ?? null, compareLog: p.compareLog ?? [], insight: null, advice: null, inStock: p.inStock ?? null, checkedAt: now, error: null, via: null,
     };
     if (r.image) it.image = r.image;
+    if (r.inStock !== undefined) it.inStock = r.inStock;
     if (!r.price) {
       it.error = r.error ?? "Unknown error";
     } else {
@@ -60,7 +61,7 @@ export async function run() {
       else {
         if (!brTried) { brTried = true; br = await openBrowser(); }
         if (br && (it.name || "").length > 3) {
-          const c = await compareItem(br.ctx, it, { maxStores: quick ? 4 : 99 });
+          const c = await compareItem(br.ctx, it, { maxStores: quick ? 4 : 99, discover: !quick });
           it.offers = c.offers; it.compareLog = c.log; it.compareAt = quick ? null : now;
           if (!w.url && c.offers.length) {
             // Name-only item: its headline price is the cheapest store found.
@@ -75,6 +76,7 @@ export async function run() {
         } else it.compareLog = [br ? "no product name yet" : "browser unavailable"];
       }
     }
+    it.advice = advise(it, rates);
     items.push(it);
   }
 
@@ -91,6 +93,7 @@ async function notify(alerts) {
   for (const { it, target, auto } of alerts) {
     const title = `${auto ? "New low" : "Price drop"}: ${it.name.slice(0, 80)} is now ${fmt(it.price, it.currency)}`;
     const body = `@${owner ?? "you"} ${auto ? "this is a new lowest price." : "your target was hit."}\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- ${auto ? "Previous low" : "Your target"}: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
+    if (process.env.NTFY_TOPIC) await fetch(`https://ntfy.sh/${encodeURIComponent(process.env.NTFY_TOPIC)}`, { method: "POST", headers: { Title: title.slice(0, 120), Click: it.url ?? "" }, body: `${it.name}: ${fmt(it.price, it.currency)} at ${it.retailer}` }).catch(() => {});
     if (!repo || !token) { console.log("[alert]", title); continue; }
     const res = await fetch(`https://api.github.com/repos/${repo}/issues`, {
       method: "POST",

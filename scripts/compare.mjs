@@ -16,6 +16,11 @@ export const STORES = {
     S("Woolworths", "https://www.woolworths.com.au/shop/search/products?searchTerm={q}", "/shop/productdetails/\\d+"),
     S("Coles", "https://www.coles.com.au/search/products?q={q}", "/product/[a-z0-9-]+-\\d+"),
     S("eBay AU", "https://www.ebay.com.au/sch/i.html?_nkw={q}", "/itm/\\d+"),
+    S("Chemist Warehouse", "https://www.chemistwarehouse.com.au/search?searchtext={q}&searchmode=allwords", "/buy/\\d+/[a-z0-9-]+"),
+    S("Priceline", "https://www.priceline.com.au/search?q={q}", "priceline\\.com\\.au/[a-z0-9-]+-\\d{4,}"),
+    S("Catch", "https://www.catch.com.au/search?query={q}", "/product/[a-z0-9-]+-\\d+"),
+    S("Bing Lee", "https://www.binglee.com.au/search?q={q}", "binglee\\.com\\.au/products/[a-z0-9-]+"),
+    S("MyDeal", "https://www.mydeal.com.au/search?q={q}", "mydeal\\.com\\.au/[a-z0-9-]+-\\d+"),
   ],
   US: [
     S("Amazon US", "https://www.amazon.com/s?k={q}", "/(?:[^/\"?]+/)?dp/[A-Z0-9]{10}"),
@@ -79,7 +84,7 @@ async function render(ctx, url) {
 }
 
 /** Returns { offers: [{store,url,price,currency,title,similarity}], log: [string] } */
-export async function compareItem(ctx, item, { minSim = 0.6, perStore = 3, maxStores = 99 } = {}) {
+export async function compareItem(ctx, item, { minSim = 0.6, perStore = 2, maxStores = 99, discover = false } = {}) {
   const country = item.storeCountry ?? "US";
   const own = detectFromUrl(item.url)?.retailer;
   const q = encodeURIComponent(queryFor(item.name));
@@ -103,6 +108,11 @@ export async function compareItem(ctx, item, { minSim = 0.6, perStore = 3, maxSt
       else log.push(`${store.name}: ${links.length} result(s), none matched with a readable price`);
     } catch (e) { log.push(`${store.name}: ${String(e?.message ?? e).split("\n")[0].slice(0, 80)}`); }
   }
+  if (discover) {
+    const known = [...offers.map((o) => new URL(o.url).hostname), ...(item.url ? [new URL(item.url).hostname] : [])];
+    const d = await discoverOffers(ctx, item, known, { minSim });
+    offers.push(...d.offers); log.push(...d.log);
+  }
   return { offers, log };
 }
 
@@ -114,4 +124,32 @@ export async function openBrowser() {
     const ctx = await browser.newContext({ userAgent: UA, locale: "en-AU", viewport: { width: 1366, height: 900 } });
     return { browser, ctx };
   } catch { return null; }
+}
+
+/** Any store on the web: searches the open web for the product, then reads each result page. */
+export async function discoverOffers(ctx, item, known, { minSim = 0.6, max = 8 } = {}) {
+  const country = item.storeCountry ?? "US", offers = [], log = [];
+  const skip = new Set(known.map((h) => h.replace(/^www\./, "")));
+  const q = encodeURIComponent(queryFor(item.name) + " buy price");
+  let html = "";
+  try { html = await render(ctx, `https://html.duckduckgo.com/html/?q=${q}`); } catch (e) { return { offers, log: [`web search: ${String(e?.message ?? e).split("\n")[0].slice(0, 70)}`] }; }
+  const urls = [];
+  for (const m of html.matchAll(/href=["'][^"']*uddg=([^"'&]+)/gi)) {
+    let u; try { u = decodeURIComponent(m[1]); new URL(u); } catch { continue; }
+    const host = new URL(u).hostname.replace(/^www\./, "");
+    if (skip.has(host) || /google|bing|facebook|youtube|reddit|pinterest|wikipedia|pricespy|idealo/i.test(host)) continue;
+    skip.add(host); urls.push(u);
+    if (urls.length >= max) break;
+  }
+  if (!urls.length) return { offers, log: [`web search: no result links (${Math.round(html.length / 1024)}kB)`] };
+  for (const u of urls) {
+    try {
+      const r = parseHtml(await render(ctx, u), country, u);
+      const sim = similarity(item.name, r.name);
+      const host = new URL(u).hostname.replace(/^www\./, "");
+      if (r.price && sim >= minSim) { offers.push({ store: host, url: u, price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), image: r.image ?? null, similarity: +sim.toFixed(2) }); log.push(`web: ${host} ${r.price} ${r.currency}`); }
+      else log.push(`web: ${host} ${r.price ? "title did not match" : "no readable price"}`);
+    } catch (e) { log.push(`web: ${String(e?.message ?? e).split("\n")[0].slice(0, 60)}`); }
+  }
+  return { offers, log };
 }

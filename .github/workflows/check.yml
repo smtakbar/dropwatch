@@ -30,6 +30,7 @@ jobs:
         run: node scripts/check.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
       - name: Commit data
         run: |
           git config user.name "dropwatch-bot"

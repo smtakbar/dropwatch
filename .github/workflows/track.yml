@@ -36,6 +36,7 @@ jobs:
         run: node scripts/check.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           QUICK: "1"
       - name: Commit
         run: |

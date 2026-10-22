@@ -54,6 +54,14 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 .pend{border:1px dashed var(--border2)}
 .bar{height:6px;background:var(--surface2);border-radius:6px;overflow:hidden;margin:10px 0 6px}.bar i{display:block;height:100%;background:#639922;width:0;transition:width .9s linear}
 details.d summary{cursor:pointer;color:var(--text2);font-size:12px;margin-top:6px}
+.advice{border-radius:10px;padding:10px 12px;margin:8px 0;background:var(--surface2)}
+.advice b{display:block;font-size:15px}.advice span{font-size:12px;color:var(--text2)}
+.advice.buy{background:var(--green-bg)}.advice.buy b{color:var(--green)}
+.advice.wait{background:#fdf0dc}.advice.wait b{color:#9a5b00}
+@media(prefers-color-scheme:dark){.advice.wait{background:#3a2e17}.advice.wait b{color:#f0b95a}}
+.best{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0;font-size:13px}
+.tabs{display:flex;gap:4px;margin-top:6px}.tabs button{border:1px solid var(--border2);background:transparent;border-radius:6px;padding:2px 8px;font-size:11px;color:var(--text2);cursor:pointer}.tabs button.on{background:var(--text);color:var(--bg)}
+.oos{font-size:11px;color:var(--red);font-weight:500}
 </style>
 </head>
 <body>
@@ -172,8 +180,12 @@ sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${
 sel.value=region;
 sel.onchange=()=>{region=sel.value;try{localStorage.setItem("region",region)}catch{}render()};
 
-function chart(h,cur,r,from){
+const RANGE={};
+window.setRange=(id,d)=>{RANGE[id]=d;render()};
+const tabs=id=>`<div class="tabs">${[[7,"7d"],[30,"30d"],[90,"90d"],[0,"All"]].map(([d,l])=>`<button class="${(RANGE[id]||0)===d?"on":""}" onclick="setRange('${id}',${d})">${l}</button>`).join("")}</div>`;
+function chart(h,cur,r,from,id){
   if(!h||!h.length)return"";
+  const days=RANGE[id]||0;if(days){const c=Date.now()-days*864e5;const f=h.filter(x=>Date.parse(x[0])>=c);h=f.length?f:h.slice(-1)}
   if(h.length<2)return`<div class="chart"><div class="muted" style="padding:10px 4px">Price graph starts after the second price change. Checked once so far.</div></div>`;
   const v=h.map(x=>conv(x[1],from,cur,r)),t=h.map(x=>Date.parse(x[0])),w=300,ht=100,mn=Math.min(...v),mx=Math.max(...v),sp=mx-mn||1,t0=t[0],tt=(t.at(-1)-t0)||1;
   const X=i=>6+((t[i]-t0)/tt)*(w-12),Y=y=>ht-10-((y-mn)/sp)*(ht-24);
@@ -181,7 +193,7 @@ function chart(h,cur,r,from){
   const lo=v.indexOf(mn);
   const d=x=>new Date(x).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
   return`<div class="chart"><svg viewBox="0 0 ${w} ${ht}" preserveAspectRatio="none" role="img" aria-label="Price history"><polyline points="${pts}" fill="none" stroke="#185fa5" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="${X(lo)}" cy="${Y(mn)}" r="3.5" fill="#3b6d11"/></svg>
-  <div class="ax"><span>${d(t[0])}</span><span>Low ${fmt(mn,cur)} · High ${fmt(mx,cur)}</span><span>${d(t.at(-1))}</span></div></div>`;
+  <div class="ax"><span>${d(t[0])}</span><span>Low ${fmt(mn,cur)} · High ${fmt(mx,cur)}</span><span>${d(t.at(-1))}</span></div>${tabs(id)}</div>`;
 }
 let DATA={items:[],rates:{}};
 function render(){
@@ -200,7 +212,7 @@ function render(){
     const good=ins&&/Lowest|Close/.test(ins.verdict);
     const offers=[{store:i.retailer,url:i.url,price:i.price,currency:i.currency,own:true},...(i.offers||[])].filter(o=>o.price!=null)
       .map(o=>({...o,v:conv(o.price,o.currency||i.currency,cur,r)})).sort((x,y)=>x.v-y.v);
-    const tbl=offers.length>1?`<table><tr><th>Store</th><th class="r">Price</th><th></th></tr>${offers.map((o,k)=>`<tr><td>${esc(o.store)}${o.own?" · your link":""}</td><td class="r ${k===0?"cheap":""}">${fmt(o.v,cur)}</td><td class="r"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Open</a></td></tr>`).join("")}</table>`:
+    const tbl=offers.length>1?`<table><tr><th>Store</th><th class="r">Price</th><th></th></tr>${offers.map((o,k)=>`<tr><td>${esc(o.store)}${o.own?" · your link":""}</td><td class="r ${k===0?"cheap":""}">${fmt(o.v,cur)}${k===0?" ✓":""}</td><td class="r"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Open</a></td></tr>`).join("")}</table>`:
       `<div class="muted" style="margin-top:6px">${i.compareAt?"No other stores found yet.":"Comparing other stores… check back in a few minutes."}</div>`;
     return`<div class="card ${hit?"hit":""}">
       <div class="row" style="align-items:flex-start">
@@ -209,11 +221,13 @@ function render(){
         <div class="muted">${flag(i.storeCountry)} ${esc(i.retailer||"Searching stores")} · checked ${ago(i.checkedAt)}</div></div>
         ${hit?'<span class="pill">Target hit</span>':""}
       </div>
-      <div style="margin:10px 0 6px">${local!=null?`<span class="price">${fmt(local,cur)}</span>${foreign?` <span class="muted">(${fmt(i.price,i.currency)} at store)</span>`:""}`:'<span class="muted">Finding the price…</span>'}</div>
-      ${ins?`<div class="verdict ${good?"good":""}">${esc(ins.verdict)}</div>
+      <div style="margin:10px 0 6px">${local!=null?`<span class="price">${fmt(local,cur)}</span>${i.inStock===false?' <span class="oos">Out of stock</span>':""}${foreign?` <span class="muted">(${fmt(i.price,i.currency)} at store)</span>`:""}`:'<span class="muted">Finding the price…</span>'}</div>
+      ${i.advice?`<div class="advice ${esc(i.advice.action)}"><b>${esc(i.advice.headline)}</b><span>${esc(i.advice.reason)}</span></div>
+      <div class="best"><span>Cheapest found: <b>${esc(i.advice.best.store)}</b> ${fmt(conv(i.advice.best.price,i.advice.best.currency||i.currency,cur,r),cur)}${i.advice.best.own?" (your link)":""}</span><a class="btn small" href="${esc(i.advice.best.url)}" target="_blank" rel="noopener noreferrer">Go to store</a></div>`:""}
+      ${ins?`${i.advice?"":`<div class="verdict ${good?"good":""}">${esc(ins.verdict)}</div>`}
       <div class="stats"><div class="stat"><span class="muted">Lowest seen</span><b>${L(ins.lowest)}</b></div><div class="stat"><span class="muted">Average</span><b>${L(ins.avg)}</b></div><div class="stat"><span class="muted">Likely low (${esc(ins.bestMonth)})</span><b>${L(ins.predictedLow)}</b></div></div>
       <div class="muted">${ins.basis==="observed"?"Estimate based on this product's own price history.":"Estimate based on usual sale seasons. It gets more accurate as we collect prices."}</div>`:""}
-      ${chart(i.history,cur,r,i.currency)}
+      ${chart(i.history,cur,r,i.currency,i.id)}
       ${tbl}
       ${i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
