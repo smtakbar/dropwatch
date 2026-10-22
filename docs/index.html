@@ -67,6 +67,7 @@ details.d summary{cursor:pointer;color:var(--text2);font-size:12px;margin-top:6p
 <body>
 <div class="top">
   <div class="logo">drop<b>watch</b></div><div class="sp"></div>
+  <button class="btn ghost small" id="who" title="Your GitHub username"></button>
   <select id="region" aria-label="Region"></select>
   <button class="btn" id="add">+ Track product</button>
 </div>
@@ -84,17 +85,26 @@ details.d summary{cursor:pointer;color:var(--text2);font-size:12px;margin-top:6p
     <div id="m-namebox" style="display:none"><label for="m-name">Product name (optional, helps find it at other stores)</label><input type="text" id="m-name" placeholder="Leave blank to use the page title"></div>
     <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
   </div>
+  <div id="m-who" style="display:none">
+    <h2>Whose list is this?</h2>
+    <p class="muted" style="margin-bottom:10px">Everyone gets their own list. Enter your GitHub username (free to create). Your products and price alerts are tied to it.</p>
+    <label for="m-user">GitHub username</label><input type="text" id="m-user" placeholder="octocat" autocomplete="off">
+    <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-usersave">Continue</button></div>
+  </div>
   <div id="m-token" style="display:none">
-    <h2>One-time setup (1 minute)</h2>
-    <p class="muted" style="margin-bottom:10px">Adding products from this page needs a GitHub token. Your link is saved and will be added right after.</p>
-    <ol class="muted" style="padding-left:18px;line-height:1.7">
-      <li><a class="link" id="m-tokenlink" href="#" target="_blank" rel="noopener">Open the token page</a> (opens pre-filled)</li>
-      <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick <b id="m-repo">this repo</b></li>
-      <li>Click <b>Generate token</b>, copy it, paste below</li>
-    </ol>
-    <label for="m-tok">Token</label><input type="password" id="m-tok" autocomplete="off" placeholder="github_pat_…">
-    <div class="row" style="margin-top:16px;justify-content:space-between"><a class="link" id="m-skip" href="#" target="_blank" rel="noopener">Skip: add via GitHub instead</a>
-    <span class="row"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-save">Save &amp; add</button></span></div>
+    <h2>Add this product</h2>
+    <p class="muted" style="margin-bottom:12px">You finish on GitHub (free account needed): it opens with your product filled in, you press <b>Submit new issue</b>, and it appears on your list in a minute or two. Price alerts reach you by email from GitHub.</p>
+    <div class="row" style="justify-content:flex-end;margin-bottom:12px"><a class="btn" id="m-gh" href="#" target="_blank" rel="noopener">Continue on GitHub</a></div>
+    <details class="d"><summary>I run this site: add products without leaving this page</summary>
+      <ol class="muted" style="padding-left:18px;line-height:1.7;margin-top:8px">
+        <li><a class="link" id="m-tokenlink" href="#" target="_blank" rel="noopener">Open the token page</a> (opens pre-filled)</li>
+        <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick <b id="m-repo">this repo</b></li>
+        <li>Click <b>Generate token</b>, copy it, paste below</li>
+      </ol>
+      <label for="m-tok">Token</label><input type="password" id="m-tok" autocomplete="off" placeholder="github_pat_…">
+      <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn" id="m-save">Save &amp; add</button></div>
+    </details>
+    <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button></div>
   </div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
@@ -110,14 +120,31 @@ const ago=iso=>{if(!iso)return"never";const m=Math.round((Date.now()-Date.parse(
 const repo=window.REPO||(location.hostname.endsWith(".github.io")?location.hostname.split(".")[0]+"/"+location.pathname.split("/")[1]:"");
 const issueUrl=(t,q="")=>repo?`https://github.com/${repo}/issues/new?template=${t}${q}`:"#";
 const $=id=>document.getElementById(id);
+let me="";try{me=(localStorage.getItem("gh_user")||"").trim()}catch{}
+const mineOf=items=>me?(items||[]).filter(i=>(i.users||[]).some(u=>String(u).toLowerCase()===me.toLowerCase())):[];
+function setWho(){$("who").textContent=me?"@"+me:"Sign in"}
 const tok=()=>{try{return localStorage.getItem("gh_token")||""}catch{return""}};
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),12000)}
 let pending="";
-function openModal(url){ pending=url||pending; $("modal").classList.add("on"); const need=!tok(); const o=repo.split("/")[0]; $("m-tokenlink").href=`https://github.com/settings/personal-access-tokens/new?name=DropWatch&description=${encodeURIComponent("Add/remove products from the DropWatch page")}&target_name=${encodeURIComponent(o)}&expires_in=365&issues=write`; $("m-skip").href=issueUrl("track.yml","&link="+encodeURIComponent(pending)); $("m-repo").textContent=repo.split("/")[1]||"this repo"; $("m-track").style.display=need?"none":"block"; $("m-token").style.display=need?"block":"none"; if(!need){$("m-url").value=pending;$("m-url").focus()} }
+function track_q(){const v=pending,l=isLink(v);const ctry=(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[0];return`&link=${encodeURIComponent(l?(/^https?:/i.test(v)?v:"https://"+v):"")}&name=${encodeURIComponent(l?"":v)}&country=${ctry}`}
+function openModal(url){
+  pending=url||pending; $("modal").classList.add("on");
+  const o=repo.split("/")[0];
+  $("m-tokenlink").href=`https://github.com/settings/personal-access-tokens/new?name=DropWatch&description=${encodeURIComponent("Add/remove products from the DropWatch page")}&target_name=${encodeURIComponent(o)}&expires_in=365&issues=write`;
+  $("m-gh").href=issueUrl("track.yml",track_q()); $("m-repo").textContent=repo.split("/")[1]||"this repo";
+  const step=!me?"m-who":tok()?"m-track":"m-token";
+  for(const id of["m-who","m-track","m-token"])$(id).style.display=id===step?"block":"none";
+  if(step==="m-track"){$("m-url").value=pending;$("m-url").focus()}
+  if(step==="m-who")$("m-user").focus();
+}
 function closeModal(){$("modal").classList.remove("on")}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{pending="";closeModal()});
 $("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
 $("add").onclick=()=>openModal("");
+$("who").onclick=()=>{$("modal").classList.add("on");for(const id of["m-track","m-token"])$(id).style.display="none";$("m-who").style.display="block";$("m-user").value=me;$("m-user").focus()};
+$("m-usersave").onclick=()=>{const v=$("m-user").value.trim().replace(/^@/,"");if(!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(v)){toast("That is not a valid GitHub username.");return}
+  me=v;try{localStorage.setItem("gh_user",me)}catch{}setWho();render();pending?openModal(pending):closeModal()};
+$("m-gh").onclick=()=>{closeModal();startPending("Waiting for you to press Submit on GitHub…",mineOf(DATA.items).map(i=>i.id));};
 $("quickGo").onclick=()=>{const v=$("quick").value.trim();if(v)openModal(v)};
 $("quick").onkeydown=e=>{if(e.key==="Enter")$("quickGo").click()};
 $("m-save").onclick=async()=>{
@@ -146,7 +173,7 @@ function startPending(label,known){
     renderPending();
     if(Math.round((Date.now()-PEND.start)/1000)%6===0){
       try{const d=await fetch("data.json?"+Date.now()).then(r=>r.json());
-        if(d.items.some(i=>!PEND.known.has(i.id))){PEND=null;DATA=d;render();toast("Added.");clearInterval(t);return}}catch{}
+        if(mineOf(d.items).some(i=>!PEND.known.has(i.id))){PEND=null;DATA=d;render();toast("Added.");clearInterval(t);return}}catch{}
     }
     if(Date.now()-PEND.start>6*60e3){PEND=null;render();toast("Still processing. Refresh in a minute.");clearInterval(t)}
   },1000);
@@ -169,12 +196,19 @@ $("m-go").onclick=async()=>{
   $("m-go").disabled=false;
   if(err){toast(err);openModal(v);return}
   closeModal();pending="";$("quick").value="";$("m-name").value="";$("m-url").value="";
-  startPending(nm||v,DATA.items.map(i=>i.id));
+  startPending(nm||v,mineOf(DATA.items).map(i=>i.id));
 };
-async function removeItem(id){ if(!tok()){openModal("");return} if(!confirm("Stop tracking this product?"))return; const err=await sendIssue("remove: "+id,`### Item ID\n\n${id}`); toast(err||"Removing… gone in about a minute."); }
-window.removeItem=removeItem;
+async function removeItem(id){
+  if(!me){openModal("");return}
+  if(!tok()){window.open(issueUrl("remove.yml","&id="+encodeURIComponent(id)),"_blank","noopener");return}
+  if(!confirm("Stop tracking this product?"))return;
+  const err=await sendIssue("remove: "+id,`### Item ID\n\n${id}`); toast(err||"Removing… gone in about a minute.");
+}
+window.removeItem=removeItem;setWho();
 
-let region="AU";try{region=localStorage.getItem("region")||"AU"}catch{}
+let region="AU",hadRegion=false;try{const r=localStorage.getItem("region");if(r){region=r;hadRegion=true}}catch{}
+if(!hadRegion)fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
+  if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;$("region").value=region;try{localStorage.setItem("region",region)}catch{}render();toast("Showing prices for "+(COUNTRIES.find(c=>c[0]===region)||[])[1]+" (from your location).")}}).catch(()=>{});
 const sel=document.getElementById("region");
 sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${c[3]})</option>`).join("");
 sel.value=region;
@@ -197,13 +231,13 @@ function chart(h,cur,r,from,id){
 }
 let DATA={items:[],rates:{}};
 function render(){
-  const me=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=me[3],r=DATA.rates||{};
-  const hits=DATA.items.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
-  document.getElementById("meta").textContent=`${DATA.items.length} tracked · ${hits} at target · updated ${ago(DATA.updated)}`;
+  const LIST=mineOf(DATA.items),reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3],r=DATA.rates||{};
+  const hits=LIST.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
+  document.getElementById("meta").textContent=`${LIST.length} on your list · ${hits} at target · updated ${ago(DATA.updated)}`;
   const g=document.getElementById("grid");
   renderPending();
-  if(!DATA.items.length){g.innerHTML=`<div class="empty">Nothing tracked yet. Paste a link above to start.</div>`;return}
-  g.innerHTML=DATA.items.map(i=>{
+  if(!LIST.length){g.innerHTML=`<div class="empty">${me?"Nothing on your list yet. Paste a link or product name above.":"Click <b>Sign in</b> (top right) and enter your GitHub username to see your own list."}</div>`;return}
+  g.innerHTML=LIST.map(i=>{
     const hit=i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r);
     const L=v=>v!=null?fmt(conv(v,i.currency,cur,r),cur):"–";
     const local=i.price!=null?conv(i.price,i.currency,cur,r):null;

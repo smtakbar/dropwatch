@@ -14,10 +14,8 @@ concurrency:
 
 jobs:
   track:
-    # Only the repo owner can change the watchlist.
-    if: >-
-      github.event.issue.user.login == github.repository_owner &&
-      (startsWith(github.event.issue.title, 'track:') || startsWith(github.event.issue.title, 'remove:'))
+    # Anyone with a GitHub account can manage their own list; the script enforces per-person rules.
+    if: startsWith(github.event.issue.title, 'track:') || startsWith(github.event.issue.title, 'remove:')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -30,6 +28,8 @@ jobs:
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          OWNER: ${{ github.repository_owner }}
       - name: Install browser driver
         run: npm install --no-save --no-audit --no-fund playwright-core
       - name: Check prices

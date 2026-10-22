@@ -4,14 +4,20 @@
     "url": "https://www.coles.com.au/product/mountain-dew-energized-soft-drink-375ml-24-pack-1310386",
     "name": "Mountain Dew",
     "target": null,
-    "currency": null
+    "currency": null,
+    "users": [
+      "smtakbar"
+    ]
   },
   {
     "id": "554885c7",
     "url": "https://www.jbhifi.com.au/products/remington-all-in-1-titanium-grooming-system?store=161",
     "name": "",
     "target": null,
-    "currency": null
+    "currency": null,
+    "users": [
+      "smtakbar"
+    ]
   },
   {
     "id": "d0d503c0",
@@ -19,6 +25,9 @@
     "name": "Marvis Sweet & Sour Rhubarb Toothpaste 75 ml",
     "country": "AU",
     "target": null,
-    "currency": null
+    "currency": null,
+    "users": [
+      "smtakbar"
+    ]
   }
 ]

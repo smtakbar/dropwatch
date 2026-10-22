@@ -209,7 +209,10 @@
    "inStock": null,
    "checkedAt": "2026-10-22T05:45:49.214Z",
    "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 774kB, json-ld yes, next-data yes",
-   "via": null
+   "via": null,
+   "users": [
+    "smtakbar"
+   ]
   },
   {
    "id": "554885c7",
@@ -282,7 +285,10 @@
    "inStock": true,
    "checkedAt": "2026-10-22T05:45:49.214Z",
    "error": null,
-   "via": "fetch:json-ld"
+   "via": "fetch:json-ld",
+   "users": [
+    "smtakbar"
+   ]
   },
   {
    "id": "d0d503c0",
@@ -323,8 +329,11 @@
    "matchName": "Marvis Sweet & Sour Rhubarb Toothpaste 75 ml",
    "inStock": null,
    "checkedAt": "2026-10-22T05:45:49.214Z",
-   "error": "Searching stores for this product…",
-   "via": null
+   "error": "Searching stores for this product\u2026",
+   "via": null,
+   "users": [
+    "smtakbar"
+   ]
   }
  ]
 }

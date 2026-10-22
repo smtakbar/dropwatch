@@ -25,6 +25,7 @@ export async function run() {
     const r = w.url ? await scrapeProduct(w.url) : { name: w.name, error: "Searching stores for this product…" };
     const it = {
       id: w.id, url: w.url, name: w.name || r.name || d?.retailer || w.url, url: w.url,
+      users: Array.isArray(w.users) && w.users.length ? w.users : (process.env.GITHUB_REPOSITORY_OWNER ? [process.env.GITHUB_REPOSITORY_OWNER] : []),
       retailer: d?.retailer ?? p.retailer ?? null, storeCountry: d?.country ?? w.country ?? null, image: p.image ?? null,
       targetPrice: w.target ?? null, targetCurrency: w.currency ?? null,
       currency: p.currency ?? null, price: p.price ?? null, lowest: p.lowest ?? null,
@@ -94,7 +95,8 @@ async function notify(alerts) {
   const repo = process.env.GITHUB_REPOSITORY, token = process.env.GITHUB_TOKEN, owner = process.env.GITHUB_REPOSITORY_OWNER;
   for (const { it, target, auto, drop } of alerts) {
     const title = `${auto ? "New low" : drop ? "Drop of 10%+" : "Price drop"}: ${it.name.slice(0, 80)} is now ${fmt(it.price, it.currency)}`;
-    const body = `@${owner ?? "you"} ${auto ? "this is a new lowest price." : drop ? "the price fell by 10% or more." : "your target was hit."}\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- ${auto ? "Previous low" : drop ? "Previous price" : "Your target"}: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
+    const who = (it.users?.length ? it.users : [owner ?? "you"]).map((u) => "@" + u).join(" ");
+    const body = `${who} ${auto ? "this is a new lowest price." : drop ? "the price fell by 10% or more." : "your target was hit."}\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- ${auto ? "Previous low" : drop ? "Previous price" : "Your target"}: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
     if (process.env.NTFY_TOPIC) await fetch(`https://ntfy.sh/${encodeURIComponent(process.env.NTFY_TOPIC)}`, { method: "POST", headers: { Title: title.slice(0, 120), Click: it.url ?? "" }, body: `${it.name}: ${fmt(it.price, it.currency)} at ${it.retailer}` }).catch(() => {});
     if (!repo || !token) { console.log("[alert]", title); continue; }
     const res = await fetch(`https://api.github.com/repos/${repo}/issues`, {
