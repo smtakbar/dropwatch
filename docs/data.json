@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T05:01:45.906Z",
+ "updated": "2026-10-22T05:13:24.334Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -231,8 +231,8 @@
    "insight": null,
    "advice": null,
    "inStock": null,
-   "checkedAt": "2026-10-22T05:01:45.906Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 828kB, json-ld yes, next-data yes",
+   "checkedAt": "2026-10-22T05:13:24.334Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 829kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -309,13 +309,13 @@
     }
    },
    "inStock": true,
-   "checkedAt": "2026-10-22T05:01:45.906Z",
+   "checkedAt": "2026-10-22T05:13:24.334Z",
    "error": null,
    "via": "fetch:json-ld"
   },
   {
    "id": "d0d503c0",
-   "url": "https://www.puretoothcare.com/product/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz/",
+   "url": "",
    "name": "Marvis Sweet & Sour Rhubarb Toothpaste 75 ml",
    "retailer": "puretoothcare.com",
    "storeCountry": "AU",
@@ -378,34 +378,11 @@
     "web: klarna.com no readable price",
     "web: buybeautycare.com no readable price"
    ],
-   "insight": {
-    "lowest": 6.55,
-    "highest": 6.55,
-    "avg": 6.55,
-    "points": 1,
-    "days": 0,
-    "bestMonth": "Nov",
-    "predictedLow": 5.57,
-    "verdict": "Close to its lowest price",
-    "confidence": "low",
-    "basis": "seasonal"
-   },
-   "advice": {
-    "action": "buy",
-    "headline": "Buy now",
-    "reason": "It is within 6% of the lowest price we have seen.",
-    "best": {
-     "store": "puretoothcare.com",
-     "url": "https://www.puretoothcare.com/product/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz/",
-     "price": 6.55,
-     "currency": "USD",
-     "own": true,
-     "saving": 0
-    }
-   },
+   "insight": null,
+   "advice": null,
    "inStock": null,
-   "checkedAt": "2026-10-22T05:01:45.906Z",
-   "error": null,
+   "checkedAt": "2026-10-22T05:13:24.334Z",
+   "error": "Searching stores for this product…",
    "via": null
   }
  ]
