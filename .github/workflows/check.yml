@@ -1,11 +1,6 @@
 name: Check prices
 on:
-  schedule:
-    - cron: "17 * * * *"   # hourly
-  workflow_dispatch: {}
-  push:
-    branches: [main]
-    paths: [watchlist.json, "scripts/**", ".github/workflows/check.yml"]
+  workflow_dispatch: {}   # manual only; the website now runs entirely in each visitor's browser
 
 permissions:
   contents: write

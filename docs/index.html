@@ -67,47 +67,25 @@ details.d summary{cursor:pointer;color:var(--text2);font-size:12px;margin-top:6p
 <body>
 <div class="top">
   <div class="logo">drop<b>watch</b></div><div class="sp"></div>
-  <button class="btn ghost small" id="who" title="Your GitHub username"></button>
   <select id="region" aria-label="Region"></select>
   <button class="btn" id="add">+ Track product</button>
 </div>
 <div class="wrap">
   <div class="hero"><h1>Track any product. Paste a link or type its name, and we watch the price across stores and tell you when to buy.</h1>
-    <input type="text" id="quick" placeholder="Product name or link, e.g. Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml"><button class="btn" id="quickGo">Track</button></div>
+    <input type="text" id="quick" placeholder="Product name or link, e.g. Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml"><button class="btn" id="quickGo">Track</button>
+    <div class="muted" style="flex:1 1 100%">Private by design: no sign-in. Your list is saved only in this browser, and prices refresh whenever this page is open.</div></div>
   <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span></div>
   <div id="pend" style="margin-bottom:12px"></div>
   <div class="grid" id="grid"></div>
 </div>
 <div class="modal" id="modal"><div class="box">
-  <div id="m-track">
-    <h2>Track a product</h2>
-    <label for="m-url">Product name or link</label><input type="text" id="m-url" placeholder="Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml">
-    <div id="m-namebox" style="display:none"><label for="m-name">Product name (optional, helps find it at other stores)</label><input type="text" id="m-name" placeholder="Leave blank to use the page title"></div>
-    <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
-  </div>
-  <div id="m-who" style="display:none">
-    <h2>Whose list is this?</h2>
-    <p class="muted" style="margin-bottom:10px">Everyone gets their own list. Enter your GitHub username (free to create). Your products and price alerts are tied to it.</p>
-    <label for="m-user">GitHub username</label><input type="text" id="m-user" placeholder="octocat" autocomplete="off">
-    <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-usersave">Continue</button></div>
-  </div>
-  <div id="m-token" style="display:none">
-    <h2>Add this product</h2>
-    <p class="muted" style="margin-bottom:12px">You finish on GitHub (free account needed): it opens with your product filled in, you press <b>Submit new issue</b>, and it appears on your list in a minute or two. Price alerts reach you by email from GitHub.</p>
-    <div class="row" style="justify-content:flex-end;margin-bottom:12px"><a class="btn" id="m-gh" href="#" target="_blank" rel="noopener">Continue on GitHub</a></div>
-    <details class="d"><summary>I run this site: add products without leaving this page</summary>
-      <ol class="muted" style="padding-left:18px;line-height:1.7;margin-top:8px">
-        <li><a class="link" id="m-tokenlink" href="#" target="_blank" rel="noopener">Open the token page</a> (opens pre-filled)</li>
-        <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick <b id="m-repo">this repo</b></li>
-        <li>Click <b>Generate token</b>, copy it, paste below</li>
-      </ol>
-      <label for="m-tok">Token</label><input type="password" id="m-tok" autocomplete="off" placeholder="github_pat_…">
-      <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn" id="m-save">Save &amp; add</button></div>
-    </details>
-    <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button></div>
-  </div>
+  <h2>Track a product</h2>
+  <label for="m-url">Product name or link</label><input type="text" id="m-url" placeholder="Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml">
+  <div id="m-namebox" style="display:none"><label for="m-name">Product name (optional, helps find it at other stores)</label><input type="text" id="m-name" placeholder="Leave blank to use the page title"></div>
+  <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
+<script src="engine.js"></script>
 <script>
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
 const flag=id=>(COUNTRIES.find(c=>c[0]===id)||[])[2]||"";
@@ -116,103 +94,24 @@ const conv=(a,f,t,r)=>(f===t||!r[f]||!r[t])?a:a/r[f]*r[t];
 const fmt=(a,c)=>{const z=c==="JPY"||c==="KRW";try{return new Intl.NumberFormat("en-AU",{style:"currency",currency:c,minimumFractionDigits:z?0:2,maximumFractionDigits:z?0:2}).format(a)}catch{return c+" "+a.toFixed(z?0:2)}};
 const ago=iso=>{if(!iso)return"never";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"just now":m<60?m+"m ago":m<1440?Math.round(m/60)+"h ago":Math.round(m/1440)+"d ago"};
 
-// Works on https://OWNER.github.io/REPO/ . For a custom domain set window.REPO="OWNER/REPO" before this script.
-const repo=window.REPO||(location.hostname.endsWith(".github.io")?location.hostname.split(".")[0]+"/"+location.pathname.split("/")[1]:"");
-const issueUrl=(t,q="")=>repo?`https://github.com/${repo}/issues/new?template=${t}${q}`:"#";
-const $=id=>document.getElementById(id);
-let me="";try{me=(localStorage.getItem("gh_user")||"").trim()}catch{}
-const mineOf=items=>me?(items||[]).filter(i=>(i.users||[]).some(u=>String(u).toLowerCase()===me.toLowerCase())):[];
-function setWho(){$("who").textContent=me?"@"+me:"Sign in"}
-const tok=()=>{try{return localStorage.getItem("gh_token")||""}catch{return""}};
-function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),12000)}
-let pending="";
-function track_q(){const v=pending,l=isLink(v);const ctry=(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[0];return`&link=${encodeURIComponent(l?(/^https?:/i.test(v)?v:"https://"+v):"")}&name=${encodeURIComponent(l?"":v)}&country=${ctry}`}
-function openModal(url){
-  pending=url||pending; $("modal").classList.add("on");
-  const o=repo.split("/")[0];
-  $("m-tokenlink").href=`https://github.com/settings/personal-access-tokens/new?name=DropWatch&description=${encodeURIComponent("Add/remove products from the DropWatch page")}&target_name=${encodeURIComponent(o)}&expires_in=365&issues=write`;
-  $("m-gh").href=issueUrl("track.yml",track_q()); $("m-repo").textContent=repo.split("/")[1]||"this repo";
-  const step=!me?"m-who":tok()?"m-track":"m-token";
-  for(const id of["m-who","m-track","m-token"])$(id).style.display=id===step?"block":"none";
-  if(step==="m-track"){$("m-url").value=pending;$("m-url").focus()}
-  if(step==="m-who")$("m-user").focus();
-}
-function closeModal(){$("modal").classList.remove("on")}
-document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{pending="";closeModal()});
-$("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
-$("add").onclick=()=>openModal("");
-$("who").onclick=()=>{$("modal").classList.add("on");for(const id of["m-track","m-token"])$(id).style.display="none";$("m-who").style.display="block";$("m-user").value=me;$("m-user").focus()};
-$("m-usersave").onclick=()=>{const v=$("m-user").value.trim().replace(/^@/,"");if(!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(v)){toast("That is not a valid GitHub username.");return}
-  me=v;try{localStorage.setItem("gh_user",me)}catch{}setWho();render();pending?openModal(pending):closeModal()};
-$("m-gh").onclick=()=>{closeModal();startPending("Waiting for you to press Submit on GitHub…",mineOf(DATA.items).map(i=>i.id));};
-$("quickGo").onclick=()=>{const v=$("quick").value.trim();if(v)openModal(v)};
-$("quick").onkeydown=e=>{if(e.key==="Enter")$("quickGo").click()};
-$("m-save").onclick=async()=>{
-  const t=$("m-tok").value.trim(); if(!t||!repo)return;
-  const r=await fetch(`https://api.github.com/repos/${repo}`,{headers:{Authorization:"Bearer "+t}}).catch(()=>null);
-  if(!r||!r.ok){toast("That token can't access "+repo+". Check the repository and permissions.");return}
-  try{localStorage.setItem("gh_token",t)}catch{toast("Browser blocked storage; token not saved.");return}
-  $("m-tok").value="";openModal(pending);if(pending)$("m-go").click();
-};
-async function sendIssue(title,body){
-  const r=await fetch(`https://api.github.com/repos/${repo}/issues`,{method:"POST",headers:{Authorization:"Bearer "+tok(),Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({title,body})}).catch(()=>null);
-  if(!r)return"Network error. Check your connection.";
-  if(r.ok)return"";
-  if(r.status===401){try{localStorage.removeItem("gh_token")}catch{} return"GitHub says the token is invalid or expired. Create a new one."}
-  if(r.status===403||r.status===404)return`GitHub refused (${r.status}). Your token must have Repository access = Only select repositories → ${repo.split("/")[1]}, and Issues = Read and write. Re-create it, then paste it again.`;
-  return"GitHub error "+r.status;
-}
-const isLink=v=>/^https?:\/\//i.test(v)||(/^[^\s]+\.[a-z]{2,}(\/|$)/i.test(v)&&!/\s/.test(v));
-$("m-url").oninput=()=>{$("m-namebox").style.display=isLink($("m-url").value.trim())?"block":"none"};
-let PEND=null;
-function startPending(label,known){
-  PEND={label,start:Date.now(),known:new Set(known)};
-  renderPending();
-  const t=setInterval(async()=>{
-    if(!PEND){clearInterval(t);return}
-    renderPending();
-    if(Math.round((Date.now()-PEND.start)/1000)%6===0){
-      try{const d=await fetch("data.json?"+Date.now()).then(r=>r.json());
-        if(mineOf(d.items).some(i=>!PEND.known.has(i.id))){PEND=null;DATA=d;render();toast("Added.");clearInterval(t);return}}catch{}
-    }
-    if(Date.now()-PEND.start>6*60e3){PEND=null;render();toast("Still processing. Refresh in a minute.");clearInterval(t)}
-  },1000);
-}
-function renderPending(){
-  const el=$("pend");if(!el)return;
-  if(!PEND){el.innerHTML="";return}
-  const sec=Math.round((Date.now()-PEND.start)/1000),est=100,left=Math.max(0,est-sec);
-  el.innerHTML=`<div class="card pend"><div class="name">${esc(PEND.label)}</div>
-  <div class="bar"><i style="width:${Math.min(95,sec/est*100)}%"></i></div>
-  <div class="muted">Adding… ${left>0?`about ${left}s left`:"almost done"} (${sec}s elapsed)</div></div>`;
-}
-$("m-go").onclick=async()=>{
-  const v=$("m-url").value.trim(); if(!v)return;
-  if(/^(github_pat_|ghp_|gho_|ghs_)/i.test(v)){toast("That looks like a GitHub token, not a product. Paste tokens in the setup box only.");return}
-  const link=isLink(v), nm=link?$("m-name").value.trim():v;
-  const ctry=(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[0];
-  $("m-go").disabled=true;
-  const err=await sendIssue("track: "+v.slice(0,80),`### Product link\n\n${link?(/^https?:/i.test(v)?v:"https://"+v):"_No response_"}\n\n### Name\n\n${nm||"_No response_"}\n\n### Country\n\n${ctry}`);
-  $("m-go").disabled=false;
-  if(err){toast(err);openModal(v);return}
-  closeModal();pending="";$("quick").value="";$("m-name").value="";$("m-url").value="";
-  startPending(nm||v,mineOf(DATA.items).map(i=>i.id));
-};
-async function removeItem(id){
-  if(!me){openModal("");return}
-  if(!tok()){window.open(issueUrl("remove.yml","&id="+encodeURIComponent(id)),"_blank","noopener");return}
-  if(!confirm("Stop tracking this product?"))return;
-  const err=await sendIssue("remove: "+id,`### Item ID\n\n${id}`); toast(err||"Removing… gone in about a minute.");
-}
-window.removeItem=removeItem;setWho();
 
+const $=id=>document.getElementById(id);
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),9000)}
+
+// ---- This browser's own list (never leaves the device) ----
+const KEY="dw_items";
+let ITEMS=[];try{ITEMS=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ITEMS.map(({busy,...x})=>x)))}catch{toast("Your browser blocked saving. The list will be lost when you close this page.")}};
+let RATES={USD:1,AUD:1.53,GBP:0.79,EUR:0.92,JPY:150,CAD:1.36,INR:83,SGD:1.34,NZD:1.65,AED:3.67,BRL:5,KRW:1350};
+
+// ---- Region: your own choice, else guessed from your location ----
 let region="AU",hadRegion=false;try{const r=localStorage.getItem("region");if(r){region=r;hadRegion=true}}catch{}
-if(!hadRegion)fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
-  if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;$("region").value=region;try{localStorage.setItem("region",region)}catch{}render();toast("Showing prices for "+(COUNTRIES.find(c=>c[0]===region)||[])[1]+" (from your location).")}}).catch(()=>{});
-const sel=document.getElementById("region");
+const sel=$("region");
 sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${c[3]})</option>`).join("");
 sel.value=region;
 sel.onchange=()=>{region=sel.value;try{localStorage.setItem("region",region)}catch{}render()};
+if(!hadRegion)fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
+  if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;sel.value=region;try{localStorage.setItem("region",region)}catch{}render();toast("Showing prices for "+(COUNTRIES.find(c=>c[0]===region)||[])[1]+" (from your location).")}}).catch(()=>{});
 
 const RANGE={};
 window.setRange=(id,d)=>{RANGE[id]=d;render()};
@@ -229,14 +128,25 @@ function chart(h,cur,r,from,id){
   return`<div class="chart"><svg viewBox="0 0 ${w} ${ht}" preserveAspectRatio="none" role="img" aria-label="Price history"><polyline points="${pts}" fill="none" stroke="#185fa5" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="${X(lo)}" cy="${Y(mn)}" r="3.5" fill="#3b6d11"/></svg>
   <div class="ax"><span>${d(t[0])}</span><span>Low ${fmt(mn,cur)} · High ${fmt(mx,cur)}</span><span>${d(t.at(-1))}</span></div>${tabs(id)}</div>`;
 }
-let DATA={items:[],rates:{}};
+
+let PEND=null,ptimer=null;
+function renderPending(){
+  const el=$("pend");if(!el)return;
+  if(!PEND){el.innerHTML="";return}
+  const sec=Math.round((Date.now()-PEND.start)/1000),est=25;
+  el.innerHTML=`<div class="card pend"><div class="name">${esc(PEND.label)}</div><div class="bar"><i style="width:${Math.min(95,sec/est*100)}%"></i></div>
+  <div class="muted">Reading the price… ${sec}s (usually under 30s)</div></div>`;
+}
+
+
+
 function render(){
-  const LIST=mineOf(DATA.items),reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3],r=DATA.rates||{};
+  const LIST=ITEMS,reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3],r=RATES;
   const hits=LIST.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
-  document.getElementById("meta").textContent=`${LIST.length} on your list · ${hits} at target · updated ${ago(DATA.updated)}`;
+  document.getElementById("meta").textContent=LIST.length?`${LIST.length} on your list · saved in this browser only`:"";
   const g=document.getElementById("grid");
   renderPending();
-  if(!LIST.length){g.innerHTML=`<div class="empty">${me?"Nothing on your list yet. Paste a link or product name above.":"Click <b>Sign in</b> (top right) and enter your GitHub username to see your own list."}</div>`;return}
+  if(!LIST.length){g.innerHTML=`<div class="empty">Your list is empty. Paste a product link or type a name above. Your list stays in this browser and is private to you.</div>`;return}
   g.innerHTML=LIST.map(i=>{
     const hit=i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r);
     const L=v=>v!=null?fmt(conv(v,i.currency,cur,r),cur):"–";
@@ -244,14 +154,14 @@ function render(){
     const foreign=i.currency&&i.currency!==cur;
     const ins=i.insight;
     const good=ins&&/Lowest|Close/.test(ins.verdict);
-    const offers=[{store:i.retailer,url:i.url,price:i.price,currency:i.currency,own:true},...(i.offers||[])].filter(o=>o.price!=null)
+    const offers=[...(i.url?[{store:i.retailer,url:i.url,price:i.price,currency:i.currency,own:true}]:[]),...(i.offers||[])].filter(o=>o.price!=null)
       .map(o=>({...o,v:conv(o.price,o.currency||i.currency,cur,r)})).sort((x,y)=>x.v-y.v);
     const tbl=offers.length>1?`<table><tr><th>Store</th><th class="r">Price</th><th></th></tr>${offers.map((o,k)=>`<tr><td>${esc(o.store)}${o.own?" · your link":""}</td><td class="r ${k===0?"cheap":""}">${fmt(o.v,cur)}${k===0?" ✓":""}</td><td class="r"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Open</a></td></tr>`).join("")}</table>`:
-      `<div class="muted" style="margin-top:6px">${i.compareAt?"No other stores found yet.":"Comparing other stores… check back in a few minutes."}</div>`;
+      `<div class="muted" style="margin-top:6px">${i.offersAt?"No other trusted stores found for this exact product.":"Looking at other stores…"}</div>`;
     return`<div class="card ${hit?"hit":""}">
       <div class="row" style="align-items:flex-start">
         ${i.image?`<img class="thumb" src="${esc(i.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;thumb ph&quot;>📦</div>'">`:`<div class="thumb ph">📦</div>`}
-        <div style="min-width:0;flex:1"><div class="name" title="${esc(i.name)}">${esc(i.name)}</div>
+        <div style="min-width:0;flex:1"><div class="name" title="${esc(i.name||i.matchName)}">${esc(i.name||i.matchName||"Loading product…")}</div>
         <div class="muted">${flag(i.storeCountry)} ${esc(i.retailer||"Searching stores")} · checked ${ago(i.checkedAt)}</div></div>
         ${hit?'<span class="pill">Target hit</span>':""}
       </div>
@@ -264,14 +174,54 @@ function render(){
       ${chart(i.history,cur,r,i.currency,i.id)}
       ${tbl}
       ${i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:""}
+      ${i.busy?`<div class="muted">Refreshing…</div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
-        <span class="muted">${i.targetPrice!=null?`Target: <b style="color:var(--text)">${fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur)}</b>`:"We alert you on new lows"}</span>
-        <span class="row"><a class="btn ghost small" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer">Open</a>
+        <span class="muted">${i.targetPrice!=null?`Target: <b style="color:var(--text)">${fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur)}</b>`:"We notify you here when the price drops"}</span>
+        <span class="row">${i.url?`<a class="btn ghost small" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer">Open</a>`:""}
         <button class="btn ghost small" onclick="removeItem('${esc(i.id)}')">Remove</button></span>
       </div></div>`}).join("");
 }
-fetch("data.json?"+Date.now()).then(r=>r.json()).then(d=>{DATA=d;render()}).catch(()=>{document.getElementById("grid").innerHTML='<div class="empty">Could not load data.json</div>'});
+
+const isLink=v=>/^https?:\/\//i.test(v)||(/^[^\s]+\.[a-z]{2,}(\/|$)/i.test(v)&&!/\s/.test(v));
+function openModal(v){$("modal").classList.add("on");$("m-url").value=v||"";$("m-namebox").style.display=isLink(v||"")?"block":"none";$("m-url").focus()}
+function closeModal(){$("modal").classList.remove("on")}
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeModal);
+$("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+$("add").onclick=()=>openModal("");
+$("quickGo").onclick=()=>{const v=$("quick").value.trim();if(v)openModal(v)};
+$("quick").onkeydown=e=>{if(e.key==="Enter")$("quickGo").click()};
+$("m-url").oninput=()=>{$("m-namebox").style.display=isLink($("m-url").value.trim())?"block":"none"};
+
+function notify(it){
+  try{if("Notification" in window&&Notification.permission==="granted")new Notification("Price drop: "+(it.name||it.matchName||"your product"),{body:DW.fmt(it.price,it.currency)+(it.retailer?" at "+it.retailer:"")})}catch{}
+}
+async function refresh(it,offers){
+  it.busy=true;render();
+  try{const r=await DW.refreshItem(it,RATES,{offers});if(r.dropped)notify(it)}catch(e){it.error="Something went wrong. We will try again."}
+  it.busy=false;save();render();
+}
+$("m-go").onclick=async()=>{
+  const v=$("m-url").value.trim();if(!v)return;
+  if(/^(github_pat_|ghp_|gho_|ghs_|sk-)/i.test(v)){toast("That looks like a secret key, not a product.");return}
+  const it=DW.makeItem(v,$("m-name").value,region);
+  closeModal();$("quick").value="";
+  ITEMS.unshift(it);save();
+  try{if("Notification" in window&&Notification.permission==="default")Notification.requestPermission()}catch{}
+  PEND={label:it.name||it.url,start:Date.now()};renderPending();
+  clearInterval(ptimer);ptimer=setInterval(renderPending,1000);
+  render();
+  await refresh(it,true);
+  PEND=null;clearInterval(ptimer);renderPending();
+  if(it.price==null)toast(it.error||"Added, but no price yet.");
+};
+window.removeItem=id=>{if(!confirm("Stop tracking this product?"))return;ITEMS=ITEMS.filter(i=>i.id!==id);save();render()};
+
+// ---- Refresh whatever is stale while the page is open ----
+async function sweep(){
+  for(const it of ITEMS){if(it.busy)continue;if(!it.checkedAt||Date.now()-Date.parse(it.checkedAt)>3600e3)await refresh(it,false)}
+}
 render();
+DW.getRates().then(r=>{RATES=r;render()}).finally(()=>{sweep();setInterval(sweep,15*60e3)});
 </script>
 </body>
 </html>
