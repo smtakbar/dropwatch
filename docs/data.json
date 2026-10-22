@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T04:47:27.385Z",
+ "updated": "2026-10-22T05:01:45.906Z",
  "rates": {
   "USD": 1,
   "AED": 3.6725,
@@ -192,24 +192,47 @@
      "title": "Mountain Dew Cans 375mL 30 Pack",
      "image": "https://s3-ap-southeast-2.amazonaws.com/wc-prod-pim/JPEG_1000x1000/SH10007191_mountain_dew_cans_375ml_30_pack.jpg",
      "similarity": 1
+    },
+    {
+     "store": "weekly-ads.us",
+     "url": "https://weekly-ads.us/products/mountain-dew",
+     "price": 6,
+     "currency": "USD",
+     "title": "Mountain Dew",
+     "image": "https://weekly-ads.us/public/gimg/1/1/8/1/0/2/9/2/11810292-160-165.jpg",
+     "similarity": 1
     }
    ],
-   "compareAt": null,
+   "compareAt": "2026-10-22T05:01:45.906Z",
    "compareLog": [
     "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
-    "JB Hi-Fi: 3 result(s), none matched with a readable price",
+    "JB Hi-Fi: 2 result(s), none matched with a readable price",
     "Officeworks: 47 AUD (sim 1)",
     "Harvey Norman: no result links (page \"no title\", 1kB)",
-    "The Good Guys: 3 result(s), none matched with a readable price",
-    "Big W: 3 result(s), none matched with a readable price",
+    "The Good Guys: 2 result(s), none matched with a readable price",
+    "Big W: 2 result(s), none matched with a readable price",
     "Kmart: no result links (page \"Access Denied\", 0kB)",
-    "Woolworths: no result links (page \"mountain dew - Woolworths Online\", 775kB)",
+    "Woolworths: no result links (page \"mountain dew - Woolworths Online\", 746kB)",
     "Coles: 2 result(s), none matched with a readable price",
-    "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
+    "eBay AU: no result links (page \"Error Page | eBay\", 2kB)",
+    "Chemist Warehouse: no result links (page \"Search Results for: undefined\", 655kB)",
+    "Priceline: no result links (page \"Search Results Page | Priceline\", 1553kB)",
+    "Catch: no result links (page \"Catch - Maintenance\", 5kB)",
+    "Bing Lee: no result links (page \"binglee.com.au\", 2kB)",
+    "MyDeal: no result links (page \"Access Denied\", 0kB)",
+    "web: walmart.com no readable price",
+    "web: amazon.com no readable price",
+    "web: weekly-ads.us 6 USD",
+    "web: target.com no readable price",
+    "web: gotoliquorstore.com no readable price",
+    "web: samsclub.com no readable price",
+    "web: kroger.com no readable price"
    ],
    "insight": null,
-   "checkedAt": "2026-10-22T04:47:27.385Z",
-   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 779kB, json-ld yes, next-data yes",
+   "advice": null,
+   "inStock": null,
+   "checkedAt": "2026-10-22T05:01:45.906Z",
+   "error": "No price found. fetch HTTP 200, page \"Buy Mountain Dew Energized Soft Drink 375ml 24 Pack | Coles\", 828kB, json-ld yes, next-data yes",
    "via": null
   },
   {
@@ -236,17 +259,29 @@
     ]
    ],
    "offers": [],
-   "compareAt": null,
+   "compareAt": "2026-10-22T05:01:45.906Z",
    "compareLog": [
-    "Amazon AU: 3 result(s), none matched with a readable price",
-    "Officeworks: 3 result(s), none matched with a readable price",
+    "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
+    "Officeworks: 2 result(s), none matched with a readable price",
     "Harvey Norman: no result links (page \"no title\", 1kB)",
-    "The Good Guys: 3 result(s), none matched with a readable price",
+    "The Good Guys: 2 result(s), none matched with a readable price",
     "Big W: page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.bigw.com.au/product/hugg",
     "Kmart: no result links (page \"Access Denied\", 0kB)",
     "Woolworths: no result links (page \"remington all 1 titanium grooming system - Woolwor\", 741kB)",
-    "Coles: no result links (page \"Search remington all 1 titanium grooming system | \", 355kB)",
-    "eBay AU: 3 result(s), none matched with a readable price"
+    "Coles: no result links (page \"no title\", 1kB)",
+    "eBay AU: no result links (page \"Error Page | eBay\", 2kB)",
+    "Chemist Warehouse: no result links (page \"Search Results for: undefined\", 670kB)",
+    "Priceline: no result links (page \"Search Results Page | Priceline\", 1110kB)",
+    "Catch: no result links (page \"Catch - Maintenance\", 5kB)",
+    "Bing Lee: no result links (page \"binglee.com.au\", 2kB)",
+    "MyDeal: no result links (page \"Access Denied\", 0kB)",
+    "web: amazon.com no readable price",
+    "web: remingtonproducts.com title did not match",
+    "web: ebay.com no readable price",
+    "web: walmart.com no readable price",
+    "web: kohls.com no readable price",
+    "web: target.com no readable price",
+    "web: newegg.com no readable price"
    ],
    "insight": {
     "lowest": 23,
@@ -260,41 +295,117 @@
     "confidence": "low",
     "basis": "seasonal"
    },
-   "checkedAt": "2026-10-22T04:47:27.385Z",
+   "advice": {
+    "action": "buy",
+    "headline": "Buy now",
+    "reason": "It is within 6% of the lowest price we have seen.",
+    "best": {
+     "store": "JB Hi-Fi",
+     "url": "https://www.jbhifi.com.au/products/remington-all-in-1-titanium-grooming-system?store=161",
+     "price": 23,
+     "currency": "AUD",
+     "own": true,
+     "saving": 0
+    }
+   },
+   "inStock": true,
+   "checkedAt": "2026-10-22T05:01:45.906Z",
    "error": null,
    "via": "fetch:json-ld"
   },
   {
    "id": "d0d503c0",
-   "url": "",
+   "url": "https://www.puretoothcare.com/product/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz/",
    "name": "Marvis Sweet & Sour Rhubarb Toothpaste 75 ml",
-   "retailer": null,
+   "retailer": "puretoothcare.com",
    "storeCountry": "AU",
-   "image": null,
+   "image": "https://www.puretoothcare.com/wp-content/uploads/2026/06/1780395309/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz.webp",
    "targetPrice": null,
    "targetCurrency": null,
-   "currency": null,
-   "price": null,
-   "lowest": null,
+   "currency": "USD",
+   "price": 6.55,
+   "lowest": 6.55,
    "lastAlerted": null,
-   "history": [],
-   "offers": [],
-   "compareAt": null,
+   "history": [
+    [
+     "2026-10-22T05:01:45.906Z",
+     6.55
+    ]
+   ],
+   "offers": [
+    {
+     "store": "eBay AU",
+     "url": "https://www.ebay.com.au/itm/305543424402?_skw=marvis+sweet+sour+rhubarb+toothpaste+75+ml&itmmeta=01M5H097EPH9FNDPVKA31QKG9N&hash=item4723cea992:g:OZQAAOSwg1hmM1tN&itmprp=enc%3AAQALAAABECHNgUiiE%2FjQhlDTaMiAde8Sr2w07JV8bHZcRzxfRzZ9%2Bv%2F1eR48q0ALBlf6N%2FfN3CwebUnNHTIFKmmh8z4DDOLDtChz2R2jsQrh3Wusg9zoDL%2Fnv%2BWF0ROJCpACEcGhNfhJaw%2BYV1dzOILyf4ioulZlabEZfvisjR6s0XWZdhlnHM2%2FAW91sa66ZfkDFE%2FQypuv20fYsxFElNKtNulvJVk2PD%2FBOWFxM8B9PxTAZw3ha8JmpdOJYHaG6NBD%2FplofYNN9Z%2BHoEMwsIE7uNlLI5jHAbKEVeDJrE1RqrS6LBOQqyoyp4Z8RCOr7dvY3DiV3d73Tn0wT42lInJaWhHbuPQnGqDb0K%2F3thT2xN2ngnZM%7Ctkp%3ABk9SR9L3pKCsaA",
+     "price": 23.9,
+     "currency": "AUD",
+     "title": "Marvis Sweet &amp; Sour Rhubarb Toothpaste - 75ml | AUS SELLER",
+     "image": "https://i.ebayimg.com/images/g/OZQAAOSwg1hmM1tN/s-l1600.png",
+     "similarity": 0.71
+    },
+    {
+     "store": "puretoothcare.com",
+     "url": "https://www.puretoothcare.com/product/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz/",
+     "price": 6.55,
+     "currency": "USD",
+     "title": "Marvis Sweet And Sour Rhubarb Toothpaste 75ml (2.53fl oz)",
+     "image": "https://www.puretoothcare.com/wp-content/uploads/2026/06/1780395309/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz.webp",
+     "similarity": 0.71
+    }
+   ],
+   "compareAt": "2026-10-22T05:01:45.906Z",
    "compareLog": [
     "Amazon AU: no result links (page \"500 - An error occurred\", 1kB)",
-    "JB Hi-Fi: 3 result(s), none matched with a readable price",
-    "Officeworks: no result links (page \"Human Verification\", 9kB)",
+    "JB Hi-Fi: 2 result(s), none matched with a readable price",
+    "Officeworks: 2 result(s), none matched with a readable price",
     "Harvey Norman: no result links (page \"no title\", 1kB)",
-    "The Good Guys: 3 result(s), none matched with a readable price",
-    "Big W: 3 result(s), none matched with a readable price",
+    "The Good Guys: 2 result(s), none matched with a readable price",
+    "Big W: page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.bigw.com.au/search?q=mar",
     "Kmart: no result links (page \"Access Denied\", 0kB)",
-    "Woolworths: no result links (page \"marvis sweet sour rhubarb toothpaste 75 ml - Woolw\", 766kB)",
-    "Coles: no result links (page \"Search marvis sweet sour rhubarb toothpaste 75 ml \", 363kB)",
-    "eBay AU: no result links (page \"Error Page | eBay\", 2kB)"
+    "Woolworths: no result links (page \"marvis sweet sour rhubarb toothpaste 75 ml - Woolw\", 723kB)",
+    "Coles: no result links (page \"no title\", 1kB)",
+    "eBay AU: 23.9 AUD (sim 0.71)",
+    "Chemist Warehouse: no result links (page \"Search Results for: undefined\", 669kB)",
+    "Priceline: no result links (page \"Search Results Page | Priceline\", 1552kB)",
+    "Catch: no result links (page \"Catch - Maintenance\", 5kB)",
+    "Bing Lee: no result links (page \"binglee.com.au\", 2kB)",
+    "MyDeal: no result links (page \"Access Denied\", 0kB)",
+    "web: walmart.com no readable price",
+    "web: aboutbeautylife.com no readable price",
+    "web: playelife.com no readable price",
+    "web: skin-beauty-supply.com no readable price",
+    "web: puretoothcare.com 6.55 USD",
+    "web: martapremium.com no readable price",
+    "web: klarna.com no readable price",
+    "web: buybeautycare.com no readable price"
    ],
-   "insight": null,
-   "checkedAt": "2026-10-22T04:47:27.385Z",
-   "error": "Searching stores for this product\u2026",
+   "insight": {
+    "lowest": 6.55,
+    "highest": 6.55,
+    "avg": 6.55,
+    "points": 1,
+    "days": 0,
+    "bestMonth": "Nov",
+    "predictedLow": 5.57,
+    "verdict": "Close to its lowest price",
+    "confidence": "low",
+    "basis": "seasonal"
+   },
+   "advice": {
+    "action": "buy",
+    "headline": "Buy now",
+    "reason": "It is within 6% of the lowest price we have seen.",
+    "best": {
+     "store": "puretoothcare.com",
+     "url": "https://www.puretoothcare.com/product/marvis-sweet-and-sour-rhubarb-toothpaste-75ml-2-53fl-oz/",
+     "price": 6.55,
+     "currency": "USD",
+     "own": true,
+     "saving": 0
+    }
+   },
+   "inStock": null,
+   "checkedAt": "2026-10-22T05:01:45.906Z",
+   "error": null,
    "via": null
   }
  ]
