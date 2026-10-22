@@ -109,6 +109,24 @@ async function browserPage(url) {
   finally { await browser?.close().catch(() => {}); }
 }
 
+/** Optional: when ANTHROPIC_API_KEY is set, ask Claude to read the price off the page text. */
+async function aiExtract(html) {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key || !html) return null;
+  const text = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 9000);
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST", signal: AbortSignal.timeout(30000),
+      headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ model: "claude-haiku-5-5", max_tokens: 200, messages: [{ role: "user", content: `From this product page text, give the CURRENT price of the main product only as JSON {"name":string,"price":number,"currency":"ISO code","inStock":boolean}. If you cannot find it reply {"price":null}.\n\n${text}` }] }),
+    });
+    const j = await res.json();
+    const m = j.content?.[0]?.text?.match(/\{[\s\S]*\}/);
+    const o = m ? JSON.parse(m[0]) : null;
+    return o?.price > 0 ? o : null;
+  } catch { return null; }
+}
+
 export async function scrapeProduct(url) {
   const country = detectFromUrl(url)?.country;
   const f = await fetchPage(url);
@@ -119,6 +137,8 @@ export async function scrapeProduct(url) {
   const rb = b.html ? parseHtml(b.html, country, url) : null;
   if (rb?.price) return { name: rb.name ?? r?.name, price: rb.price, currency: rb.currency, image: rb.image ?? r?.image, inStock: rb.inStock, via: "browser:" + rb.via };
 
+  const ai = await aiExtract(b.html || f.html);
+  if (ai) return { name: ai.name ?? rb?.name ?? r?.name, price: ai.price, currency: ai.currency ?? CUR[country], image: rb?.image ?? r?.image, inStock: ai.inStock, via: "ai" };
   const d = (rb ?? r)?.diag;
   const fetchNote = f.err ? `fetch failed (${f.err})` : f.status !== 200 ? `fetch HTTP ${f.status}` : "fetch HTTP 200";
   const pageNote = d ? `, page "${d.title ?? "no title"}", ${Math.round(d.bytes / 1024)}kB, json-ld ${d.jsonld ? "yes" : "no"}, next-data ${d.nextData ? "yes" : "no"}` : "";

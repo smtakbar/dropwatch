@@ -28,8 +28,9 @@ export async function run() {
       retailer: d?.retailer ?? p.retailer ?? null, storeCountry: d?.country ?? w.country ?? null, image: p.image ?? null,
       targetPrice: w.target ?? null, targetCurrency: w.currency ?? null,
       currency: p.currency ?? null, price: p.price ?? null, lowest: p.lowest ?? null,
-      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], offers: p.offers ?? [], compareAt: p.compareAt ?? null, compareLog: p.compareLog ?? [], insight: null, advice: null, inStock: p.inStock ?? null, checkedAt: now, error: null, via: null,
+      lastAlerted: p.lastAlerted ?? null, history: p.history ?? [], offers: p.offers ?? [], compareAt: p.compareAt ?? null, compareLog: p.compareLog ?? [], insight: null, advice: null, matchName: p.matchName ?? null, inStock: p.inStock ?? null, checkedAt: now, error: null, via: null,
     };
+    if (r.name && r.name !== d?.retailer) it.matchName = String(r.name).replace(/^buy\s+/i, "").replace(/\s*[|\-–]\s*[^|\-–]*$/, "").trim() || it.matchName;
     if (r.image) it.image = r.image;
     if (r.inStock !== undefined) it.inStock = r.inStock;
     if (!r.price) {
@@ -47,9 +48,10 @@ export async function run() {
       // No target set: alert on a new all-time low (>=3% under the previous low, once there is some history).
       const prevLow = p.lowest ?? null;
       const autoHit = target == null && prevLow != null && it.history.length >= 3 && r.price <= prevLow * 0.97;
-      const hit = (target != null && r.price <= target) || autoHit;
+      const dropHit = target == null && !autoHit && p.price != null && p.currency === it.currency && r.price <= p.price * 0.9;
+      const hit = (target != null && r.price <= target) || autoHit || dropHit;
       if (hit && (it.lastAlerted == null || r.price < it.lastAlerted)) {
-        alerts.push({ it, target: target ?? prevLow, auto: autoHit });
+        alerts.push({ it, target: target ?? (dropHit ? p.price : prevLow), auto: autoHit, drop: dropHit });
         it.lastAlerted = r.price;
       } else if (!hit && target != null) it.lastAlerted = null;
       it.insight = insight(it.history, r.price, it.storeCountry);
@@ -90,9 +92,9 @@ export async function run() {
 
 async function notify(alerts) {
   const repo = process.env.GITHUB_REPOSITORY, token = process.env.GITHUB_TOKEN, owner = process.env.GITHUB_REPOSITORY_OWNER;
-  for (const { it, target, auto } of alerts) {
-    const title = `${auto ? "New low" : "Price drop"}: ${it.name.slice(0, 80)} is now ${fmt(it.price, it.currency)}`;
-    const body = `@${owner ?? "you"} ${auto ? "this is a new lowest price." : "your target was hit."}\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- ${auto ? "Previous low" : "Your target"}: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
+  for (const { it, target, auto, drop } of alerts) {
+    const title = `${auto ? "New low" : drop ? "Drop of 10%+" : "Price drop"}: ${it.name.slice(0, 80)} is now ${fmt(it.price, it.currency)}`;
+    const body = `@${owner ?? "you"} ${auto ? "this is a new lowest price." : drop ? "the price fell by 10% or more." : "your target was hit."}\n\n**${it.name}**\n- Now: **${fmt(it.price, it.currency)}** at ${it.retailer}\n- ${auto ? "Previous low" : drop ? "Previous price" : "Your target"}: ${fmt(target, it.currency)}\n- Lowest seen: ${fmt(it.lowest, it.currency)}\n\n[Buy now](${it.url})`;
     if (process.env.NTFY_TOPIC) await fetch(`https://ntfy.sh/${encodeURIComponent(process.env.NTFY_TOPIC)}`, { method: "POST", headers: { Title: title.slice(0, 120), Click: it.url ?? "" }, body: `${it.name}: ${fmt(it.price, it.currency)} at ${it.retailer}` }).catch(() => {});
     if (!repo || !token) { console.log("[alert]", title); continue; }
     const res = await fetch(`https://api.github.com/repos/${repo}/issues`, {

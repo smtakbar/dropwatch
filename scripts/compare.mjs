@@ -1,6 +1,7 @@
 // Finds the same product at other stores: searches each store in a real Chrome, opens the top results,
 // reads their price, and keeps only results whose title closely matches the tracked product.
 import { parseHtml, detectFromUrl } from "./lib.mjs";
+import { isTrusted, trustedStoreName } from "./trusted.mjs";
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 const S = (name, search, link) => ({ name, search, link: new RegExp(link) });
@@ -49,8 +50,8 @@ STORES.SG.push(S("Amazon SG", "https://www.amazon.sg/s?k={q}", "/(?:[^/\"?]+/)?d
 STORES.AE.push(S("Amazon AE", "https://www.amazon.ae/s?k={q}", "/(?:[^/\"?]+/)?dp/[A-Z0-9]{10}"));
 STORES.BR.push(S("Amazon BR", "https://www.amazon.com.br/s?k={q}", "/(?:[^/\"?]+/)?dp/[A-Z0-9]{10}"));
 
-const STOP = new Set(["buy", "the", "and", "with", "for", "online", "pack", "new", "from", "at", "in", "of", "a", "an", "coles", "jb", "hi", "fi", "amazon", "au", "com"]);
-export const tokens = (s = "") => (String(s).toLowerCase().replace(/\|.*$/, "").replace(/(\d)\s+(ml|g|kg|l|oz|pack|pk|mg)\b/g, "$1$2").match(/[a-z0-9]+/g) ?? []).filter((t) => !STOP.has(t));
+const STOP = new Set(["buy", "the", "and", "with", "for", "online", "pack", "new", "from", "at", "in", "of", "a", "an", "product", "products", "coles", "jb", "hi", "fi", "amazon", "au", "com"]);
+export const tokens = (s = "") => (String(s).toLowerCase().replace(/\|.*$/, "").replace(/(\d)\s+(ml|g|kg|l|oz|mg)\b/g, "$1$2").match(/[a-z0-9]+/g) ?? []).map((t) => t.replace(/ise(d|s)?$/, "ize$1")).filter((t) => !STOP.has(t));
 export const queryFor = (name) => tokens(name).slice(0, 7).join(" ");
 
 /** How much of the tracked product's title (incl. numbers like 375ml/24) appears in the candidate. 0..1 */
@@ -60,6 +61,23 @@ export function similarity(a, b) {
   // Sizes and counts (75ml, 375ml, 24...) must all match, otherwise it is a different product.
   if (A.filter((t) => /\d/.test(t)).some((t) => !B.has(t))) return 0;
   return A.filter((t) => B.has(t)).length / A.length;
+}
+
+/** Product links without search/tracking junk, so they open the product page cleanly. */
+export function cleanUrl(u) {
+  try {
+    const x = new URL(u);
+    if (/\/itm\/\d+|\/dp\/[A-Z0-9]{10}|\/gp\/product\/[A-Z0-9]{10}/.test(x.pathname)) return x.origin + x.pathname;
+    return detectFromUrl(u)?.url ?? u;
+  } catch { return u; }
+}
+
+/** Plain-words product title for matching: scraped page title, else words from the link. Size/pack numbers matter. */
+export function matchTitle(item) {
+  const fromUrl = (() => { try { return decodeURIComponent(new URL(item.url).pathname).replace(/[-_/+]+/g, " ").replace(/\b\d{5,}\b/g, " "); } catch { return ""; } })();
+  const t = item.matchName || item.name || "";
+  // Keep size/pack words from the link if the stored title lacks them (e.g. user typed just "Mountain Dew").
+  return /\d/.test(t) ? t : `${t} ${fromUrl}`.trim();
 }
 
 function candidates(html, base, re, max = 3) {
@@ -89,7 +107,8 @@ async function render(ctx, url) {
 export async function compareItem(ctx, item, { minSim = 0.6, perStore = 2, maxStores = 99, discover = false } = {}) {
   const country = item.storeCountry ?? "US";
   const own = detectFromUrl(item.url)?.retailer;
-  const q = encodeURIComponent(queryFor(item.name));
+  const ref = matchTitle(item);
+  const q = encodeURIComponent(queryFor(ref));
   const offers = [], log = [];
   for (const store of (STORES[country] ?? STORES.US).slice(0, maxStores)) {
     if (own && store.name.toLowerCase().replace(/[^a-z]/g, "").includes(own.toLowerCase().replace(/[^a-z]/g, ""))) continue;
@@ -102,9 +121,9 @@ export async function compareItem(ctx, item, { minSim = 0.6, perStore = 2, maxSt
       for (const l of links) {
         const r = parseHtml(await render(ctx, l), country, l);
         if (!r.price) continue;
-        const sim = similarity(item.name, r.name);
+        const sim = similarity(ref, r.name);
         if (sim >= minSim && (!best || sim > best.similarity || (sim === best.similarity && r.price < best.price)))
-          best = { store: store.name, url: l, price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), image: r.image ?? null, similarity: +sim.toFixed(2) };
+          best = { store: store.name, url: cleanUrl(l), price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), image: r.image ?? null, similarity: +sim.toFixed(2) };
       }
       if (best) { offers.push(best); log.push(`${store.name}: ${best.price} ${best.currency} (sim ${best.similarity})`); }
       else log.push(`${store.name}: ${links.length} result(s), none matched with a readable price`);
@@ -114,6 +133,9 @@ export async function compareItem(ctx, item, { minSim = 0.6, perStore = 2, maxSt
     const known = [...offers.map((o) => new URL(o.url).hostname), ...(item.url ? [new URL(item.url).hostname] : [])];
     const d = await discoverOffers(ctx, item, known, { minSim });
     offers.push(...d.offers); log.push(...d.log);
+    const g = await serpOffers(item, { minSim });
+    for (const o of g.offers) if (!offers.some((x) => x.store === o.store)) offers.push(o);
+    log.push(...g.log);
   }
   return { offers, log };
 }
@@ -132,7 +154,7 @@ export async function openBrowser() {
 export async function discoverOffers(ctx, item, known, { minSim = 0.6, max = 8 } = {}) {
   const country = item.storeCountry ?? "US", offers = [], log = [];
   const skip = new Set(known.map((h) => h.replace(/^www\./, "")));
-  const q = encodeURIComponent(queryFor(item.name) + " buy price") + "&kl=" + ({ AU: "au-en", US: "us-en", GB: "uk-en", CA: "ca-en", IN: "in-en", DE: "de-de", FR: "fr-fr", JP: "jp-jp", SG: "sg-en", NZ: "nz-en" }[country] ?? "wt-wt");
+  const q = encodeURIComponent(queryFor(matchTitle(item)) + " buy price") + "&kl=" + ({ AU: "au-en", US: "us-en", GB: "uk-en", CA: "ca-en", IN: "in-en", DE: "de-de", FR: "fr-fr", JP: "jp-jp", SG: "sg-en", NZ: "nz-en" }[country] ?? "wt-wt");
   let html = "";
   try { html = await render(ctx, `https://html.duckduckgo.com/html/?q=${q}`); } catch (e) { return { offers, log: [`web search: ${String(e?.message ?? e).split("\n")[0].slice(0, 70)}`] }; }
   const urls = [];
@@ -140,18 +162,39 @@ export async function discoverOffers(ctx, item, known, { minSim = 0.6, max = 8 }
     let u; try { u = decodeURIComponent(m[1]); new URL(u); } catch { continue; }
     const host = new URL(u).hostname.replace(/^www\./, "");
     if (skip.has(host) || /google|bing|facebook|youtube|reddit|pinterest|wikipedia|pricespy|idealo/i.test(host)) continue;
+    if (!isTrusted(u, country)) continue;
     skip.add(host); urls.push(u);
     if (urls.length >= max) break;
   }
-  if (!urls.length) return { offers, log: [`web search: no result links (${Math.round(html.length / 1024)}kB)`] };
+  if (!urls.length) return { offers, log: [`web search: no trusted retailer links (${Math.round(html.length / 1024)}kB page)`] };
   for (const u of urls) {
     try {
       const r = parseHtml(await render(ctx, u), country, u);
-      const sim = similarity(item.name, r.name);
+      const sim = similarity(matchTitle(item), r.name);
       const host = new URL(u).hostname.replace(/^www\./, "");
-      if (r.price && sim >= minSim) { offers.push({ store: host, url: u, price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), image: r.image ?? null, similarity: +sim.toFixed(2) }); log.push(`web: ${host} ${r.price} ${r.currency}`); }
+      if (r.price && sim >= minSim) { offers.push({ store: host, url: cleanUrl(u), price: r.price, currency: r.currency, title: (r.name ?? "").slice(0, 120), image: r.image ?? null, similarity: +sim.toFixed(2) }); log.push(`web: ${host} ${r.price} ${r.currency}`); }
       else log.push(`web: ${host} ${r.price ? "title did not match" : "no readable price"}`);
     } catch (e) { log.push(`web: ${String(e?.message ?? e).split("\n")[0].slice(0, 60)}`); }
   }
   return { offers, log };
+}
+
+/** Optional: Google Shopping results through SerpApi (set SERPAPI_KEY). Trusted retailers only. */
+export async function serpOffers(item, { minSim = 0.6 } = {}) {
+  const key = process.env.SERPAPI_KEY;
+  if (!key) return { offers: [], log: [] };
+  const country = item.storeCountry ?? "AU", ref = matchTitle(item);
+  const CUR = { AU: "AUD", US: "USD", GB: "GBP", CA: "CAD", DE: "EUR", FR: "EUR", JP: "JPY", IN: "INR", SG: "SGD", NZ: "NZD", AE: "AED", BR: "BRL", KR: "KRW" };
+  try {
+    const u = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(queryFor(ref))}&gl=${country.toLowerCase()}&hl=en&api_key=${key}`;
+    const j = await (await fetch(u, { signal: AbortSignal.timeout(20000) })).json();
+    const offers = [];
+    for (const r of j.shopping_results ?? []) {
+      const link = r.link ?? r.product_link;
+      if (!r.extracted_price || !link || !trustedStoreName(r.source, country)) continue;
+      if (similarity(ref, r.title) < minSim) continue;
+      offers.push({ store: r.source, url: link, price: r.extracted_price, currency: CUR[country], title: String(r.title).slice(0, 120), image: r.thumbnail ?? null, similarity: +similarity(ref, r.title).toFixed(2) });
+    }
+    return { offers, log: [`google shopping: ${offers.length} trusted match(es) of ${(j.shopping_results ?? []).length}`] };
+  } catch (e) { return { offers: [], log: [`google shopping: ${String(e?.message ?? e).slice(0, 60)}`] }; }
 }
