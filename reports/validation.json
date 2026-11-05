@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T05:25:37.937Z",
- "totalChecks": 30,
- "passed": 30,
+ "ranAt": "2026-11-05T06:24:37.130Z",
+ "totalChecks": 39,
+ "passed": 35,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 2
+   "secs": 9
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 33
+   "secs": 48
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 20
+   "secs": 50
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 25
+   "secs": 50
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 15
+   "secs": 48
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 36
+   "secs": 54
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "2s"
+   "detail": "9s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "33s"
+   "detail": "48s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "20s"
+   "detail": "50s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "25s"
+   "detail": "50s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "15s"
+   "detail": "48s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "36s"
+   "detail": "54s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 25s"
+   "detail": "6/6 succeeded; median 50s"
   },
   {
    "id": "B6b",
@@ -239,18 +239,10 @@
   {
    "id": "D1",
    "area": "Alerts",
-   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
-   "pass": true,
-   "severity": "-",
-   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
-  },
-  {
-   "id": "D2",
-   "area": "History",
-   "check": "Price history accumulates across refreshes",
-   "pass": true,
-   "severity": "-",
-   "detail": "6 point(s)"
+   "check": "Alert test could not run (price fetch failed)",
+   "pass": false,
+   "severity": "major",
+   "detail": "price not read in 75s"
   },
   {
    "id": "E1",
@@ -267,6 +259,86 @@
    "pass": true,
    "severity": "-",
    "detail": "[]"
+  },
+  {
+   "id": "G1",
+   "area": "Regions",
+   "check": "Region list has 13 countries",
+   "pass": true,
+   "severity": "-",
+   "detail": "13"
+  },
+  {
+   "id": "G2",
+   "area": "Regions",
+   "check": "Switching region updates heading, search hint, example text and store list for all 13",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "G3",
+   "area": "Regions",
+   "check": "Regions with a readable retailer show only that region's logged products (no Australian leakage)",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "G4",
+   "area": "Regions",
+   "check": "Every region offers tap-to-search product ideas",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "G5",
+   "area": "Regions",
+   "check": "Prices shown in the region's own currency",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "G6",
+   "area": "Regions",
+   "check": "India: add a Vijay Sales sample and read a price in rupees",
+   "pass": false,
+   "severity": "major",
+   "detail": ""
+  },
+  {
+   "id": "G7",
+   "area": "History",
+   "check": "Card has a 'Price history on other trackers' panel with lookup links",
+   "pass": false,
+   "severity": "major",
+   "detail": ""
+  },
+  {
+   "id": "G8",
+   "area": "Regions",
+   "check": "An India item is hidden in Australia, with a button to show other regions",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "G9",
+   "area": "History",
+   "check": "CamelCamelCamel adapter reads lowest/average/highest for an Amazon product",
+   "pass": false,
+   "severity": "minor",
+   "detail": "[]"
+  },
+  {
+   "id": "G10",
+   "area": "History",
+   "check": "pricehistory.app adapter finds and reads an Indian product by name",
+   "pass": true,
+   "severity": "-",
+   "detail": "[{\"s\":\"pricehistory.app\",\"low\":31490,\"avg\":51198,\"high\":61151}]"
   },
   {
    "id": "F1",
