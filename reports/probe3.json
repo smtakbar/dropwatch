@@ -1,62 +1,185 @@
 [
  {
-  "page": "vs",
+  "page": "jb",
   "relay": "allorigins",
+  "status": 522,
+  "len": 7260,
+  "ms": 19757,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
+ },
+ {
+  "page": "jb",
+  "relay": "codetabs",
+  "status": 522,
+  "len": 7248,
+  "ms": 19854,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
+ },
+ {
+  "page": "jb",
+  "relay": "thingproxy",
+  "err": "TypeError",
+  "ms": 179
+ },
+ {
+  "page": "jb",
+  "relay": "corsio",
+  "status": 429,
+  "len": 53084,
+  "ms": 328,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": " <!doctype html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html cla"
+ },
+ {
+  "page": "jb",
+  "relay": "allget",
+  "status": 522,
+  "len": 7260,
+  "ms": 19573,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
+ },
+ {
+  "page": "jb",
+  "relay": "jina",
   "status": 200,
-  "len": 838637,
-  "ms": 21629,
+  "len": 919182,
+  "ms": 597,
   "hasTable": false,
   "hasPrice": true,
-  "head": " <!DOCTYPE HTML> <html lang=\"en\"> <head> <meta charset=\"UTF-8\"/> <title>Sony WH-1000XM5 Wireless Nois"
+  "acao": null,
+  "head": "<html class=\"no-js\" lang=\"en\"> <!-- <![endif] --> <head><script data-source-attribution=\"shopify.exit_interstitial\">"
  },
  {
   "page": "vs",
-  "relay": "corsproxy",
-  "status": 401,
-  "len": 81,
-  "ms": 44,
+  "relay": "allorigins",
+  "status": 522,
+  "len": 7260,
+  "ms": 19367,
   "hasTable": false,
   "hasPrice": false,
-  "head": "{\"error\":\"A valid API key is required. Get one at https://console.corsproxy.io/\"}"
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
+ },
+ {
+  "page": "vs",
+  "relay": "codetabs",
+  "status": 522,
+  "len": 7248,
+  "ms": 19857,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
+ },
+ {
+  "page": "vs",
+  "relay": "thingproxy",
+  "err": "TypeError",
+  "ms": 167
+ },
+ {
+  "page": "vs",
+  "relay": "corsio",
+  "status": 429,
+  "len": 53084,
+  "ms": 73,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": " <!doctype html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html cla"
+ },
+ {
+  "page": "vs",
+  "relay": "allget",
+  "status": 522,
+  "len": 7260,
+  "ms": 19325,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
  },
  {
   "page": "vs",
   "relay": "jina",
   "status": 200,
   "len": 839559,
-  "ms": 941,
+  "ms": 628,
   "hasTable": false,
   "hasPrice": true,
+  "acao": null,
   "head": "<html lang=\"en\"> <head> <meta charset=\"UTF-8\"> <title>Sony WH-1000XM5 Wireless Noise-Canceling Headphones w"
  },
  {
   "page": "ccc",
   "relay": "allorigins",
-  "status": 500,
-  "len": 177,
-  "ms": 11621,
+  "status": 522,
+  "len": 7260,
+  "ms": 19339,
   "hasTable": false,
   "hasPrice": false,
-  "head": "<html> <head><title>500 Internal Server Error</title></head> <body> <center><h1>500 Internal Server Error</h1></cente"
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
  },
  {
   "page": "ccc",
-  "relay": "corsproxy",
-  "status": 401,
-  "len": 81,
-  "ms": 34,
+  "relay": "codetabs",
+  "status": 522,
+  "len": 7248,
+  "ms": 19397,
   "hasTable": false,
   "hasPrice": false,
-  "head": "{\"error\":\"A valid API key is required. Get one at https://console.corsproxy.io/\"}"
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
+ },
+ {
+  "page": "ccc",
+  "relay": "thingproxy",
+  "err": "TypeError",
+  "ms": 191
+ },
+ {
+  "page": "ccc",
+  "relay": "corsio",
+  "status": 429,
+  "len": 53084,
+  "ms": 85,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": " <!doctype html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html cla"
+ },
+ {
+  "page": "ccc",
+  "relay": "allget",
+  "status": 522,
+  "len": 7260,
+  "ms": 19753,
+  "hasTable": false,
+  "hasPrice": false,
+  "acao": null,
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class"
  },
  {
   "page": "ccc",
   "relay": "jina",
   "status": 200,
   "len": 5891,
-  "ms": 209,
+  "ms": 174,
   "hasTable": false,
   "hasPrice": false,
+  "acao": null,
   "head": "<html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-"
  }
 ]
