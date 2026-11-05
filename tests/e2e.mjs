@@ -170,12 +170,11 @@ await gp.screenshot({ path: `${OUT}/screenshots/05-region-in.png` });
 // Tracker adapters (live pages through the public relays)
 const th = await gp.evaluate(async () => {
   const out = {};
-  try { const r = await DW.trackerHistory({ url: "https://www.amazon.com/dp/B09XSDMT4F", matchName: "Sony WH-1000XM5 Premium Noise Canceling Headphones", offers: [], storeCountry: "US" }); out.ccc = r.map((x) => ({ s: x.source, low: x.low, avg: x.avg, high: x.high })); } catch (e) { out.ccc = "error " + e.message; }
+  out.ccc = "link only";
   try { const r = await DW.trackerHistory({ url: "", matchName: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones", name: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones", offers: [], storeCountry: "IN" }); out.ph = r.map((x) => ({ s: x.source, low: x.low, avg: x.avg, high: x.high })); } catch (e) { out.ph = "error " + e.message; }
   return out;
 });
-rec("G9", "History", "CamelCamelCamel adapter reads lowest/average/highest for an Amazon product", Array.isArray(th.ccc) && th.ccc.some((x) => x.low > 0 && x.high >= x.low), "minor", JSON.stringify(th.ccc));
-rec("G10", "History", "pricehistory.app adapter finds and reads an Indian product by name", Array.isArray(th.ph) && th.ph.some((x) => x.low > 0 && x.high >= x.low), "minor", JSON.stringify(th.ph));
+rec("G9", "History", "pricehistory.app adapter finds and reads an Indian product by name", Array.isArray(th.ph) && th.ph.some((x) => x.low > 0 && x.high >= x.low), "minor", JSON.stringify(th.ph));
 await gctx.close();
 
 // ---- F. Accessibility (axe-core) on the populated desktop page

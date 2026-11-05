@@ -25,6 +25,8 @@ An Australian online shopper planning a purchase of one to five specific items (
 | Verdict method | Transparent rule (price vs 30-day low and median) | Model | Fewer than 60 days of data exist. A rule can be audited. A model cannot yet be validated. |
 | Which stores are shown | Allowlist of established retailers | Everything a search returns | An early version showed an ad-aggregator and a store that sold a different pack size. Trust matters more than coverage. |
 | Logger identity | Honest bot name, robots.txt obeyed, one request per product per run | Browser-like disguise | Terms-of-service and ethics. Cost: several stores refuse (see risks). |
+| Region behaviour | The selector switches currency, search stores, samples and list filter | Currency only | A visitor in India should see Indian stores and products, not Australian ones. Cost: public sample logs exist for 7 of 13 regions only, because many retailers refuse bots. |
+| Third-party history | Read one tracker that allows it (pricehistory.app, India); link out to the rest | Scrape Buyhatke, CamelCamelCamel, PriceSpy | Buyhatke blocks bots and disallows its API in robots.txt; CamelCamelCamel is behind a bot check. Cost: imported history is summary numbers for Indian products only. |
 | Match strictness | 80% title match and sizes must agree | Looser match | A 30-pack was once shown for a 24-pack. |
 
 ## 6. Metrics (definitions)
@@ -79,3 +81,4 @@ Every term is an **[assumption]** until measured: [MAU], [click-through share], 
 | Oct 2026 | Fixed wrong-pack matches; allowlist of established retailers. |
 | Oct 2026 | Moved to browser-only, no sign-in, per-visitor lists. |
 | 5 Nov 2026 | Public price log (every 6 hours), live-site test suite, fixes from the test report (mobile overflow, duplicate button, missing labels and repo link), deal-check rule, sample products, gated Monte Carlo script. |
+| 5 Nov 2026 | Region switch for 13 countries (samples, search stores, currency, list filter), 22 seed products across India, Singapore, France, Brazil, Korea and Japan, "Price history on other trackers" panel, relay request limiter. |

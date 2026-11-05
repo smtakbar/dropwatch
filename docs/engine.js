@@ -218,11 +218,18 @@ const fmt = (a, c) => {
 const FALLBACK_RATES = { USD: 1, AUD: 1.53, GBP: 0.79, EUR: 0.92, JPY: 150, CAD: 1.36, INR: 83, SGD: 1.34, NZD: 1.65, AED: 3.67, BRL: 5, KRW: 1350 };
 
 /** Browsers cannot read other sites directly, so pages are fetched through public read-only relays (first one that answers wins). */
+// At most 3 relay requests at once, so the free relays do not rate-limit us when several pages load together.
+let _active = 0; const _wait = [];
+const _slot = () => new Promise((res) => { const go = () => { _active++; res(); }; _active < 3 ? go() : _wait.push(go); });
+const _free = () => { _active--; const n = _wait.shift(); if (n) n(); };
 async function fetchHtml(url) {
+  await _slot();
+  try { return await fetchHtmlInner(url); } finally { _free(); }
+}
+async function fetchHtmlInner(url) {
   const enc = encodeURIComponent(url);
   const tries = [
     [`https://api.allorigins.win/raw?url=${enc}`, {}],
-    [`https://corsproxy.io/?url=${enc}`, {}],
     [`https://r.jina.ai/${url}`, { headers: { "x-return-format": "html" } }],
   ];
   // Race all relays in parallel; the first usable page wins. One retry after a short pause.
@@ -396,14 +403,6 @@ function trackerVerdict(s, now) {
 }
 async function trackerHistory(it) {
   const out = [], ref = matchTitle(it);
-  const am = asinOf(it);
-  if (am) {
-    const [host, currency] = CCC[am.tld];
-    const url = `https://${host}/product/${am.asin}`;
-    const html = await fetchHtml(url);
-    const s = html && parseCCC(html);
-    if (s) out.push({ source: "CamelCamelCamel", url, currency, ...s, note: "Amazon price history, as reported by CamelCamelCamel." });
-  }
   if ((it.storeCountry ?? it.country) === "IN" && ref) {
     const q = `site:pricehistory.app ${ref.split(/\s+/).slice(0, 12).join(" ")}`;
     const res = await fetchHtml(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&kl=in-en`);

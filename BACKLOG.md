@@ -30,3 +30,12 @@ Priority: P0 must do before the application link is shared; P1 next; P2 only wit
 | 15 | DBSCAN for fake "was" prices and outliers | 60+ days | Not started |
 | 16 | Random forest or logistic regression for "drop in 7 days", time-based validation, permutation importance, compared to the rule | 60+ days | Not started. With the 24 Nov deadline, 60 days of history cannot exist yet. |
 | 17 | Pricing and business case with measured inputs | Needs usage data | Structure in `PRD.md` section 10 |
+
+## Added 5 Nov 2026 (regions and trackers)
+| # | Item | Status | Notes |
+|---|---|---|---|
+| 13 | Region switch changes samples, search stores, currency, list | Done | Live tests G1 to G5, G8 in VALIDATION.md |
+| 14 | Logged samples for US, GB, CA, DE, NZ, AE | Blocked | Tested retailers refuse bots. Options: find retailers that allow it, or use official affiliate or product feeds (needs the owner's accounts) |
+| 15 | Third-party history import | Partly done | pricehistory.app (India) read automatically; others are links. Buyhatke and CamelCamelCamel cannot be read legitimately |
+| 16 | Replace public relays with an owned endpoint | To do | Only r.jina.ai worked reliably in the last diagnostic; corsproxy.io now needs an API key |
+| 17 | Fix layout shift (CLS 0.37 mobile) | To do | Cause not found yet |
