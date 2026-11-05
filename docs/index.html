@@ -121,12 +121,12 @@ select{max-width:100%}
   <h2>I bought this</h2>
   <p class="muted" style="margin-bottom:8px">DropWatch will watch the price while your store's price-adjustment or return window is open, and tell you if it drops. Whether a store refunds the difference depends on its own policy; check it.</p>
   <label for="b-price">Price you paid</label><input type="number" step="0.01" min="0" id="b-price" placeholder="e.g. 399.00">
-  <label for="b-date">Purchase date</label><input type="date" id="b-date">
+  <label for="b-date">Purchase date</label><input type="date" id="b-date" placeholder="YYYY-MM-DD">
   <label for="b-days">Window in days (price match or returns)</label><input type="number" min="1" max="365" id="b-days" value="14" placeholder="14">
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-bclose>Cancel</button><button class="btn" id="b-go">Start watching</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611052031"></script>
+<script src="engine.js?v=202611052038"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -165,7 +165,7 @@ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ITEMS.map(({busy,trk
 let RATES={USD:1,AUD:1.53,GBP:0.79,EUR:0.92,JPY:150,CAD:1.36,INR:83,SGD:1.34,NZD:1.65,AED:3.67,BRL:5,KRW:1350};
 
 // ---- Region: your own choice, else guessed from your location ----
-let region="AU",hadRegion=false;try{const r=localStorage.getItem("region");if(r){region=r;hadRegion=true}}catch{}
+let regionTouched=false,painted=false;let region="AU",hadRegion=false;try{const r=localStorage.getItem("region");if(r){region=r;hadRegion=true}}catch{}
 const sel=$("region");
 sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${c[3]})</option>`).join("");
 sel.value=region;
@@ -177,10 +177,10 @@ function applyRegion(){
   $("regionline").innerHTML="Region: <b>"+esc(n)+"</b> ("+esc((COUNTRIES.find(c=>c[0]===region)||[])[3])+"). Searching stores in "+esc(n)+": "+esc(R0.stores)+".";
   document.documentElement.lang=(R0.loc||"en").split("-")[0];
 }
-sel.onchange=()=>{region=sel.value;SHOWALL=false;try{localStorage.setItem("region",region)}catch{}applyRegion();render()};
+sel.onchange=()=>{regionTouched=true;region=sel.value;SHOWALL=false;try{localStorage.setItem("region",region)}catch{}applyRegion();render()};
 const regionReady=hadRegion?Promise.resolve():Promise.race([
   fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
-    if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;sel.value=region;try{localStorage.setItem("region",region)}catch{}return region}}).catch(()=>{}),
+    if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)&&!regionTouched&&(!painted||ITEMS.length===0)){region=j.country_code;sel.value=region;try{localStorage.setItem("region",region)}catch{}if(painted){applyRegion();render()}return region}}).catch(()=>{}),
   new Promise(r=>setTimeout(r,1200))]);
 
 const RANGE={};
@@ -224,7 +224,7 @@ function renderPub(){
 }
 function wireIdeas(el){el.querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>openModal(b.dataset.idea))}
 window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);if(p.country){it.country=it.storeCountry=p.country}ITEMS.unshift(it);followItem(it);save();render();renderPub();await refresh(it,true);renderPub()};
-function followItem(it){const c=it.country||it.storeCountry;if(c&&c!==region&&COUNTRIES.some(x=>x[0]===c)){region=c;sel.value=c;SHOWALL=false;try{localStorage.setItem("region",c)}catch{}applyRegion();toast("Switched to "+cname()+" because that is where this store is.")}}
+function followItem(it){const c=it.country||it.storeCountry;if(c&&c!==region&&COUNTRIES.some(x=>x[0]===c)){regionTouched=true;region=c;sel.value=c;SHOWALL=false;try{localStorage.setItem("region",c)}catch{}applyRegion();toast("Switched to "+cname()+" because that is where this store is.")}}
 
 // ---- I bought this: price protection ----
 let BID=null;
@@ -380,7 +380,6 @@ async function sweep(){
   for(const it of ITEMS){if(it.busy)continue;if(!it.checkedAt||Date.now()-Date.parse(it.checkedAt)>3600e3)await refresh(it,false)}
 }
 // First paint waits (briefly) for region, public data and rates so nothing jumps around afterwards.
-let painted=false;
 const firstPaint=()=>{if(painted)return;painted=true;applyRegion();render();renderPub();sweep();setInterval(sweep,15*60e3)};
 setTimeout(firstPaint,2500);
 Promise.all([regionReady,DW.loadPublic().then(p=>{PUB=p}),DW.getRates().then(r=>{RATES=r})]).finally(()=>{firstPaint();if(!hadRegion&&region)toast("Showing prices for "+((COUNTRIES.find(c=>c[0]===region)||[])[1]||region)+" (from your location).")});
