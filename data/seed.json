@@ -1,26 +1,10 @@
 [
   {
-    "id": "jb-airpods-pro-2",
-    "store": "JB Hi-Fi",
-    "name": "Apple AirPods Pro 2 (USB-C)",
-    "category": "audio",
-    "url": "https://www.jbhifi.com.au/products/apple-airpods-pro-2-with-magsafe-charging-case-usb-c",
-    "country": "AU"
-  },
-  {
     "id": "jb-remington-all-in-1",
     "store": "JB Hi-Fi",
     "name": "Remington All-in-1 Titanium Grooming System",
     "category": "personal-care",
     "url": "https://www.jbhifi.com.au/products/remington-all-in-1-titanium-grooming-system",
-    "country": "AU"
-  },
-  {
-    "id": "ow-mx-master-3s",
-    "store": "Officeworks",
-    "name": "Logitech MX Master 3S Wireless Mouse",
-    "category": "computer-accessories",
-    "url": "https://www.officeworks.com.au/shop/officeworks/p/logitech-mx-master-3s-wireless-mouse-graphite-logmxm3sbk",
     "country": "AU"
   },
   {
@@ -32,30 +16,6 @@
     "country": "AU"
   },
   {
-    "id": "pccg-990pro-1tb",
-    "store": "PC Case Gear",
-    "name": "Samsung 990 PRO 1TB NVMe SSD",
-    "category": "storage",
-    "url": "https://www.pccasegear.com/products/60035/samsung-990-pro-m-2-nvme-ssd-1tb",
-    "country": "AU"
-  },
-  {
-    "id": "pccg-990pro-2tb",
-    "store": "PC Case Gear",
-    "name": "Samsung 990 PRO 2TB NVMe SSD",
-    "category": "storage",
-    "url": "https://www.pccasegear.com/products/60036/samsung-990-pro-m-2-nvme-ssd-2tb",
-    "country": "AU"
-  },
-  {
-    "id": "hn-dyson-v8",
-    "store": "Harvey Norman",
-    "name": "Dyson V8 Stick Vacuum",
-    "category": "appliances",
-    "url": "https://www.harveynorman.com.au/dyson-v8-stick-vacuum.html",
-    "country": "AU"
-  },
-  {
     "id": "tgg-sony-xm5",
     "store": "The Good Guys",
     "name": "Sony WH-1000XM5 Headphones (Pink)",
@@ -64,35 +24,75 @@
     "country": "AU"
   },
   {
-    "id": "bigw-lego-10328",
-    "store": "Big W",
-    "name": "LEGO Botanicals Bouquet of Roses 10328",
-    "category": "toys",
-    "url": "https://www.bigw.com.au/product/lego-botanicals-bouquet-of-roses-building-set-10328/p/437053",
-    "country": "AU"
-  },
-  {
-    "id": "bigw-lego-10315",
-    "store": "Big W",
-    "name": "LEGO Icons Tranquil Garden 10315",
-    "category": "toys",
-    "url": "https://www.bigw.com.au/product/lego-icons-tranquil-garden-10315-/p/316969",
-    "country": "AU"
-  },
-  {
-    "id": "kogan-switch-oled",
-    "store": "Kogan",
-    "name": "Nintendo Switch OLED 64GB White",
+    "id": "jb-ps5-slim",
+    "store": "JB Hi-Fi",
+    "name": "PlayStation 5 Slim Console",
     "category": "gaming",
-    "url": "https://www.kogan.com/au/buy/heybattery-nintendo-switch-oled-64gb-white-ni-swo-wh/",
+    "url": "https://www.jbhifi.com.au/products/ps5-playstation-5-slim-console",
     "country": "AU"
   },
   {
-    "id": "coles-mountain-dew-24",
-    "store": "Coles",
-    "name": "Mountain Dew 375ml 24 pack",
-    "category": "grocery",
-    "url": "https://www.coles.com.au/product/mountain-dew-energized-soft-drink-375ml-24-pack-1310386",
+    "id": "jb-switch2-zelda",
+    "store": "JB Hi-Fi",
+    "name": "Nintendo Switch 2 Zelda 40th Anniversary Edition",
+    "category": "gaming",
+    "url": "https://www.jbhifi.com.au/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-console",
+    "country": "AU"
+  },
+  {
+    "id": "sc-crucial-t500-2tb",
+    "store": "Scorptec",
+    "name": "Crucial T500 2TB NVMe SSD",
+    "category": "storage",
+    "url": "https://www.scorptec.com.au/product/hard-drives-and-ssds/solid-state-drives--ssd/106772-ct2000t500ssd5",
+    "country": "AU"
+  },
+  {
+    "id": "sc-corsair-ddr5-6000",
+    "store": "Scorptec",
+    "name": "Corsair Vengeance 32GB DDR5 6000MHz",
+    "category": "memory",
+    "url": "https://www.scorptec.com.au/product/memory/ddr5-desktop-memory/103569-cmk32gx5m2e6000c36",
+    "country": "AU"
+  },
+  {
+    "id": "sc-corsair-ddr5-5200",
+    "store": "Scorptec",
+    "name": "Corsair Vengeance RGB 32GB DDR5 5200MHz",
+    "category": "memory",
+    "url": "https://www.scorptec.com.au/product/memory/ddr5-desktop-memory/98869-cmh32gx5m2b5200c40",
+    "country": "AU"
+  },
+  {
+    "id": "um-990pro-2tb",
+    "store": "Umart",
+    "name": "Samsung 990 Pro 2TB NVMe SSD",
+    "category": "storage",
+    "url": "https://www.umart.com.au/product/samsung-990-pro-2tb-pcie-4-0-m-2-2280-nvme-ssd-mz-v9p2t0bw-66090",
+    "country": "AU"
+  },
+  {
+    "id": "um-g502-lightspeed",
+    "store": "Umart",
+    "name": "Logitech G502 Lightspeed Wireless Gaming Mouse",
+    "category": "computer-accessories",
+    "url": "https://www.umart.com.au/product/logitech-g502-lightspeed-wireless-gaming-mouse-910-005569-51898",
+    "country": "AU"
+  },
+  {
+    "id": "um-g502x-black",
+    "store": "Umart",
+    "name": "Logitech G502 X Wired Gaming Mouse Black",
+    "category": "computer-accessories",
+    "url": "https://www.umart.com.au/product/logitech-g502-x-wired-optical-gaming-mouse-black-910-006140-65274",
+    "country": "AU"
+  },
+  {
+    "id": "cc-mx-master-3s-mac",
+    "store": "Centrecom",
+    "name": "Logitech MX Master 3S for Mac Pale Gray",
+    "category": "computer-accessories",
+    "url": "https://www.centrecom.com.au/logitech-mx-master-3s-performance-wireless-mouse-for-macosipados-pale-gray",
     "country": "AU"
   }
 ]
