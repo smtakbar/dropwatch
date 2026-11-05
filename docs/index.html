@@ -92,11 +92,12 @@ select{max-width:100%}
   <div class="hero"><h1>Track any product. Paste a link or type its name, and we watch the price across stores and tell you when to buy.</h1>
     <input type="text" id="quick" aria-label="Product name or link" placeholder="Product name or link, e.g. Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml"><button class="btn" id="quickGo">Track this product</button>
     <div class="muted" style="flex:1 1 100%">Private by design: no sign-in. Your list is saved only in this browser, and prices refresh whenever this page is open.</div></div>
-  <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span></div>
+  <div class="muted" id="regionline" style="margin:-4px 0 12px"></div>
+  <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span><button class="btn ghost small" id="showall" style="display:none"></button></div>
   <div id="pend" style="margin-bottom:12px"></div>
   <div class="grid" id="grid"></div>
   <section class="pub" aria-labelledby="pubh" style="margin-top:24px">
-    <h2 id="pubh" style="font-size:16px;margin-bottom:4px">Sample products (real, public price log)</h2>
+    <h2 id="pubh" style="font-size:16px;margin-bottom:4px">Sample products</h2>
     <p class="muted" style="margin-bottom:10px">A fixed set of products we check every 6 hours and publish as open data. Add any to your list to try the page. Charts and the deal rule fill in as readings accumulate. <a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/data/prices.csv" target="_blank" rel="noopener">Open the data</a></p>
     <div class="grid" id="pubgrid"><div class="muted">Loading sample products…</div></div>
   </section>
@@ -113,10 +114,28 @@ select{max-width:100%}
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
+const RI={
+AU:{stores:"JB Hi-Fi, Harvey Norman, The Good Guys, Officeworks, Amazon AU",ex:"Sony WH-1000XM5 headphones",loc:"en-AU",extra:["Dyson V15 Detect"],trk:[["PriceSpy","pricespy.com.au"],["CamelCamelCamel (Amazon)","au.camelcamelcamel.com"],["Buyhatke","buyhatke.com"]]},
+US:{stores:"Amazon, Best Buy, Walmart, Target, Newegg",ex:"Apple AirPods Pro 2",loc:"en-US",extra:["Dyson V15 Detect"],trk:[["CamelCamelCamel (Amazon)","camelcamelcamel.com"],["Keepa (Amazon)","keepa.com"],["Buyhatke","buyhatke.com"]]},
+GB:{stores:"Argos, Currys, John Lewis, AO, Amazon UK",ex:"Sony WH-1000XM5 headphones",loc:"en-GB",extra:["Dyson V15 Detect"],trk:[["PriceSpy","pricespy.co.uk"],["CamelCamelCamel (Amazon)","uk.camelcamelcamel.com"],["Keepa (Amazon)","keepa.com"]]},
+CA:{stores:"Best Buy, Memory Express, Canada Computers, Amazon CA",ex:"Samsung 990 PRO 1TB SSD",loc:"en-CA",extra:["Apple AirPods Pro 2"],trk:[["CamelCamelCamel (Amazon)","ca.camelcamelcamel.com"],["Keepa (Amazon)","keepa.com"]]},
+DE:{stores:"MediaMarkt, Saturn, Notebooksbilliger, Cyberport, Amazon DE",ex:"Sony WH-1000XM5 Kopfhörer",loc:"de-DE",extra:["Dyson V15 Detect"],trk:[["Geizhals","geizhals.de"],["idealo","idealo.de"],["CamelCamelCamel (Amazon)","de.camelcamelcamel.com"]]},
+FR:{stores:"LDLC, Fnac, Darty, Boulanger, Amazon FR",ex:"Sony WH-1000XM5 casque",loc:"fr-FR",extra:["Dyson V15 Detect"],trk:[["idealo","idealo.fr"],["CamelCamelCamel (Amazon)","fr.camelcamelcamel.com"]]},
+JP:{stores:"Yodobashi, Biccamera, Rakuten, Amazon JP",ex:"Sony WH-1000XM5 ヘッドホン",loc:"ja-JP",extra:["Nintendo Switch 2"],trk:[["Kakaku.com","kakaku.com"],["Keepa (Amazon)","keepa.com"]]},
+IN:{stores:"Vijay Sales, Croma, Reliance Digital, Flipkart, Amazon IN",ex:"Sony WH-1000XM5 headphones",loc:"en-IN",extra:["Redmi Note 14"],trk:[["Buyhatke","buyhatke.com"],["pricehistory.app","pricehistory.app"]]},
+SG:{stores:"Courts, Challenger, Harvey Norman, Lazada, Amazon SG",ex:"Sony WH-1000XM5 headphones",loc:"en-SG",extra:["Nintendo Switch 2"],trk:[["iPrice","iprice.sg"]]},
+NZ:{stores:"PB Tech, Noel Leeming, Mighty Ape, Harvey Norman",ex:"Samsung 990 PRO 1TB SSD",loc:"en-NZ",extra:["Dyson V15 Detect"],trk:[["PriceSpy","pricespy.co.nz"]]},
+AE:{stores:"Noon, Sharaf DG, Jumbo, Amazon AE",ex:"Sony WH-1000XM5 headphones",loc:"en-AE",extra:["Apple AirPods Pro 2"],trk:[["Pricena","pricena.com"]]},
+BR:{stores:"KaBuM, Magazine Luiza, Mercado Livre, Amazon BR",ex:"Sony WH-1000XM5 fone de ouvido",loc:"pt-BR",extra:["Nintendo Switch 2"],trk:[["Buscapé","buscape.com.br"],["Zoom","zoom.com.br"]]},
+KR:{stores:"Danawa, Coupang, 11st, Gmarket",ex:"삼성 990 PRO 1TB SSD",loc:"ko-KR",extra:["Nintendo Switch 2"],trk:[["Danawa","danawa.com"]]},
+};
+const IDEAS=["Sony WH-1000XM5","Samsung 990 PRO 1TB SSD","Logitech MX Master 3S","PlayStation 5 Slim"];
+const RGN=()=>RI[region]||RI.AU;
+const cname=()=>(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[1];
 const flag=id=>(COUNTRIES.find(c=>c[0]===id)||[])[2]||"";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const conv=(a,f,t,r)=>(f===t||!r[f]||!r[t])?a:a/r[f]*r[t];
-const fmt=(a,c)=>{const z=c==="JPY"||c==="KRW";try{return new Intl.NumberFormat("en-AU",{style:"currency",currency:c,minimumFractionDigits:z?0:2,maximumFractionDigits:z?0:2}).format(a)}catch{return c+" "+a.toFixed(z?0:2)}};
+const fmt=(a,c)=>{const z=c==="JPY"||c==="KRW";try{return new Intl.NumberFormat((typeof RI!=="undefined"&&RI[region]||{}).loc||"en-AU",{style:"currency",currency:c,minimumFractionDigits:z?0:2,maximumFractionDigits:z?0:2}).format(a)}catch{return c+" "+a.toFixed(z?0:2)}};
 const ago=iso=>{if(!iso)return"never";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"just now":m<60?m+"m ago":m<1440?Math.round(m/60)+"h ago":Math.round(m/1440)+"d ago"};
 
 
@@ -134,7 +153,15 @@ let region="AU",hadRegion=false;try{const r=localStorage.getItem("region");if(r)
 const sel=$("region");
 sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${c[3]})</option>`).join("");
 sel.value=region;
-sel.onchange=()=>{region=sel.value;try{localStorage.setItem("region",region)}catch{}render()};
+let SHOWALL=false;
+function applyRegion(){
+  const R0=RGN(),n=cname();
+  $("quick").placeholder="Type a product name or paste a link, e.g. "+R0.ex;
+  $("m-url").placeholder=R0.ex;
+  $("regionline").innerHTML="Region: <b>"+esc(n)+"</b> ("+esc((COUNTRIES.find(c=>c[0]===region)||[])[3])+"). Searching stores in "+esc(n)+": "+esc(R0.stores)+".";
+  document.documentElement.lang=(R0.loc||"en").split("-")[0];
+}
+sel.onchange=()=>{region=sel.value;SHOWALL=false;try{localStorage.setItem("region",region)}catch{}applyRegion();render()};
 const regionReady=hadRegion?Promise.resolve():Promise.race([
   fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
     if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;sel.value=region;try{localStorage.setItem("region",region)}catch{}return region}}).catch(()=>{}),
@@ -159,16 +186,22 @@ function chart(h,cur,r,from,id){
 let PUB=[];
 function renderPub(){
   const el=$("pubgrid");if(!el)return;
-  if(!PUB.length){el.innerHTML='<div class="muted">The public price log could not be loaded right now.</div>';return}
-  const reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3];
-  el.innerHTML=PUB.map(p=>{const last=p.history.at(-1),price=last?last[1]:null,d=DW.dealRule(p.history,price);
+  const n=cname(),R0=RGN(),cur=(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[3];
+  const h2=$("pubh");if(h2)h2.textContent=PUB.some(p=>p.country===region)?"Sample products in "+n+" (real, public price log)":"Popular in "+n;
+  const mine=PUB.filter(p=>p.country===region);
+  const ideas=[...IDEAS,...(R0.extra||[])];
+  const chips=`<div style="grid-column:1/-1"><div class="muted" style="margin-bottom:6px">${mine.length?"Or search any product in "+esc(n)+":":"No store in "+esc(n)+" lets us log prices automatically yet, so there is no public history here. Tap an idea to search "+esc(n)+" stores ("+esc(R0.stores)+") and start your own history:"}</div><div class="row" style="flex-wrap:wrap">${ideas.map(x=>`<button class="btn ghost small" data-idea="${esc(x)}">${esc(x)}</button>`).join("")}</div></div>`;
+  if(!PUB.length&&!mine.length){el.innerHTML=chips;wireIdeas(el);return}
+  el.innerHTML=mine.map(p=>{const last=p.history.at(-1),price=last?last[1]:null,d=DW.dealRule(p.history,price);
     const have=ITEMS.some(i=>DW.normKey(i.url)===p.key);
     return`<div class="card"><div class="name" title="${esc(p.name)}">${esc(p.name)}</div><div class="muted">${esc(p.store)} · ${p.history.length} reading${p.history.length===1?"":"s"}</div>
     <div style="margin:8px 0"><span class="price">${price!=null?fmt(conv(price,p.currency,cur,RATES),cur):"No price yet"}</span></div>
     <div class="rule ${d.level==="good"?"good":""}"><b>${esc(d.label)}</b>${d.low!=null?` · 30-day low ${fmt(conv(d.low,p.currency,cur,RATES),cur)}`:""}</div>
     <div class="row" style="margin-top:8px;justify-content:space-between"><a class="btn ghost small" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Open</a>
-    <button class="btn small" ${have?"disabled":""} onclick="addSample('${esc(p.id)}')">${have?"On your list":"Add to my list"}</button></div></div>`}).join("");
+    <button class="btn small" ${have?"disabled":""} onclick="addSample('${esc(p.id)}')">${have?"On your list":"Add to my list"}</button></div></div>`}).join("")+chips;
+  wireIdeas(el);
 }
+function wireIdeas(el){el.querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>openModal(b.dataset.idea))}
 window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);ITEMS.unshift(it);save();render();renderPub();await refresh(it,true);renderPub()};
 let PEND=null,ptimer=null;
 function renderPending(){
@@ -183,12 +216,13 @@ function renderPending(){
 
 function render(){
   try{renderPub()}catch{}
-  const LIST=ITEMS,reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3],r=RATES;
+  const ALL=ITEMS,LIST=SHOWALL?ALL:ALL.filter(i=>(i.country||i.storeCountry)===region),other=ALL.length-ALL.filter(i=>(i.country||i.storeCountry)===region).length,reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3],r=RATES;
   const hits=LIST.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
-  document.getElementById("meta").textContent=LIST.length?`${LIST.length} on your list · saved in this browser only`:"";
+  document.getElementById("meta").textContent=LIST.length?`${LIST.length} on your list${SHOWALL?" (all regions)":" in "+cname()} · saved in this browser only`:"";
+  const sa=$("showall");if(other>0||SHOWALL){sa.style.display="";sa.textContent=SHOWALL?"Only show "+cname():"Show "+other+" tracked in other regions";sa.onclick=()=>{SHOWALL=!SHOWALL;render()}}else sa.style.display="none";
   const g=document.getElementById("grid");
   renderPending();
-  if(!LIST.length){g.innerHTML=`<div class="empty">Your list is empty. Paste a product link or type a name above. Your list stays in this browser and is private to you.</div>`;return}
+  if(!LIST.length){g.innerHTML=`<div class="empty">${ALL.length?"Nothing tracked in "+esc(cname())+" yet.":"Your list is empty."} Type a product name or paste a link above, or pick one below. Your list stays in this browser and is private to you.</div>`;return}
   g.innerHTML=LIST.map(i=>{
     const hit=i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r);
     const L=v=>v!=null?fmt(conv(v,i.currency,cur,r),cur):"–";
@@ -264,7 +298,7 @@ async function sweep(){
 }
 // First paint waits (briefly) for region, public data and rates so nothing jumps around afterwards.
 let painted=false;
-const firstPaint=()=>{if(painted)return;painted=true;render();renderPub();sweep();setInterval(sweep,15*60e3)};
+const firstPaint=()=>{if(painted)return;painted=true;applyRegion();render();renderPub();sweep();setInterval(sweep,15*60e3)};
 setTimeout(firstPaint,2500);
 Promise.all([regionReady,DW.loadPublic().then(p=>{PUB=p}),DW.getRates().then(r=>{RATES=r})]).finally(()=>{firstPaint();if(!hadRegion&&region)toast("Showing prices for "+((COUNTRIES.find(c=>c[0]===region)||[])[1]||region)+" (from your location).")});
 </script>
