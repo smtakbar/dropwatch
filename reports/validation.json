@@ -1,8 +1,8 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T06:38:56.805Z",
- "totalChecks": 38,
- "passed": 35,
+ "ranAt": "2026-11-05T06:45:08.971Z",
+ "totalChecks": 39,
+ "passed": 39,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
@@ -12,12 +12,12 @@
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 39
+   "secs": 36
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 34
+   "secs": 35
   },
   {
    "store": "Umart",
@@ -27,12 +27,12 @@
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 52
+   "secs": 34
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 46
+   "secs": 38
   }
  ],
  "results": [
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "39s"
+   "detail": "36s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "34s"
+   "detail": "35s"
   },
   {
    "id": "B4",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "52s"
+   "detail": "34s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "46s"
+   "detail": "38s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 46s"
+   "detail": "6/6 succeeded; median 36s"
   },
   {
    "id": "B6b",
@@ -239,10 +239,18 @@
   {
    "id": "D1",
    "area": "Alerts",
-   "check": "Alert test could not run (price fetch failed)",
-   "pass": false,
-   "severity": "major",
-   "detail": "price not read in 75s"
+   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
+   "pass": true,
+   "severity": "-",
+   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
+  },
+  {
+   "id": "D2",
+   "area": "History",
+   "check": "Price history accumulates across refreshes",
+   "pass": true,
+   "severity": "-",
+   "detail": "10 point(s)"
   },
   {
    "id": "E1",
@@ -304,16 +312,16 @@
    "id": "G6",
    "area": "Regions",
    "check": "India: add a Vijay Sales sample and read a price in rupees",
-   "pass": false,
-   "severity": "major",
+   "pass": true,
+   "severity": "-",
    "detail": ""
   },
   {
    "id": "G7",
    "area": "History",
    "check": "Card has a 'Price history on other trackers' panel with lookup links",
-   "pass": false,
-   "severity": "major",
+   "pass": true,
+   "severity": "-",
    "detail": ""
   },
   {
