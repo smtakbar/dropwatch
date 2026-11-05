@@ -1,0 +1,98 @@
+[
+  {
+    "id": "jb-airpods-pro-2",
+    "store": "JB Hi-Fi",
+    "name": "Apple AirPods Pro 2 (USB-C)",
+    "category": "audio",
+    "url": "https://www.jbhifi.com.au/products/apple-airpods-pro-2-with-magsafe-charging-case-usb-c",
+    "country": "AU"
+  },
+  {
+    "id": "jb-remington-all-in-1",
+    "store": "JB Hi-Fi",
+    "name": "Remington All-in-1 Titanium Grooming System",
+    "category": "personal-care",
+    "url": "https://www.jbhifi.com.au/products/remington-all-in-1-titanium-grooming-system",
+    "country": "AU"
+  },
+  {
+    "id": "ow-mx-master-3s",
+    "store": "Officeworks",
+    "name": "Logitech MX Master 3S Wireless Mouse",
+    "category": "computer-accessories",
+    "url": "https://www.officeworks.com.au/shop/officeworks/p/logitech-mx-master-3s-wireless-mouse-graphite-logmxm3sbk",
+    "country": "AU"
+  },
+  {
+    "id": "sc-990pro-1tb",
+    "store": "Scorptec",
+    "name": "Samsung 990 PRO 1TB NVMe SSD",
+    "category": "storage",
+    "url": "https://www.scorptec.com.au/product/hard-drives-&-ssds/solid-state-drives-(ssd)/100601-mz-v9p1t0bw",
+    "country": "AU"
+  },
+  {
+    "id": "pccg-990pro-1tb",
+    "store": "PC Case Gear",
+    "name": "Samsung 990 PRO 1TB NVMe SSD",
+    "category": "storage",
+    "url": "https://www.pccasegear.com/products/60035/samsung-990-pro-m-2-nvme-ssd-1tb",
+    "country": "AU"
+  },
+  {
+    "id": "pccg-990pro-2tb",
+    "store": "PC Case Gear",
+    "name": "Samsung 990 PRO 2TB NVMe SSD",
+    "category": "storage",
+    "url": "https://www.pccasegear.com/products/60036/samsung-990-pro-m-2-nvme-ssd-2tb",
+    "country": "AU"
+  },
+  {
+    "id": "hn-dyson-v8",
+    "store": "Harvey Norman",
+    "name": "Dyson V8 Stick Vacuum",
+    "category": "appliances",
+    "url": "https://www.harveynorman.com.au/dyson-v8-stick-vacuum.html",
+    "country": "AU"
+  },
+  {
+    "id": "tgg-sony-xm5",
+    "store": "The Good Guys",
+    "name": "Sony WH-1000XM5 Headphones (Pink)",
+    "category": "audio",
+    "url": "https://www.thegoodguys.com.au/sony-premium-noise-cancelling-headphones-pink-wh1000xm5p",
+    "country": "AU"
+  },
+  {
+    "id": "bigw-lego-10328",
+    "store": "Big W",
+    "name": "LEGO Botanicals Bouquet of Roses 10328",
+    "category": "toys",
+    "url": "https://www.bigw.com.au/product/lego-botanicals-bouquet-of-roses-building-set-10328/p/437053",
+    "country": "AU"
+  },
+  {
+    "id": "bigw-lego-10315",
+    "store": "Big W",
+    "name": "LEGO Icons Tranquil Garden 10315",
+    "category": "toys",
+    "url": "https://www.bigw.com.au/product/lego-icons-tranquil-garden-10315-/p/316969",
+    "country": "AU"
+  },
+  {
+    "id": "kogan-switch-oled",
+    "store": "Kogan",
+    "name": "Nintendo Switch OLED 64GB White",
+    "category": "gaming",
+    "url": "https://www.kogan.com/au/buy/heybattery-nintendo-switch-oled-64gb-white-ni-swo-wh/",
+    "country": "AU"
+  },
+  {
+    "id": "coles-mountain-dew-24",
+    "store": "Coles",
+    "name": "Mountain Dew 375ml 24 pack",
+    "category": "grocery",
+    "url": "https://www.coles.com.au/product/mountain-dew-energized-soft-drink-375ml-24-pack-1310386",
+    "country": "AU"
+  }
+]
