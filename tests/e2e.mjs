@@ -177,6 +177,32 @@ const th = await gp.evaluate(async () => {
 rec("G9", "History", "pricehistory.app adapter finds and reads an Indian product by name", Array.isArray(th.ph) && th.ph.some((x) => x.low > 0 && x.high >= x.low), "minor", JSON.stringify(th.ph));
 await gctx.close();
 
+// ---- H. Indian .com store link is classified as India; mini game while waiting
+const hctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU" });
+await hctx.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); } catch {} });
+const hp = await hctx.newPage();
+await hp.goto(SITEURL, { waitUntil: "load" }); await hp.waitForTimeout(2000);
+await hp.fill("#quick", "https://www.myntra.com/perfume/prada/prada-men-luna-rossa-black-eau-de-parfum-spray---100ml/21596686/buy"); await hp.click("#quickGo"); await hp.click("#m-go");
+await hp.waitForTimeout(1500);
+const my = await hp.evaluate(() => ({ it: JSON.parse(localStorage.getItem("dw_items") || "[]")[0], region: document.getElementById("region").value }));
+rec("H1", "Regions", "A Myntra link is classified as an Indian store and the page switches to India", my.it?.country === "IN" && my.it?.storeCountry === "IN" && my.region === "IN", "major", JSON.stringify({ c: my.it?.country, s: my.it?.storeCountry, r: my.region }));
+const play = hp.locator("#pend button", { hasText: "Play" });
+const canPlay = (await play.count()) > 0;
+rec("H2", "Engagement", "A game is offered while the price is being read", canPlay, "minor");
+if (canPlay) {
+  await play.first().click();
+  const tiles = await hp.locator("#game .gt").count();
+  let scored = false;
+  for (let i = 0; i < 40 && !scored; i++) {
+    const d = hp.locator("#game .gt.drop");
+    if (await d.count()) { await d.first().click(); scored = /Score [1-9]/.test(await hp.locator("#gs").innerText()); }
+    else await hp.waitForTimeout(150);
+  }
+  rec("H3", "Engagement", "Game shows 9 tiles and tapping a green drop scores a point", tiles === 9 && scored, "minor", `${tiles} tiles, scored=${scored}`);
+  await hp.screenshot({ path: `${OUT}/screenshots/06-game.png` });
+}
+await hctx.close();
+
 // ---- F. Accessibility (axe-core) on the populated desktop page
 await page.addScriptTag({ content: axe.source });
 const ax = await page.evaluate(async () => { const r = await window.axe.run(document, { resultTypes: ["violations"] }); return r.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, help: v.help })); });

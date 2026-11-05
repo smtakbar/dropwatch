@@ -9,7 +9,7 @@ const RETAILERS = [
   [/amazon\./, "Amazon"], [/jbhifi/, "JB Hi-Fi"], [/harveynorman/, "Harvey Norman"], [/thegoodguys/, "The Good Guys"],
   [/officeworks/, "Officeworks"], [/kmart/, "Kmart"], [/bestbuy/, "Best Buy"], [/walmart/, "Walmart"],
   [/target\./, "Target"], [/newegg/, "Newegg"], [/currys/, "Currys"], [/argos/, "Argos"], [/johnlewis/, "John Lewis"],
-  [/flipkart/, "Flipkart"], [/lazada/, "Lazada"], [/coupang/, "Coupang"], [/noon\./, "Noon"],
+  [/flipkart/, "Flipkart"], [/myntra/, "Myntra"], [/nykaa/, "Nykaa"], [/tatacliq/, "Tata CLiQ"], [/ajio/, "Ajio"], [/lazada/, "Lazada"], [/coupang/, "Coupang"], [/noon\./, "Noon"],
   [/mercadolivre/, "Mercado Livre"], [/yodobashi/, "Yodobashi"], [/fnac/, "Fnac"], [/mediamarkt/, "MediaMarkt"],
   [/ebgames/, "EB Games"], [/vijaysales/, "Vijay Sales"], [/croma/, "Croma"], [/reliancedigital/, "Reliance Digital"],
   [/courts\.com\.sg/, "Courts"], [/challenger\.sg/, "Challenger"], [/ldlc/, "LDLC"], [/kabum/, "KaBuM"],
@@ -22,7 +22,7 @@ function detectFromUrl(raw) {
   try { u = new URL(/^https?:\/\//i.test(raw.trim()) ? raw.trim() : `https://${raw.trim()}`); } catch { return null; }
   for (const k of [...u.searchParams.keys()]) if (/^(utm_|ref|fbclid|gclid|msclkid|tag$|linkcode|th$|psc$|smid|sprefix|cid$)/i.test(k)) u.searchParams.delete(k);
   const host = u.hostname.replace(/^www\./, "");
-  const DOM = [[/(^|\.)(ldlc|fnac|darty|boulanger|cdiscount)\.com$/, "FR"], [/(^|\.)kakaku\.com$/, "JP"], [/(^|\.)danawa\.com$/, "KR"], [/(^|\.)(memoryexpress|canadacomputers)\.com$/, "CA"], [/(^|\.)(noon|sharafdg)\.com$/, "AE"], [/(^|\.)vijaysales\.com$/, "IN"], [/(^|\.)(courts|challenger)\.com\.sg$/, "SG"]];
+  const DOM = [[/(^|\.)(ldlc|fnac|darty|boulanger|cdiscount)\.com$/, "FR"], [/(^|\.)kakaku\.com$/, "JP"], [/(^|\.)danawa\.com$/, "KR"], [/(^|\.)(memoryexpress|canadacomputers)\.com$/, "CA"], [/(^|\.)(noon|sharafdg)\.com$/, "AE"], [/(^|\.)(vijaysales|myntra|flipkart|nykaa|tatacliq|croma|ajio|bigbasket|snapdeal|jiomart|meesho|firstcry|pepperfry|lenskart)\.com$/, "IN"], [/(^|\.)(courts|challenger)\.com\.sg$/, "SG"]];
   let country = DOM.find(([re]) => re.test(host))?.[1] ?? TLD.find(([re]) => re.test(host))?.[1] ?? (/\.com$/.test(host) ? "US" : null);
   const retailer = RETAILERS.find(([re]) => re.test(host))?.[1] ?? host;
   return { url: u.toString(), retailer, country };
@@ -192,7 +192,7 @@ const LIST = {
   US: ["amazon.com", "ebay.com", "walmart.com", "target.com", "bestbuy.com", "costco.com", "homedepot.com", "lowes.com", "newegg.com", "macys.com", "kohls.com", "nordstrom.com", "cvs.com", "walgreens.com", "kroger.com", "samsclub.com", "bhphotovideo.com", "adorama.com", "ulta.com", "sephora.com", "apple.com", "dell.com", "staples.com", "officedepot.com", "chewy.com", "wayfair.com", "gamestop.com", "microcenter.com", "bhphotovideo.com", "adorama.com"],
   GB: ["amazon.co.uk", "ebay.co.uk", "argos.co.uk", "currys.co.uk", "johnlewis.com", "tesco.com", "sainsburys.co.uk", "asda.com", "boots.com", "superdrug.com", "very.co.uk", "ao.com", "screwfix.com", "diy.com", "next.co.uk", "marksandspencer.com", "lookfantastic.com", "apple.com", "scan.co.uk", "overclockers.co.uk", "box.co.uk", "ebuyer.com", "very.co.uk"],
   CA: ["amazon.ca", "ebay.ca", "bestbuy.ca", "walmart.ca", "canadiantire.ca", "costco.ca", "shoppersdrugmart.ca", "londondrugs.com", "homedepot.ca", "staples.ca", "apple.com", "memoryexpress.com", "canadacomputers.com", "newegg.ca", "bestbuy.ca", "thesource.ca"],
-  IN: ["amazon.in", "flipkart.com", "croma.com", "reliancedigital.in", "tatacliq.com", "myntra.com", "nykaa.com", "bigbasket.com", "apple.com", "vijaysales.com", "croma.com", "ajio.com", "snapdeal.com"],
+  IN: ["amazon.in", "flipkart.com", "croma.com", "reliancedigital.in", "tatacliq.com", "myntra.com", "nykaa.com", "bigbasket.com", "apple.com", "vijaysales.com", "croma.com", "ajio.com", "snapdeal.com", "jiomart.com", "meesho.com", "firstcry.com", "lenskart.com"],
   DE: ["amazon.de", "ebay.de", "mediamarkt.de", "saturn.de", "otto.de", "dm.de", "rossmann.de", "apple.com", "notebooksbilliger.de", "alternate.de", "cyberport.de", "mindfactory.de", "conrad.de", "expert.de"],
   FR: ["amazon.fr", "fnac.com", "darty.com", "cdiscount.com", "boulanger.com", "carrefour.fr", "apple.com", "ldlc.com", "materiel.net", "rueducommerce.fr", "leclerc.fr"],
   JP: ["amazon.co.jp", "rakuten.co.jp", "yodobashi.com", "biccamera.com", "apple.com", "kakaku.com", "joshin.co.jp", "nojima.co.jp", "ksdenki.com", "kojima.net"],
@@ -258,6 +258,8 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 function makeItem(input, name, region) {
   const v = input.trim();
   const d = /^https?:\/\//i.test(v) || (/^[^\s]+\.[a-z]{2,}(\/|$)/i.test(v) && !/\s/.test(v)) ? detectFromUrl(v) : null;
+  // A bare .com is guessed as US; if the store is on the visitor's own region list, trust the region instead.
+  if (d && region && isTrusted(d.url, region)) d.country = region;
   if (d) return { id: uid(), url: d.url, name: (name || "").trim().slice(0, 120), retailer: d.retailer, storeCountry: d.country ?? region, country: d.country ?? region, history: [], offers: [], addedAt: new Date().toISOString() };
   return { id: uid(), url: "", name: v.slice(0, 120), retailer: null, storeCountry: region, country: region, history: [], offers: [], addedAt: new Date().toISOString() };
 }

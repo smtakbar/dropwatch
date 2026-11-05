@@ -77,6 +77,13 @@ select{max-width:100%}
 .rule.good{background:var(--green-bg);color:var(--green)}
 .rule small{display:block;color:var(--text2);margin-top:2px}
 .pub .grid{grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
+.gm{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;background:var(--surface)}
+.gm .gh{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px}
+.gm .gg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:360px}
+.gm .gt{min-height:56px;border-radius:10px;border:1px dashed var(--border);background:var(--surface2);font-weight:600;font-size:14px;cursor:pointer;color:var(--text)}
+.gm .gt.drop{background:var(--green-bg);color:var(--green);border:1px solid var(--green)}
+.gm .gt.hike{background:#fcebeb;color:#a32d2d;border:1px solid #a32d2d}
+@media (prefers-color-scheme:dark){.gm .gt.hike{background:#3a1c1c;color:#f09595;border-color:#f09595}}
 .foot{margin:28px 0 8px;font-size:12px;color:var(--text2);display:flex;gap:14px;flex-wrap:wrap}
 #pubgrid{min-height:280px}#grid{min-height:160px}#pend{min-height:0}
 .foot a{display:inline-block;padding:12px 4px}
@@ -95,6 +102,7 @@ select{max-width:100%}
   <div class="muted" id="regionline" style="margin:-4px 0 12px"></div>
   <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span><button class="btn ghost small" id="showall" style="display:none"></button></div>
   <div id="pend" style="margin-bottom:12px"></div>
+  <div id="game"></div>
   <div class="grid" id="grid"></div>
   <section class="pub" aria-labelledby="pubh" style="margin-top:24px">
     <h2 id="pubh" style="font-size:16px;margin-bottom:4px">Sample products</h2>
@@ -110,7 +118,7 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611051739"></script>
+<script src="engine.js?v=202611051858"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -210,12 +218,43 @@ function wireIdeas(el){el.querySelectorAll("[data-idea]").forEach(b=>b.onclick=(
 window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);if(p.country){it.country=it.storeCountry=p.country}ITEMS.unshift(it);followItem(it);save();render();renderPub();await refresh(it,true);renderPub()};
 function followItem(it){const c=it.country||it.storeCountry;if(c&&c!==region&&COUNTRIES.some(x=>x[0]===c)){region=c;sel.value=c;SHOWALL=false;try{localStorage.setItem("region",c)}catch{}applyRegion();toast("Switched to "+cname()+" because that is where this store is.")}}
 let PEND=null,ptimer=null;
+// ---- Optional mini game while a price is being read (no data collected; best score stays in this browser) ----
+const GAME={on:false,score:0,t:0,spawn:null,clock:null,best:0};
+try{GAME.best=+localStorage.getItem("dw_best")||0}catch{}
+function gameDraw(msg){
+  const el=$("game");if(!el)return;
+  el.innerHTML=`<div class="gm"><div class="gh"><b>Price Catch</b><span id="gs">Score ${GAME.score}</span><span id="gt">${GAME.on?GAME.t+"s left":""}</span><span>Best ${GAME.best}</span><button class="btn ghost small" onclick="endGame(true)">Close</button></div>
+  <div class="muted" style="margin-bottom:8px">${msg||"Tap the green price drops. Avoid the red hikes (they cost a point)."}</div>
+  <div class="gg">${Array.from({length:9},(_,k)=>`<button class="gt" data-k="${k}" aria-label="Empty tile"></button>`).join("")}</div>${GAME.on?"":`<button class="btn small" style="margin-top:10px" onclick="startGame()">Play again</button>`}</div>`;
+  el.querySelectorAll(".gt").forEach(b=>b.onclick=()=>gameTap(b));
+}
+window.startGame=()=>{clearInterval(GAME.spawn);clearInterval(GAME.clock);GAME.on=true;GAME.score=0;GAME.t=30;gameDraw();renderPending();
+  GAME.clock=setInterval(()=>{GAME.t--;const e=$("gt");if(e)e.textContent=GAME.t+"s left";if(GAME.t<=0)endGame(false)},1000);
+  GAME.spawn=setInterval(gameSpawn,650)};
+function gameSpawn(){
+  const tiles=[...document.querySelectorAll("#game .gt")];if(!tiles.length)return;
+  tiles.forEach(b=>{if(b.dataset.kind&&Date.now()-b.dataset.at>1100)gameClear(b)});
+  const free=tiles.filter(b=>!b.dataset.kind);if(!free.length)return;
+  const b=free[Math.floor(Math.random()*free.length)],drop=Math.random()<0.7,amt=Math.floor(5+Math.random()*45);
+  b.dataset.kind=drop?"drop":"hike";b.dataset.at=Date.now();b.className="gt "+(drop?"drop":"hike");
+  b.textContent=(drop?"- $":"+ $")+amt;b.setAttribute("aria-label",(drop?"Price drop of ":"Price hike of ")+amt+(drop?", tap":", avoid"));
+}
+function gameClear(b){delete b.dataset.kind;delete b.dataset.at;b.className="gt";b.textContent="";b.setAttribute("aria-label","Empty tile")}
+function gameTap(b){
+  if(!GAME.on||!b.dataset.kind)return;
+  GAME.score=Math.max(0,GAME.score+(b.dataset.kind==="drop"?1:-1));gameClear(b);
+  const e=$("gs");if(e)e.textContent="Score "+GAME.score;
+}
+window.endGame=close=>{clearInterval(GAME.spawn);clearInterval(GAME.clock);const was=GAME.on;GAME.on=false;
+  if(close){$("game").innerHTML="";renderPending();return}
+  if(was){if(GAME.score>GAME.best){GAME.best=GAME.score;try{localStorage.setItem("dw_best",String(GAME.best))}catch{}}gameDraw("Time. You caught "+GAME.score+" price drops."+(PEND?" Your price is still loading.":""))}};
+
 function renderPending(){
   const el=$("pend");if(!el)return;
   if(!PEND){el.innerHTML="";return}
   const sec=Math.round((Date.now()-PEND.start)/1000),est=45;
   el.innerHTML=`<div class="card pend"><div class="name">${esc(PEND.label)}</div><div class="bar"><i style="width:${Math.min(95,sec/est*100)}%"></i></div>
-  <div class="muted">Reading the price… ${sec}s (usually under a minute)</div></div>`;
+  <div class="muted">Reading the price… ${sec}s (usually under a minute)</div>${GAME.on?"":`<button class="btn ghost small" style="margin-top:8px" onclick="startGame()">Play a 30 second game while you wait</button>`}</div>`;
 }
 
 
