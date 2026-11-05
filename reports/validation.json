@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T06:24:37.130Z",
- "totalChecks": 39,
+ "ranAt": "2026-11-05T06:38:56.805Z",
+ "totalChecks": 38,
  "passed": 35,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 9
+   "secs": 3
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 48
+   "secs": 39
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 50
+   "secs": 34
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 50
+   "secs": 46
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 48
+   "secs": 52
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 54
+   "secs": 46
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "9s"
+   "detail": "3s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "48s"
+   "detail": "39s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "50s"
+   "detail": "34s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "50s"
+   "detail": "46s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "48s"
+   "detail": "52s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "54s"
+   "detail": "46s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 50s"
+   "detail": "6/6 succeeded; median 46s"
   },
   {
    "id": "B6b",
@@ -326,14 +326,6 @@
   },
   {
    "id": "G9",
-   "area": "History",
-   "check": "CamelCamelCamel adapter reads lowest/average/highest for an Amazon product",
-   "pass": false,
-   "severity": "minor",
-   "detail": "[]"
-  },
-  {
-   "id": "G10",
    "area": "History",
    "check": "pricehistory.app adapter finds and reads an Indian product by name",
    "pass": true,
