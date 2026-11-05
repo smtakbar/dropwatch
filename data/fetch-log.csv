@@ -1,0 +1,13 @@
+timestamp,id,store,outcome
+2026-11-05T04:40:56.756Z,jb-airpods-pro-2,JB Hi-Fi,no_price
+2026-11-05T04:40:56.756Z,jb-remington-all-in-1,JB Hi-Fi,ok
+2026-11-05T04:40:56.756Z,ow-mx-master-3s,Officeworks,http_404
+2026-11-05T04:40:56.756Z,sc-990pro-1tb,Scorptec,ok
+2026-11-05T04:40:56.756Z,pccg-990pro-1tb,PC Case Gear,http_403
+2026-11-05T04:40:56.756Z,pccg-990pro-2tb,PC Case Gear,http_403
+2026-11-05T04:40:56.756Z,hn-dyson-v8,Harvey Norman,no_price
+2026-11-05T04:40:56.756Z,tgg-sony-xm5,The Good Guys,ok
+2026-11-05T04:40:56.756Z,bigw-lego-10328,Big W,error_timeouterror
+2026-11-05T04:40:56.756Z,bigw-lego-10315,Big W,error_timeouterror
+2026-11-05T04:40:56.756Z,kogan-switch-oled,Kogan,http_403
+2026-11-05T04:40:56.756Z,coles-mountain-dew-24,Coles,no_price
