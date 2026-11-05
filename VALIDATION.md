@@ -1,10 +1,10 @@
 # DropWatch validation report
 
-Run: 2026-11-05T06:45:08.971Z against https://smtakbar.github.io/dropwatch/ (headless Chrome on a GitHub Actions runner, Playwright, axe-core, Lighthouse). Raw files: `reports/`. Re-run any time with the "Validate live site" workflow.
+Run: 2026-11-05T08:20:33.931Z against https://smtakbar.github.io/dropwatch/ (headless Chrome on a GitHub Actions runner, Playwright, axe-core, Lighthouse). Raw files: `reports/`. Re-run any time with the "Validate live site" workflow.
 
 ## Result
 
-39 of 39 checks pass. This is one run, not a guarantee: store pages and the public relays change, so price fetch can fail on another day. Price tests used 6 real products from 4 Australian retailers plus one Indian retailer (Vijay Sales).
+42 of 42 checks pass. This is one run, not a guarantee: store pages and the public relays change, so price fetch can fail on another day. Price tests used 6 real products from 4 Australian retailers plus one Indian retailer (Vijay Sales).
 
 ## History of this suite
 
@@ -12,13 +12,19 @@ Run: 2026-11-05T06:45:08.971Z against https://smtakbar.github.io/dropwatch/ (hea
 |---|---|---|
 | First live run | 19 of 27 | duplicate Track CTA, missing label, no sample data, no repo link, 404 console error, mobile overflow, small tap targets |
 | After bug fixes | 30 of 30 | none |
-| After adding region switching (39 checks) | 35 of 38, then 39 of 39 | first run: items from a store in another country were hidden by the new region filter (D1, G6, G7). Fix: adding an item switches to its store's region |
+| After adding region switching and the mini game (42 checks) | 35 of 38, 39 of 39, 40 of 41 twice, then 42 of 42 | first run: items from a store in another country were hidden by the new region filter (D1, G6, G7). Fix: adding an item switches to its store's region. The alert test (D1) then failed twice with "price not read in 75s" and passed on the next run with no code change, so it is intermittent and depends on the free relays |
 
 ## Regions (checks G1 to G9)
 
 - All 13 regions switch the heading, search hint, example text, store list and currency (G1 to G5).
 - Only Australia, India, Singapore, France, Brazil, South Korea and Japan have logged sample products. US, UK, Canada, Germany, New Zealand and UAE show tap-to-search ideas, because the retailers tested refused automated requests (see `reports/probe.json`).
 - Not covered: end-to-end price reads for every store in every region. Typed-name search was exercised on Australian stores and one Indian store only.
+
+## Indian .com stores and the mini game (H1 to H3)
+
+- A Myntra link is now classified as an Indian store (it was guessed as US from the .com), and a store on the visitor's own region list wins over the US guess.
+- The optional "Price Catch" game appears on the loading card; tiles and scoring are tested (H2, H3). It collects no data; the best score stays in the browser.
+- Whether the game keeps people waiting is untested: no users exist yet.
 
 ## Price history from other trackers (G7, G9)
 
@@ -53,13 +59,13 @@ A separate diagnostic on the runner found that only the r.jina.ai relay answered
 | A9 | Hygiene | No console errors on load | PASS |  |
 | A10 | First run | Public sample products listed with real logged prices | PASS | 12 sample product(s) |
 | A11 | First run | 'Add to my list' on a sample product produces a priced card | PASS |  |
-| B1 | Price fetch | Track JB Hi-Fi product and read a price | PASS | 3s |
-| B2 | Price fetch | Track Scorptec product and read a price | PASS | 36s |
-| B3 | Price fetch | Track The Good Guys product and read a price | PASS | 35s |
-| B4 | Price fetch | Track Umart product and read a price | PASS | 46s |
-| B5 | Price fetch | Track JB Hi-Fi (2) product and read a price | PASS | 34s |
-| B6 | Price fetch | Track Scorptec (2) product and read a price | PASS | 38s |
-| B0 | Price fetch | At least 5 of 6 real products return a price in the browser | PASS | 6/6 succeeded; median 36s |
+| B1 | Price fetch | Track JB Hi-Fi product and read a price | PASS | 2s |
+| B2 | Price fetch | Track Scorptec product and read a price | PASS | 47s |
+| B3 | Price fetch | Track The Good Guys product and read a price | PASS | 46s |
+| B4 | Price fetch | Track Umart product and read a price | PASS | 47s |
+| B5 | Price fetch | Track JB Hi-Fi (2) product and read a price | PASS | 47s |
+| B6 | Price fetch | Track Scorptec (2) product and read a price | PASS | 32s |
+| B0 | Price fetch | At least 5 of 6 real products return a price in the browser | PASS | 6/6 succeeded; median 47s |
 | B6b | Features | Cards show the transparent deal-check rule line | PASS |  |
 | B7 | Features | Cards show a buy/wait verdict | PASS | 6/6 cards |
 | B8 | Features | Cards show a product image | PASS | 6/6 cards |
@@ -68,7 +74,7 @@ A separate diagnostic on the runner found that only the r.jina.ai relay answered
 | C2 | Privacy | A fresh visitor does not see another visitor's list | PASS |  |
 | D0 | Alerts | Test setup: fresh context starts empty | PASS |  |
 | D1 | Alerts | Stale item refreshes on reopen and fires a drop notification when price fell 10%+ | PASS | 1 notification(s): ["Price drop: Remington All-in","$29.00 at JB Hi-Fi"] |
-| D2 | History | Price history accumulates across refreshes | PASS | 10 point(s) |
+| D2 | History | Price history accumulates across refreshes | PASS | 12 point(s) |
 | E1 | Mobile | No horizontal scroll at 375px | PASS | scrollWidth 375 vs 375 |
 | E2 | Mobile | Tap targets at least 40px tall | PASS | [] |
 | G1 | Regions | Region list has 13 countries | PASS | 13 |
@@ -80,6 +86,9 @@ A separate diagnostic on the runner found that only the r.jina.ai relay answered
 | G7 | History | Card has a 'Price history on other trackers' panel with lookup links | PASS |  |
 | G8 | Regions | An India item is hidden in Australia, with a button to show other regions | PASS |  |
 | G9 | History | pricehistory.app adapter finds and reads an Indian product by name | PASS | [{"s":"pricehistory.app","low":31490,"avg":51198,"high":61151}] |
+| H1 | Regions | A Myntra link is classified as an Indian store and the page switches to India | PASS | {"c":"IN","s":"IN","r":"IN"} |
+| H2 | Engagement | A game is offered while the price is being read | PASS |  |
+| H3 | Engagement | Game shows 9 tiles and tapping a green drop scores a point | PASS | 9 tiles, scored=true |
 | F1 | A11y | No critical or serious axe violations | PASS |  |
 
 ## Mobile, accessibility, Lighthouse
@@ -87,7 +96,7 @@ A separate diagnostic on the runner found that only the r.jina.ai relay answered
 - Mobile (375px): no horizontal scroll, tap targets at least 40px (E1, E2).
 - axe-core: no critical or serious violations (F1).
 - Lighthouse mobile: performance 82, accessibility 100, best practices 100, SEO 100; layout shift 0.373.
-- Lighthouse desktop: performance 92, accessibility 100, best practices 100, SEO 100; layout shift 0.008.
+- Lighthouse desktop: performance 92, accessibility 100, best practices 100, SEO 100; layout shift 0.007.
 
 ## Known open issue
 
