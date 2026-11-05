@@ -1,0 +1,218 @@
+[
+ {
+  "region": "NZ",
+  "store": "PB Tech",
+  "url": "https://www.pbtech.co.nz/product/HDDSAM990100/Samsung-990-Pro-1TB-M2-NVMe-Internal-SSD-PCIe-Gen",
+  "kind": "retailer"
+ },
+ {
+  "region": "IN",
+  "store": "Reliance Digital",
+  "url": "https://www.reliancedigital.in/product/sony-wh-1000xm5-bluetooth-headphone-with-30-hours-battery-life-black-l88xiz",
+  "kind": "retailer"
+ },
+ {
+  "region": "IN",
+  "store": "Vijay Sales",
+  "url": "https://www.vijaysales.com/p/P206834/206834/sony-wh-1000xm5-wireless-industry-leading-noise-canceling-headphones-with-auto-noise-canceling-up-to-30-hours-battery-life-black",
+  "kind": "retailer"
+ },
+ {
+  "region": "US",
+  "store": "Newegg",
+  "url": "https://www.newegg.com/p/2RC-0034-009T5",
+  "kind": "retailer"
+ },
+ {
+  "region": "US",
+  "store": "Newegg",
+  "url": "https://www.newegg.com/samsung-1tb-nvme-2-0/p/0D9-0009-00CP8",
+  "kind": "retailer"
+ },
+ {
+  "region": "GB",
+  "store": "Argos",
+  "url": "https://www.argos.co.uk/product/2847319",
+  "kind": "retailer"
+ },
+ {
+  "region": "GB",
+  "store": "Argos",
+  "url": "https://www.argos.co.uk/product/2847326",
+  "kind": "retailer"
+ },
+ {
+  "region": "CA",
+  "store": "Memory Express",
+  "url": "https://www.memoryexpress.com/Products/MX00125831",
+  "kind": "retailer"
+ },
+ {
+  "region": "CA",
+  "store": "Best Buy CA",
+  "url": "https://www.bestbuy.ca/en-ca/product/samsung-990-pro-1tb-nvme-pci-e-internal-solid-state-drive-mz-v9p1t0b-am-english/16624802",
+  "kind": "retailer"
+ },
+ {
+  "region": "FR",
+  "store": "LDLC",
+  "url": "https://www.ldlc.com/en/product/PB00535836.html",
+  "kind": "retailer"
+ },
+ {
+  "region": "FR",
+  "store": "Fnac",
+  "url": "https://www.fnac.com/Casque-audio-a-reduction-de-bruit-Bluetooth-Sony-WH1000XM5-Argent/a16864768/w-4",
+  "kind": "retailer"
+ },
+ {
+  "region": "FR",
+  "store": "Boulanger",
+  "url": "https://www.boulanger.com/ref/1189728",
+  "kind": "retailer"
+ },
+ {
+  "region": "SG",
+  "store": "Harvey Norman SG",
+  "url": "https://www.harveynorman.com.sg/tv-and-audio/headphones-en/wireless-headphones-en/sony-wireless-noise-cancelling-headphones-black-wh-1000xm5.html",
+  "kind": "retailer"
+ },
+ {
+  "region": "SG",
+  "store": "Courts",
+  "url": "https://www.courts.com.sg/sony-wh-1000xm5-bme-wireless-noise-cancellation-headphones-black-ip176694",
+  "kind": "retailer"
+ },
+ {
+  "region": "SG",
+  "store": "Challenger",
+  "url": "https://online.challenger.sg/products/sony-wh-1000xm5-wireless-noise-cancelling-headphones-blue",
+  "kind": "retailer"
+ },
+ {
+  "region": "AE",
+  "store": "Sharaf DG",
+  "url": "https://uae.sharafdg.com/product/sony-wh1000xm5-b-true-wireless-over-ear-headphone-black/",
+  "kind": "retailer"
+ },
+ {
+  "region": "AE",
+  "store": "Noon",
+  "url": "https://www.noon.com/uae-en/wh-1000xm5-wireless-noise-cancelling-headphones-black/N53330542A/p/",
+  "kind": "retailer"
+ },
+ {
+  "region": "BR",
+  "store": "KaBuM",
+  "url": "https://www.kabum.com.br/produto/462802/fone-de-ouvido-sony-bluetooth-wh-1000xm5-over-ear-cancelamento-de-ruido-preto-wh-1000xm5-b",
+  "kind": "retailer"
+ },
+ {
+  "region": "BR",
+  "store": "Magazine Luiza",
+  "url": "https://www.magazineluiza.com.br/fone-de-ouvido-sony-bluetooth-wh-1000xm5-over-ear-cancelamento-de-ruido-preto-wh-1000xm5-b/p/gh0aa2ek54/ea/fobt/",
+  "kind": "retailer"
+ },
+ {
+  "region": "KR",
+  "store": "11st",
+  "url": "https://www.11st.co.kr/products/5164689086",
+  "kind": "retailer"
+ },
+ {
+  "region": "KR",
+  "store": "Danawa",
+  "url": "https://prod.danawa.com/info/?pcode=18297002",
+  "kind": "tracker"
+ },
+ {
+  "region": "JP",
+  "store": "Kakaku",
+  "url": "https://kakaku.com/item/J0000038619/",
+  "kind": "tracker"
+ },
+ {
+  "region": "JP",
+  "store": "Yodobashi",
+  "url": "https://www.yodobashi.com/product/100000001007253984/",
+  "kind": "retailer"
+ },
+ {
+  "region": "DE",
+  "store": "MediaMarkt",
+  "url": "https://www.mediamarkt.de/de/product/_sony-wh-1000xm5-2792349.html",
+  "kind": "retailer"
+ },
+ {
+  "region": "DE",
+  "store": "Notebooksbilliger",
+  "url": "https://www.notebooksbilliger.de/sony+wh1000xm5+kopfhoerer+schwarz+805139",
+  "kind": "retailer"
+ },
+ {
+  "region": "IN",
+  "store": "Buyhatke",
+  "url": "https://buyhatke.com/us/amazon-sony-wh-1000xm5-crystal-clear-headphones-price-6326-63590",
+  "kind": "tracker"
+ },
+ {
+  "region": "US",
+  "store": "Buyhatke",
+  "url": "https://buyhatke.com/us/bestbuy-sony-wh-1000xm5-noise-canceling-wireless-over-ear-headphones-international-version-black-price-8967-159525",
+  "kind": "tracker"
+ },
+ {
+  "region": "IN",
+  "store": "pricehistory.app",
+  "url": "https://pricehistory.app/p/sony-wh-1000xm5-best-active-noise-cancelling-1n4hLvyp",
+  "kind": "tracker"
+ },
+ {
+  "region": "US",
+  "store": "CamelCamelCamel",
+  "url": "https://camelcamelcamel.com/product/B09XSDMT4F",
+  "kind": "tracker"
+ },
+ {
+  "region": "AU",
+  "store": "CamelCamelCamel AU",
+  "url": "https://au.camelcamelcamel.com/product/B09ZFD9CBB",
+  "kind": "tracker"
+ },
+ {
+  "region": "GB",
+  "store": "CamelCamelCamel UK",
+  "url": "https://uk.camelcamelcamel.com/product/B09Y2MYL5C",
+  "kind": "tracker"
+ },
+ {
+  "region": "AU",
+  "store": "PriceSpy AU",
+  "url": "https://pricespy.com.au/",
+  "kind": "tracker"
+ },
+ {
+  "region": "GB",
+  "store": "PriceSpy UK",
+  "url": "https://pricespy.co.uk/",
+  "kind": "tracker"
+ },
+ {
+  "region": "DE",
+  "store": "Idealo DE",
+  "url": "https://www.idealo.de/",
+  "kind": "tracker"
+ },
+ {
+  "region": "FR",
+  "store": "Idealo FR",
+  "url": "https://www.idealo.fr/",
+  "kind": "tracker"
+ },
+ {
+  "region": "DE",
+  "store": "Geizhals",
+  "url": "https://geizhals.de/",
+  "kind": "tracker"
+ }
+]
