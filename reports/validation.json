@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T09:51:45.924Z",
+ "ranAt": "2026-11-05T12:28:39.567Z",
  "totalChecks": 45,
  "passed": 45,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 2
+   "secs": 3
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 3
+   "secs": 54
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 33
+   "secs": 50
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 47
+   "secs": 49
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 45
+   "secs": 48
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 52
+   "secs": 49
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "2s"
+   "detail": "3s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "3s"
+   "detail": "54s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "33s"
+   "detail": "50s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "47s"
+   "detail": "49s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "45s"
+   "detail": "48s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "52s"
+   "detail": "49s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 45s"
+   "detail": "6/6 succeeded; median 49s"
   },
   {
    "id": "B6b",
@@ -210,7 +210,7 @@
    "check": "Cross-store comparison found at least one other store",
    "pass": true,
    "severity": "-",
-   "detail": "4/6 cards"
+   "detail": "3/6 cards"
   },
   {
    "id": "C1",
