@@ -114,7 +114,11 @@ if (readOk) {
   rec("D1", "Alerts", "Stale item refreshes on reopen and fires a drop notification when price fell 10%+", notes.length >= 1, "major", `${notes.length} notification(s): ${JSON.stringify(notes[0] ?? null)}`);
   const hist = await pA.evaluate(() => JSON.parse(localStorage.getItem("dw_items"))[0].history.length);
   rec("D2", "History", "Price history accumulates across refreshes", hist >= 2, "minor", `${hist} point(s)`);
-} else rec("D1", "Alerts", "Alert test could not run (price fetch failed)", false, "major", "price not read in 75s");
+} else {
+  const dbg = await pA.evaluate(() => ({ region: document.getElementById("region").value, items: JSON.parse(localStorage.getItem("dw_items") || "[]").map((i) => ({ c: i.country, p: i.price, e: i.error, r: i.retailer })), pend: document.getElementById("pend").innerText.slice(0, 120), meta: document.getElementById("meta").innerText, grid: document.getElementById("grid").innerText.slice(0, 200) }));
+  await pA.screenshot({ path: `${OUT}/screenshots/07-d1-debug.png` });
+  rec("D1", "Alerts", "Alert test could not run (price fetch failed)", false, "major", "price not read in 75s " + JSON.stringify(dbg) + " | console: " + consoleErrors.slice(0, 3).join(" | "));
+}
 await ctxA.close();
 
 // ---- E. Mobile layout
