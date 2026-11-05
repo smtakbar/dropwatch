@@ -5,7 +5,11 @@
   "store": "PB Tech",
   "url": "https://www.pbtech.co.nz/product/HDDSAM990100/Samsung-990-Pro-1TB-M2-NVMe-Internal-SSD-PCIe-Gen",
   "robots": true,
-  "status": 403
+  "status": 200,
+  "bytes": 1103974,
+  "price": 516.35,
+  "currency": "NZD",
+  "title": "Samsung 990 Pro 1TB M.2 NVMe Internal SSD PCIe Gen 4 - Up to 7450MB/s "
  },
  {
   "region": "IN",
@@ -22,7 +26,7 @@
   "url": "https://www.vijaysales.com/p/P206834/206834/sony-wh-1000xm5-wireless-industry-leading-noise-canceling-headphones-with-auto-noise-canceling-up-to-30-hours-battery-life-black",
   "robots": true,
   "status": 200,
-  "bytes": 861087,
+  "bytes": 838637,
   "price": 19999,
   "currency": "INR",
   "title": "Sony WH-1000XM5 Wireless Industry Leading Noise Canceling Headphones w"
@@ -65,10 +69,7 @@
   "store": "Memory Express",
   "url": "https://www.memoryexpress.com/Products/MX00125831",
   "robots": true,
-  "status": 200,
-  "bytes": 194941,
-  "currency": "CAD",
-  "title": "Samsung 990 PRO PCIe 4.0 NVMe M.2 SSD, 1TB w/ HeatSink - M.2 Solid Sta"
+  "status": 403
  },
  {
   "region": "CA",
@@ -76,10 +77,7 @@
   "store": "Best Buy CA",
   "url": "https://www.bestbuy.ca/en-ca/product/samsung-990-pro-1tb-nvme-pci-e-internal-solid-state-drive-mz-v9p1t0b-am-english/16624802",
   "robots": true,
-  "status": 200,
-  "bytes": 276117,
-  "currency": "CAD",
-  "title": "Samsung 990 Pro 1TB NVMe PCI-e Internal Solid State Drive (MZ-V9P1T0B/"
+  "error": "TimeoutError"
  },
  {
   "region": "FR",
@@ -192,7 +190,7 @@
   "url": "https://prod.danawa.com/info/?pcode=18297002",
   "robots": true,
   "status": 200,
-  "bytes": 163781,
+  "bytes": 163005,
   "price": 379670,
   "currency": "KRW",
   "title": "삼성전자 990 PRO M.2 NVMe (1TB)",
@@ -277,7 +275,7 @@
   "url": "https://camelcamelcamel.com/product/B09XSDMT4F",
   "robots": true,
   "status": 200,
-  "bytes": 128138,
+  "bytes": 128293,
   "currency": "USD",
   "title": "Sony WH-1000XM5 Premium Noise Cancelling Wireless Headphones, Silver",
   "historyMarkers": [
@@ -291,7 +289,7 @@
   "url": "https://au.camelcamelcamel.com/product/B09ZFD9CBB",
   "robots": true,
   "status": 200,
-  "bytes": 116504,
+  "bytes": 112795,
   "currency": "AUD",
   "title": "Sony WH-1000XM5 Industry Leading Noise Cancelling Wireless Headphones,",
   "historyMarkers": [
@@ -305,7 +303,7 @@
   "url": "https://uk.camelcamelcamel.com/product/B09Y2MYL5C",
   "robots": true,
   "status": 200,
-  "bytes": 126236,
+  "bytes": 128383,
   "currency": "GBP",
   "title": "Sony WH-1000XM5 Premium Wireless Noise Cancelling Headphones",
   "historyMarkers": [
@@ -327,7 +325,7 @@
   "url": "https://pricespy.co.uk/",
   "robots": true,
   "status": 200,
-  "bytes": 2058115,
+  "bytes": 2035861,
   "currency": "GBP",
   "title": "Price Comparison | Find the best deals at PriceSpy UK",
   "historyMarkers": [
@@ -357,7 +355,7 @@
   "url": "https://geizhals.de/",
   "robots": true,
   "status": 200,
-  "bytes": 375977,
+  "bytes": 374902,
   "currency": "EUR",
   "title": "Geizhals Preisvergleich Deutschland",
   "historyMarkers": [
