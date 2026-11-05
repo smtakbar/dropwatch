@@ -48,15 +48,25 @@ function fromOffers(offers) {
   return {};
 }
 
+const normGtin = (v) => { const d = String(v ?? "").replace(/\D/g, "").replace(/^0+/, ""); return d.length >= 8 ? d : undefined; };
+const normMpn = (v) => { const m = String(v ?? "").toLowerCase().replace(/[^a-z0-9]/g, ""); return m.length >= 4 ? m : undefined; };
+/** Does a candidate listing sell the same product? Barcode first, then manufacturer part number, then strict title match. */
+function matchOffer(ids, cand, ref, title) {
+  if (ids.gtin && cand.gtin) return ids.gtin === cand.gtin && similarity(ref, title) >= 0.4 ? "gtin" : null;
+  if (ids.mpn && cand.mpn) return ids.mpn === cand.mpn && similarity(ref, title) >= 0.4 ? "mpn" : null;
+  return similarity(ref, title) >= 0.8 ? "title" : null;
+}
 /** Extract name/price/currency from HTML. Order: JSON-LD, meta tags, __NEXT_DATA__ JSON. */
 function parseHtml(html, country, base = "https://example.com") {
-  let name, price, currency, via, image, inStock;
+  let name, price, currency, via, image, inStock, gtin, mpn;
   for (const b of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
     try {
       for (const n of walk(JSON.parse(b[1].trim()))) {
         const t = n["@type"];
         if (t === "Product" || (Array.isArray(t) && t.includes("Product"))) {
           name ??= typeof n.name === "string" ? n.name : undefined;
+          gtin ??= normGtin(n.gtin13 ?? n.gtin14 ?? n.gtin12 ?? n.gtin8 ?? n.gtin ?? n.isbn);
+          mpn ??= normMpn(n.mpn);
           image ??= [].concat(n.image ?? []).map((x) => (typeof x === "string" ? x : x?.url)).find(Boolean);
           if (!price) { const r = fromOffers(n.offers); price = r.price; currency = r.currency; inStock = r.inStock; if (price) via = "json-ld"; }
         }
@@ -84,7 +94,7 @@ function parseHtml(html, country, base = "https://example.com") {
   if (image) { try { image = new URL(image.replace(/&amp;/g, "&"), base).toString(); } catch { image = undefined; } }
   name ??= meta("og:title") ?? html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim();
   currency ??= CUR[country];
-  return { name, price, currency, via, image, inStock, diag: { bytes: html.length, title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim().slice(0, 60), jsonld: /ld\+json/i.test(html), nextData: !!nd } };
+  return { name, price, currency, via, image, inStock, gtin, mpn, diag: { bytes: html.length, title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim().slice(0, 60), jsonld: /ld\+json/i.test(html), nextData: !!nd } };
 }
 
 
@@ -290,8 +300,10 @@ async function findOffers(it, { max = 6 } = {}) {
     const page = await fetchHtml(u);
     if (!page) return null;
     const r = parseHtml(page, country, u);
-    if (!r.price || similarity(ref, r.name) < 0.8) return null;
-    return { store: new URL(u).hostname.replace(/^www\./, ""), url: cleanUrl(u), price: r.price, currency: r.currency, title: String(r.name ?? "").slice(0, 120), image: r.image ?? null };
+    if (!r.price) return null;
+    const how = matchOffer({ gtin: it.gtin, mpn: it.mpn }, r, ref, r.name);
+    if (!how) return null;
+    return { match: how, store: new URL(u).hostname.replace(/^www\./, ""), url: cleanUrl(u), price: r.price, currency: r.currency, title: String(r.name ?? "").slice(0, 120), image: r.image ?? null };
   }));
   return out.filter(Boolean);
 }
@@ -308,6 +320,8 @@ async function refreshItem(it, rates, { offers = false, pub = null } = {}) {
       const r = parseHtml(html, it.storeCountry, it.url);
       if (r.name) it.matchName = String(r.name).replace(/^buy\s+/i, "").replace(/\s*[|\-–]\s*[^|\-–]*$/, "").trim() || it.matchName;
       if (r.image) it.image = r.image;
+      if (r.gtin) it.gtin = r.gtin;
+      if (r.mpn) it.mpn = r.mpn;
       if (r.inStock !== undefined) it.inStock = r.inStock;
       if (r.price) { it.price = r.price; it.currency = r.currency ?? it.currency ?? CUR[it.storeCountry] ?? "USD"; it.error = null; pushHistory(it, r.price, now); }
       else it.error = "We could not read a price from this store.";
@@ -361,6 +375,17 @@ function mergePublic(it, pub) {
   const seen = new Set(it.history.map((h) => h[0]));
   it.history = [...it.history, ...m.history.filter((h) => !seen.has(h[0]))].sort((a, b) => Date.parse(a[0]) - Date.parse(b[0])).slice(-300);
   it.publicHistory = m.history.length;
+}
+
+/** Price protection: if the price falls after you bought, tell you while the store's adjustment window is still open. */
+function protection(it, nowMs = Date.now()) {
+  const b = it.bought; if (!b || !(b.price > 0) || it.price == null) return null;
+  const cur = b.currency && it.currency && b.currency !== it.currency ? null : it.price;
+  if (cur == null) return null;
+  const end = Date.parse(b.date) + (b.days || 14) * 864e5, left = Math.ceil((end - nowMs) / 864e5);
+  const diff = Math.round((b.price - cur) * 100) / 100;
+  if (nowMs > end) return { state: "expired", left: 0, diff, until: new Date(end).toISOString(), paid: b.price };
+  return { state: diff >= Math.max(0.01, b.price * 0.02) ? "claim" : "watching", left, diff, until: new Date(end).toISOString(), paid: b.price };
 }
 
 // ---- History from other trackers (read-only, only on request, public pages that robots.txt allows) ----
@@ -419,5 +444,5 @@ async function trackerHistory(it) {
   return out;
 }
 
-window.DW = { trackerHistory, trackerVerdict, titleCover, parseCCC, parsePH, money, normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
+window.DW = { protection, matchOffer, normGtin, normMpn, trackerHistory, trackerVerdict, titleCover, parseCCC, parsePH, money, normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
 })();

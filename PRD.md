@@ -83,3 +83,4 @@ Every term is an **[assumption]** until measured: [MAU], [click-through share], 
 | 5 Nov 2026 | Public price log (every 6 hours), live-site test suite, fixes from the test report (mobile overflow, duplicate button, missing labels and repo link), deal-check rule, sample products, gated Monte Carlo script. |
 | 5 Nov 2026 | Region switch for 13 countries (samples, search stores, currency, list filter), 22 seed products across India, Singapore, France, Brazil, Korea and Japan, "Price history on other trackers" panel, relay request limiter. |
 | 5 Nov 2026 | Indian .com stores (for example Myntra) classified as India; optional "Price Catch" mini game on the loading card (engagement is untested until there are users). |
+| 5 Nov 2026 | Barcode (GTIN) and part-number matching for cross-store offers; "I bought this" price protection with a window and alert. |

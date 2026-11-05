@@ -117,8 +117,16 @@ select{max-width:100%}
   <div id="m-namebox" style="display:none"><label for="m-name">Product name (optional, helps find it at other stores)</label><input type="text" id="m-name" placeholder="Leave blank to use the page title"></div>
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
+<div class="modal" id="bm"><div class="box">
+  <h2>I bought this</h2>
+  <p class="muted" style="margin-bottom:8px">DropWatch will watch the price while your store's price-adjustment or return window is open, and tell you if it drops. Whether a store refunds the difference depends on its own policy; check it.</p>
+  <label for="b-price">Price you paid</label><input type="number" step="0.01" min="0" id="b-price" placeholder="e.g. 399.00">
+  <label for="b-date">Purchase date</label><input type="date" id="b-date">
+  <label for="b-days">Window in days (price match or returns)</label><input type="number" min="1" max="365" id="b-days" value="14" placeholder="14">
+  <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-bclose>Cancel</button><button class="btn" id="b-go">Start watching</button></div>
+</div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611051858"></script>
+<script src="engine.js?v=202611052031"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -217,6 +225,20 @@ function renderPub(){
 function wireIdeas(el){el.querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>openModal(b.dataset.idea))}
 window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);if(p.country){it.country=it.storeCountry=p.country}ITEMS.unshift(it);followItem(it);save();render();renderPub();await refresh(it,true);renderPub()};
 function followItem(it){const c=it.country||it.storeCountry;if(c&&c!==region&&COUNTRIES.some(x=>x[0]===c)){region=c;sel.value=c;SHOWALL=false;try{localStorage.setItem("region",c)}catch{}applyRegion();toast("Switched to "+cname()+" because that is where this store is.")}}
+
+// ---- I bought this: price protection ----
+let BID=null;
+window.openBought=id=>{const it=ITEMS.find(x=>x.id===id);if(!it)return;BID=id;
+  $("b-price").value=it.bought?it.bought.price:(it.price!=null?it.price:"");
+  $("b-date").value=(it.bought?it.bought.date:new Date().toISOString()).slice(0,10);
+  $("b-days").value=it.bought?it.bought.days:14;$("bm").classList.add("on");$("b-price").focus()};
+document.querySelectorAll("[data-bclose]").forEach(b=>b.onclick=()=>$("bm").classList.remove("on"));
+$("bm").onclick=e=>{if(e.target.id==="bm")$("bm").classList.remove("on")};
+$("b-go").onclick=()=>{const it=ITEMS.find(x=>x.id===BID);if(!it)return;
+  const price=parseFloat($("b-price").value),days=Math.max(1,Math.min(365,parseInt($("b-days").value,10)||14)),d=$("b-date").value;
+  if(!(price>0)||!d){toast("Enter the price you paid and the purchase date.");return}
+  it.bought={price,currency:it.currency||(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[3],date:new Date(d+"T12:00:00").toISOString(),days};it.protSeen=false;
+  $("bm").classList.remove("on");save();render();toast("Watching this price for "+days+" days.")};
 let PEND=null,ptimer=null;
 // ---- Optional mini game while a price is being read (no data collected; best score stays in this browser) ----
 const GAME={on:false,score:0,t:0,spawn:null,clock:null,best:0};
@@ -277,7 +299,7 @@ function render(){
     const good=ins&&/Lowest|Close/.test(ins.verdict);
     const offers=[...(i.url?[{store:i.retailer,url:i.url,price:i.price,currency:i.currency,own:true}]:[]),...(i.offers||[])].filter(o=>o.price!=null)
       .map(o=>({...o,v:conv(o.price,o.currency||i.currency,cur,r)})).sort((x,y)=>x.v-y.v);
-    const tbl=offers.length>1?`<table><tr><th>Store</th><th class="r">Price</th><th></th></tr>${offers.map((o,k)=>`<tr><td>${esc(o.store)}${o.own?" · your link":""}</td><td class="r ${k===0?"cheap":""}">${fmt(o.v,cur)}${k===0?" ✓":""}</td><td class="r"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Open</a></td></tr>`).join("")}</table>`:
+    const tbl=offers.length>1?`<table><tr><th>Store</th><th class="r">Price</th><th></th></tr>${offers.map((o,k)=>`<tr><td>${esc(o.store)}${o.own?" · your link":""}${o.match==="gtin"||o.match==="mpn"?` <small class="muted" title="Same ${o.match==="gtin"?"barcode (GTIN)":"manufacturer part number"}">exact match</small>`:""}</td><td class="r ${k===0?"cheap":""}">${fmt(o.v,cur)}${k===0?" ✓":""}</td><td class="r"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Open</a></td></tr>`).join("")}</table>`:
       `<div class="muted" style="margin-top:6px">${i.offersAt?"No other trusted stores found for this exact product.":"Looking at other stores…"}</div>`;
     return`<div class="card ${hit?"hit":""}">
       <div class="row" style="align-items:flex-start">
@@ -289,6 +311,10 @@ function render(){
       <div style="margin:10px 0 6px">${local!=null?`<span class="price">${fmt(local,cur)}</span>${i.inStock===false?' <span class="oos">Out of stock</span>':""}${foreign?` <span class="muted">(${fmt(i.price,i.currency)} at store)</span>`:""}`:'<span class="muted">Finding the price…</span>'}</div>
       ${i.advice?`<div class="advice ${esc(i.advice.action)}"><b>${esc(i.advice.headline)}</b><span>${esc(i.advice.reason)}</span></div>
       <div class="best"><span>Cheapest found: <b>${esc(i.advice.best.store)}</b> ${fmt(conv(i.advice.best.price,i.advice.best.currency||i.currency,cur,r),cur)}${i.advice.best.own?" (your link)":""}</span><a class="btn small" href="${esc(i.advice.best.url)}" target="_blank" rel="noopener noreferrer">Go to store</a></div>`:""}
+      ${(()=>{const pr=DW.protection(i);if(!pr)return"";const dt=new Date(pr.until).toLocaleDateString(RGN().loc||"en-AU",{day:"numeric",month:"short"});
+        if(pr.state==="claim")return`<div class="advice buy"><b>Price protection: it dropped ${fmt(conv(pr.diff,i.currency,cur,r),cur)} since you paid ${fmt(conv(pr.paid,i.currency,cur,r),cur)}</b><span>Ask ${esc(i.retailer||"the store")} for a price adjustment or refund before ${dt} (${pr.left} day${pr.left===1?"":"s"} left). Whether they pay depends on their own policy.</span></div>`;
+        if(pr.state==="watching")return`<div class="rule"><b>Price protection on</b> · you paid ${fmt(conv(pr.paid,i.currency,cur,r),cur)}; watching until ${dt} (${pr.left} day${pr.left===1?"":"s"} left). No drop so far.</div>`;
+        return`<div class="rule"><b>Price protection ended</b> on ${dt}. ${pr.diff>0?"It had dropped "+fmt(conv(pr.diff,i.currency,cur,r),cur)+" by the last check.":"No drop was seen."}</div>`})()}
       ${(()=>{const d=DW.dealRule(i.history,i.price);return`<div class="rule ${d.level==="good"?"good":""}"><b>Deal check: ${esc(d.label)}</b>${d.low!=null?` · now ${fmt(conv(i.price,i.currency,cur,r),cur)} vs 30-day low ${L(d.low)}, median ${L(d.median)} (${d.n} readings)`:` (${d.n} of 3 readings)`}<small>${esc(d.note)}</small></div>`})()}
       ${ins?`${i.advice?"":`<div class="verdict ${good?"good":""}">${esc(ins.verdict)}</div>`}
       <div class="stats"><div class="stat"><span class="muted">Lowest seen</span><b>${L(ins.lowest)}</b></div><div class="stat"><span class="muted">Average</span><b>${L(ins.avg)}</b></div><div class="stat"><span class="muted">Likely low (${esc(ins.bestMonth)})</span><b>${L(ins.predictedLow)}</b></div></div>
@@ -309,7 +335,7 @@ function render(){
       ${i.busy?`<div class="muted">Refreshing…</div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
         <span class="muted">${i.targetPrice!=null?`Target: <b style="color:var(--text)">${fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur)}</b>`:"We notify you here when the price drops"}</span>
-        <span class="row">${i.url?`<a class="btn ghost small" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer">Open</a>`:""}
+        <span class="row"><button class="btn ghost small" onclick="openBought('${esc(i.id)}')">${i.bought?"Edit purchase":"I bought this"}</button>${i.url?`<a class="btn ghost small" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer">Open</a>`:""}
         <button class="btn ghost small" onclick="removeItem('${esc(i.id)}')">Remove</button></span>
       </div></div>`}).join("");
 }
@@ -329,6 +355,7 @@ function notify(it){
 async function refresh(it,offers){
   it.busy=true;render();
   try{const r=await DW.refreshItem(it,RATES,{offers,pub:PUB});if(r.dropped)notify(it)}catch(e){it.error="Something went wrong. We will try again."}
+  {const pr=DW.protection(it);if(pr&&pr.state==="claim"&&!it.protSeen){it.protSeen=true;try{if("Notification" in window&&Notification.permission==="granted")new Notification("Price protection: "+(it.name||it.matchName||"your purchase"),{body:"Dropped "+DW.fmt(pr.diff,it.currency)+" since you paid. Ask the store before "+new Date(pr.until).toLocaleDateString()+"."})}catch{}}}
   if(offers&&it.price!=null&&!it.trackersAt){try{await DW.trackerHistory(it)}catch{}}
   it.busy=false;save();render();
 }

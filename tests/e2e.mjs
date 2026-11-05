@@ -207,6 +207,21 @@ if (canPlay) {
 }
 await hctx.close();
 
+// ---- I. Price protection ("I bought this")
+const ictx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU" });
+await ictx.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); if (!localStorage.getItem("dw_items")) { const n = Date.now(); localStorage.setItem("dw_items", JSON.stringify([{ id: "t1", url: "", name: "Test headphones", retailer: "Test store", storeCountry: "AU", country: "AU", price: 90, currency: "AUD", history: [[new Date(n - 3600e3).toISOString(), 90]], offers: [], offersAt: new Date(n).toISOString(), checkedAt: new Date(n).toISOString(), addedAt: new Date(n).toISOString() }])); } } catch {} });
+const ip = await ictx.newPage();
+await ip.goto(SITEURL, { waitUntil: "load" }); await ip.waitForTimeout(2500);
+await ip.click("#grid .card button:has-text('I bought this')");
+await ip.fill("#b-price", "130"); await ip.click("#b-go"); await ip.waitForTimeout(500);
+const bt = await ip.locator("#grid .card").first().innerText();
+rec("I1", "Price protection", "'I bought this' shows a claim banner when the price fell below what you paid inside the window", /Price protection: it dropped/.test(bt) && /Ask Test store/.test(bt), "major", bt.match(/Price protection[^\n]*/)?.[0] ?? "");
+await ip.reload({ waitUntil: "load" }); await ip.waitForTimeout(2000);
+rec("I2", "Price protection", "Purchase record survives a reload", /Price protection: it dropped/.test(await ip.locator("#grid .card").first().innerText()), "major");
+await ip.click("#grid .card button:has-text('Edit purchase')"); await ip.fill("#b-price", "80"); await ip.click("#b-go"); await ip.waitForTimeout(500);
+rec("I3", "Price protection", "No claim banner when the price is above what you paid; shows 'protection on'", /Price protection on/.test(await ip.locator("#grid .card").first().innerText()), "major");
+await ictx.close();
+
 // ---- F. Accessibility (axe-core) on the populated desktop page
 await page.addScriptTag({ content: axe.source });
 const ax = await page.evaluate(async () => { const r = await window.axe.run(document, { resultTypes: ["violations"] }); return r.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, help: v.help })); });
