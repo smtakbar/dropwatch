@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T08:06:48.570Z",
+ "ranAt": "2026-11-05T08:14:10.302Z",
  "totalChecks": 41,
  "passed": 40,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 2
+   "secs": 3
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 45
+   "secs": 49
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 49
+   "secs": 46
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 53
+   "secs": 46
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 48
+   "secs": 42
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 49
+   "secs": 46
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "2s"
+   "detail": "3s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "45s"
+   "detail": "49s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "49s"
+   "detail": "46s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "53s"
+   "detail": "46s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "48s"
+   "detail": "42s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "49s"
+   "detail": "46s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 49s"
+   "detail": "6/6 succeeded; median 46s"
   },
   {
    "id": "B6b",
