@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T05:18:57.227Z",
+ "ranAt": "2026-11-05T05:25:37.937Z",
  "totalChecks": 30,
- "passed": 24,
+ "passed": 30,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 62
+   "secs": 2
   },
   {
    "store": "Scorptec",
-   "ok": false,
-   "secs": 75
+   "ok": true,
+   "secs": 33
   },
   {
    "store": "The Good Guys",
-   "ok": false,
-   "secs": 75
+   "ok": true,
+   "secs": 20
   },
   {
    "store": "Umart",
-   "ok": false,
-   "secs": 75
+   "ok": true,
+   "secs": 25
   },
   {
    "store": "JB Hi-Fi (2)",
-   "ok": false,
-   "secs": 75
+   "ok": true,
+   "secs": 15
   },
   {
    "store": "Scorptec (2)",
-   "ok": false,
-   "secs": 75
+   "ok": true,
+   "secs": 36
   }
  ],
  "results": [
@@ -130,55 +130,55 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "62s"
+   "detail": "2s"
   },
   {
    "id": "B2",
    "area": "Price fetch",
    "check": "Track Scorptec product and read a price",
-   "pass": false,
-   "severity": "major",
-   "detail": "no price within 75s"
+   "pass": true,
+   "severity": "-",
+   "detail": "33s"
   },
   {
    "id": "B3",
    "area": "Price fetch",
    "check": "Track The Good Guys product and read a price",
-   "pass": false,
-   "severity": "major",
-   "detail": "no price within 75s"
+   "pass": true,
+   "severity": "-",
+   "detail": "20s"
   },
   {
    "id": "B4",
    "area": "Price fetch",
    "check": "Track Umart product and read a price",
-   "pass": false,
-   "severity": "major",
-   "detail": "no price within 75s"
+   "pass": true,
+   "severity": "-",
+   "detail": "25s"
   },
   {
    "id": "B5",
    "area": "Price fetch",
    "check": "Track JB Hi-Fi (2) product and read a price",
-   "pass": false,
-   "severity": "major",
-   "detail": "no price within 75s"
+   "pass": true,
+   "severity": "-",
+   "detail": "15s"
   },
   {
    "id": "B6",
    "area": "Price fetch",
    "check": "Track Scorptec (2) product and read a price",
-   "pass": false,
-   "severity": "major",
-   "detail": "no price within 75s"
+   "pass": true,
+   "severity": "-",
+   "detail": "36s"
   },
   {
    "id": "B0",
    "area": "Price fetch",
    "check": "At least 5 of 6 real products return a price in the browser",
-   "pass": false,
-   "severity": "blocker",
-   "detail": "1/6 succeeded; median 62s"
+   "pass": true,
+   "severity": "-",
+   "detail": "6/6 succeeded; median 25s"
   },
   {
    "id": "B6b",
@@ -194,7 +194,7 @@
    "check": "Cards show a buy/wait verdict",
    "pass": true,
    "severity": "-",
-   "detail": "5/6 cards"
+   "detail": "6/6 cards"
   },
   {
    "id": "B8",
@@ -202,7 +202,7 @@
    "check": "Cards show a product image",
    "pass": true,
    "severity": "-",
-   "detail": "5/6 cards"
+   "detail": "6/6 cards"
   },
   {
    "id": "B9",
@@ -210,7 +210,7 @@
    "check": "Cross-store comparison found at least one other store",
    "pass": true,
    "severity": "-",
-   "detail": "2/6 cards"
+   "detail": "3/6 cards"
   },
   {
    "id": "C1",
