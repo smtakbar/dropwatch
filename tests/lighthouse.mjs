@@ -6,7 +6,7 @@ const OUT = process.env.OUT ?? "reports";
 const chrome = await chromeLauncher.launch({ chromeFlags: ["--headless=new", "--no-sandbox"] });
 const out = {};
 for (const form of ["mobile", "desktop"]) {
-  const r = await lighthouse(SITE, { port: chrome.port, output: "json", logLevel: "error", formFactor: form, screenEmulation: form === "desktop" ? { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false } : undefined, throttlingMethod: "simulate", onlyCategories: ["performance", "accessibility", "best-practices", "seo"] });
+  const r = await lighthouse(`${SITE}?cb=${Date.now()}`, { port: chrome.port, output: "json", logLevel: "error", formFactor: form, screenEmulation: form === "desktop" ? { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false } : undefined, throttlingMethod: "simulate", onlyCategories: ["performance", "accessibility", "best-practices", "seo"] });
   const lhr = r.lhr;
   out[form] = {
     scores: Object.fromEntries(Object.entries(lhr.categories).map(([k, v]) => [k, Math.round(v.score * 100)])),

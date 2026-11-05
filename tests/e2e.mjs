@@ -18,6 +18,13 @@ const PRODUCTS = [
   ["Scorptec (2)", "https://www.scorptec.com.au/product/memory/ddr5-desktop-memory/103569-cmk32gx5m2e6000c36"],
 ];
 
+// Wait until the live site serves the same engine version as this commit (GitHub Pages caches for minutes).
+const want = fs.readFileSync("docs/index.html", "utf8").match(/engine\.js\?v=(\d+)/)?.[1];
+for (let i = 0; i < 40 && want; i++) {
+  try { const h = await (await fetch(`${SITE}?cb=${Date.now()}`)).text(); if (h.includes(`engine.js?v=${want}`)) break; } catch {}
+  await new Promise((r) => setTimeout(r, 15000));
+}
+const SITEURL = `${SITE}?cb=${Date.now()}`;
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU", permissions: [] });
 const page = await ctx.newPage();
@@ -27,7 +34,7 @@ page.on("pageerror", (e) => consoleErrors.push("pageerror: " + e.message.slice(0
 
 // ---- A. First load and page hygiene
 const t0 = Date.now();
-const resp = await page.goto(SITE, { waitUntil: "load", timeout: 45000 });
+const resp = await page.goto(SITEURL, { waitUntil: "load", timeout: 45000 });
 rec("A1", "Load", "Site returns HTTP 200", resp?.status() === 200, "blocker", `status ${resp?.status()}`);
 await page.waitForTimeout(1500);
 const title = await page.title();
@@ -82,7 +89,7 @@ await page.waitForTimeout(1500);
 const after = await page.locator(".card:not(.pend)").count();
 rec("C1", "Persistence", "List survives a reload", after === before && after > 0, "blocker", `${before} before, ${after} after`);
 const other = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-const p2 = await other.newPage(); await p2.goto(SITE, { waitUntil: "load" }); await p2.waitForTimeout(1000);
+const p2 = await other.newPage(); await p2.goto(SITEURL, { waitUntil: "load" }); await p2.waitForTimeout(1000);
 rec("C2", "Privacy", "A fresh visitor does not see another visitor's list", (await p2.locator(".card:not(.pend)").count()) === 0, "blocker");
 await other.close();
 
@@ -90,7 +97,7 @@ await other.close();
 const ctxA = await browser.newContext({ viewport: { width: 1280, height: 900 }, permissions: ["notifications"] });
 const pA = await ctxA.newPage();
 await pA.addInitScript(() => { window.__notes = []; window.Notification = class { constructor(t, o) { window.__notes.push([t, o && o.body]); } static get permission() { return "granted"; } static requestPermission() { return Promise.resolve("granted"); } }; });
-await pA.goto(SITE, { waitUntil: "load" });
+await pA.goto(SITEURL, { waitUntil: "load" });
 const items = await pA.evaluate(() => JSON.parse(localStorage.getItem("dw_items") || "[]"));
 rec("D0", "Alerts", "Test setup: fresh context starts empty", items.length === 0, "minor");
 await pA.fill("#quick", PRODUCTS[0][1]); await pA.click("#quickGo"); await pA.click("#m-go");
@@ -109,7 +116,7 @@ await ctxA.close();
 
 // ---- E. Mobile layout
 const mob = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-const pm = await mob.newPage(); await pm.goto(SITE, { waitUntil: "load" }); await pm.waitForTimeout(1200);
+const pm = await mob.newPage(); await pm.goto(SITEURL, { waitUntil: "load" }); await pm.waitForTimeout(1200);
 const m = await pm.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, small: [...document.querySelectorAll("button,a,select,input")].filter((e) => e.offsetParent).map((e) => { const r = e.getBoundingClientRect(); return { t: (e.textContent || e.id || e.tagName).trim().slice(0, 20), w: Math.round(r.width), h: Math.round(r.height) }; }).filter((x) => x.h < 40) }));
 rec("E1", "Mobile", "No horizontal scroll at 375px", m.sw <= m.cw + 1, "major", `scrollWidth ${m.sw} vs ${m.cw}`);
 rec("E2", "Mobile", "Tap targets at least 40px tall", m.small.length === 0, "minor", JSON.stringify(m.small.slice(0, 5)));

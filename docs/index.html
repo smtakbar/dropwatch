@@ -78,6 +78,8 @@ select{max-width:100%}
 .rule small{display:block;color:var(--text2);margin-top:2px}
 .pub .grid{grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
 .foot{margin:28px 0 8px;font-size:12px;color:var(--text2);display:flex;gap:14px;flex-wrap:wrap}
+#pubgrid{min-height:280px}#grid{min-height:160px}#pend{min-height:0}
+.foot a{display:inline-block;padding:12px 4px}
 </style>
 </head>
 <body>
@@ -107,8 +109,9 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js"></script>
+<script src="engine.js?v=202611051604"></script>
 <script>
+if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
 const flag=id=>(COUNTRIES.find(c=>c[0]===id)||[])[2]||"";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
