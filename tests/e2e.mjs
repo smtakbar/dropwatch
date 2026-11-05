@@ -27,6 +27,7 @@ for (let i = 0; i < 40 && want; i++) {
 const SITEURL = `${SITE}?cb=${Date.now()}`;
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU", permissions: [] });
+await ctx.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); } catch {} });
 const page = await ctx.newPage();
 const consoleErrors = [];
 page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(m.text().slice(0, 160)); });
@@ -89,6 +90,8 @@ await page.waitForTimeout(1500);
 const after = await page.locator("#grid .card:not(.pend)").count();
 rec("C1", "Persistence", "List survives a reload", after === before && after > 0, "blocker", `${before} before, ${after} after`);
 const other = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+await other.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); } catch {} });
+
 const p2 = await other.newPage(); await p2.goto(SITEURL, { waitUntil: "load" }); await p2.waitForTimeout(1000);
 rec("C2", "Privacy", "A fresh visitor does not see another visitor's list", (await p2.locator("#grid .card:not(.pend)").count()) === 0, "blocker");
 await other.close();
@@ -116,12 +119,64 @@ await ctxA.close();
 
 // ---- E. Mobile layout
 const mob = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+await mob.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); } catch {} });
 const pm = await mob.newPage(); await pm.goto(SITEURL, { waitUntil: "load" }); await pm.waitForTimeout(1200);
 const m = await pm.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, small: [...document.querySelectorAll("button,a,select,input")].filter((e) => e.offsetParent && !e.closest("p")).map((e) => { const r = e.getBoundingClientRect(); return { t: (e.textContent || e.id || e.tagName).trim().slice(0, 20), w: Math.round(r.width), h: Math.round(r.height) }; }).filter((x) => x.h < 40) }));
 rec("E1", "Mobile", "No horizontal scroll at 375px", m.sw <= m.cw + 1, "major", `scrollWidth ${m.sw} vs ${m.cw}`);
 rec("E2", "Mobile", "Tap targets at least 40px tall", m.small.length === 0, "minor", JSON.stringify(m.small.slice(0, 5)));
 await pm.screenshot({ path: `${OUT}/screenshots/03-first-load-mobile.png` });
 await mob.close();
+
+
+// ---- G. Region switching: the whole page follows the chosen country
+const gctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU" });
+await gctx.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); } catch {} });
+const gp = await gctx.newPage();
+await gp.goto(SITEURL, { waitUntil: "load" }); await gp.waitForTimeout(2500);
+const regions = await gp.$$eval("#region option", (os) => os.map((o) => [o.value, o.textContent.replace(/^\W+/, "").replace(/\s*\(.*$/, "").trim()]));
+rec("G1", "Regions", "Region list has 13 countries", regions.length === 13, "major", String(regions.length));
+const SEEDED = { AU: "", IN: "₹", SG: "$", FR: "€", BR: "R$", KR: "₩", JP: "¥" };
+const bad = [], badSample = [], badIdeas = [], badCur = [];
+for (const [code, name] of regions) {
+  await gp.selectOption("#region", code); await gp.waitForTimeout(400);
+  const st = await gp.evaluate(() => ({ line: document.getElementById("regionline").textContent, ph: document.getElementById("quick").placeholder, h: document.getElementById("pubh").textContent, cards: [...document.querySelectorAll("#pubgrid .card")].map((c) => c.innerText), chips: document.querySelectorAll("#pubgrid [data-idea]").length, lang: document.documentElement.lang }));
+  if (!st.line.includes(name.replace(/^\W+/, "")) || !/e\.g\./.test(st.ph) || !st.h.includes(name)) bad.push(code);
+  const isSeeded = code in SEEDED;
+  if (isSeeded && st.cards.length < 1) badSample.push(code + ":none");
+  if (!isSeeded && st.cards.length !== 0) badSample.push(code + ":unexpected " + st.cards.length);
+  if (code !== "AU" && st.cards.some((t) => /JB Hi-Fi|Scorptec|Umart|The Good Guys|Centrecom/.test(t))) badSample.push(code + ":AU stores leaked");
+  if (st.chips < 4) badIdeas.push(code);
+  if (isSeeded && SEEDED[code] && st.cards.length && !st.cards.some((t) => t.includes(SEEDED[code]) || (code === "JP" && /[¥￥]/.test(t)))) badCur.push(code + ":no " + SEEDED[code]);
+}
+rec("G2", "Regions", "Switching region updates heading, search hint, example text and store list for all 13", bad.length === 0, "major", bad.join(","));
+rec("G3", "Regions", "Regions with a readable retailer show only that region's logged products (no Australian leakage)", badSample.length === 0, "major", badSample.join(" | "));
+rec("G4", "Regions", "Every region offers tap-to-search product ideas", badIdeas.length === 0, "minor", badIdeas.join(","));
+rec("G5", "Regions", "Prices shown in the region's own currency", badCur.length === 0, "major", badCur.join(" | "));
+// Track a product in India, then check it is hidden when the region changes and the trackers panel is present.
+await gp.selectOption("#region", "IN"); await gp.waitForTimeout(500);
+const inBtn = gp.locator("#pubgrid button:not([disabled])", { hasText: "Add to my list" }).first();
+await inBtn.click();
+let inOk = true; try { await gp.waitForSelector("#grid .card .price", { timeout: 90000 }); } catch { inOk = false; }
+rec("G6", "Regions", "India: add a Vijay Sales sample and read a price in rupees", inOk && /₹/.test(await gp.locator("#grid .card .price").first().innerText().catch(() => "")), "major");
+await gp.waitForTimeout(8000);
+const trk = await gp.locator("#grid details.d", { hasText: "Price history on other trackers" }).count();
+rec("G7", "History", "Card has a 'Price history on other trackers' panel with lookup links", trk >= 1, "major");
+await gp.selectOption("#region", "AU"); await gp.waitForTimeout(500);
+const hidden = (await gp.locator("#grid .card:not(.pend)").count()) === 0 && (await gp.locator("#showall").isVisible());
+rec("G8", "Regions", "An India item is hidden in Australia, with a button to show other regions", hidden, "major");
+await gp.screenshot({ path: `${OUT}/screenshots/04-region-au.png` });
+await gp.selectOption("#region", "IN"); await gp.waitForTimeout(500);
+await gp.screenshot({ path: `${OUT}/screenshots/05-region-in.png` });
+// Tracker adapters (live pages through the public relays)
+const th = await gp.evaluate(async () => {
+  const out = {};
+  try { const r = await DW.trackerHistory({ url: "https://www.amazon.com/dp/B09XSDMT4F", matchName: "Sony WH-1000XM5 Premium Noise Canceling Headphones", offers: [], storeCountry: "US" }); out.ccc = r.map((x) => ({ s: x.source, low: x.low, avg: x.avg, high: x.high })); } catch (e) { out.ccc = "error " + e.message; }
+  try { const r = await DW.trackerHistory({ url: "", matchName: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones", name: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones", offers: [], storeCountry: "IN" }); out.ph = r.map((x) => ({ s: x.source, low: x.low, avg: x.avg, high: x.high })); } catch (e) { out.ph = "error " + e.message; }
+  return out;
+});
+rec("G9", "History", "CamelCamelCamel adapter reads lowest/average/highest for an Amazon product", Array.isArray(th.ccc) && th.ccc.some((x) => x.low > 0 && x.high >= x.low), "minor", JSON.stringify(th.ccc));
+rec("G10", "History", "pricehistory.app adapter finds and reads an Indian product by name", Array.isArray(th.ph) && th.ph.some((x) => x.low > 0 && x.high >= x.low), "minor", JSON.stringify(th.ph));
+await gctx.close();
 
 // ---- F. Accessibility (axe-core) on the populated desktop page
 await page.addScriptTag({ content: axe.source });

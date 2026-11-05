@@ -110,7 +110,7 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611051620"></script>
+<script src="engine.js?v=202611051714"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -145,7 +145,7 @@ function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTi
 // ---- This browser's own list (never leaves the device) ----
 const KEY="dw_items";
 let ITEMS=[];try{ITEMS=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ITEMS.map(({busy,...x})=>x)))}catch{toast("Your browser blocked saving. The list will be lost when you close this page.")}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ITEMS.map(({busy,trkBusy,...x})=>x)))}catch{toast("Your browser blocked saving. The list will be lost when you close this page.")}};
 let RATES={USD:1,AUD:1.53,GBP:0.79,EUR:0.92,JPY:150,CAD:1.36,INR:83,SGD:1.34,NZD:1.65,AED:3.67,BRL:5,KRW:1350};
 
 // ---- Region: your own choice, else guessed from your location ----
@@ -183,6 +183,11 @@ function chart(h,cur,r,from,id){
   <div class="ax"><span>${d(t[0])}</span><span>Low ${fmt(mn,cur)} · High ${fmt(mx,cur)}</span><span>${d(t.at(-1))}</span></div>${tabs(id)}</div>`;
 }
 
+const TOPEN=new Set();
+window.toggleTrk=(id,o)=>{o?TOPEN.add(id):TOPEN.delete(id)};
+window.checkTrackers=async id=>{const it=ITEMS.find(x=>x.id===id);if(!it)return;it.trkBusy=true;TOPEN.add(id);render();
+  try{await DW.trackerHistory(it)}catch{it.trackers=[];it.trackersAt=new Date().toISOString()}
+  it.trkBusy=false;save();render()};
 let PUB=[];
 function renderPub(){
   const el=$("pubgrid");if(!el)return;
@@ -250,6 +255,16 @@ function render(){
       <div class="muted">${ins.basis==="observed"?"Estimate based on this product's own price history.":"Estimate based on usual sale seasons. It gets more accurate as we collect prices."}</div>`:""}
       ${chart(i.history,cur,r,i.currency,i.id)}
       ${tbl}
+      ${(()=>{
+        const R0=RGN(),nm=encodeURIComponent((i.name||i.matchName||"")),q=d=>`https://www.google.com/search?q=${encodeURIComponent("site:"+d+" "+(i.name||i.matchName||""))}`;
+        const links=(R0.trk||[]).map(([n,d])=>`<a class="link" href="${q(d)}" target="_blank" rel="noopener noreferrer">${esc(n)}</a>`).join(" · ");
+        const rows=(i.trackers||[]).map(t=>{const nowT=i.price!=null?conv(i.price,i.currency,t.currency,r):null,v=DW.trackerVerdict(t,nowT);
+          const F=x=>x!=null?fmt(conv(x,t.currency,cur,r),cur):"–";
+          return`<div class="rule ${v&&v.level==="good"?"good":""}" style="margin-top:6px"><b>${esc(t.source)}</b>${v?`: ${esc(v.label)}`:""}<br>Lowest ${F(t.low)}${t.lowDate?" ("+esc(t.lowDate)+")":""} · Average ${F(t.avg)} · Highest ${F(t.high)}${t.highDate?" ("+esc(t.highDate)+")":""}<small>${esc(t.note)} Imported, not measured by DropWatch${t.asOf?"; as of "+esc(t.asOf):""}. Rule: good if now is within 3% of the lowest or 10% under the average. <a class="link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">Open</a></small></div>`}).join("");
+        const msg=i.trackersAt?(rows?"":`<div class="muted" style="margin-top:6px">No readable tracker page matched this exact product (checked ${ago(i.trackersAt)}). Try the links below.</div>`):"";
+        return`<details class="d" ${TOPEN.has(i.id)?"open":""} ontoggle="toggleTrk('${esc(i.id)}',this.open)"><summary>Price history on other trackers</summary>${rows}${msg}
+        <div class="row" style="margin-top:8px"><button class="btn ghost small" onclick="checkTrackers('${esc(i.id)}')" ${i.trkBusy?"disabled":""}>${i.trkBusy?"Checking…":(i.trackersAt?"Check again":"Check trackers")}</button></div>
+        <div class="muted" style="margin-top:6px">Look it up yourself: ${links}</div></details>`})()}
       ${i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:""}
       ${i.busy?`<div class="muted">Refreshing…</div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
@@ -274,6 +289,7 @@ function notify(it){
 async function refresh(it,offers){
   it.busy=true;render();
   try{const r=await DW.refreshItem(it,RATES,{offers,pub:PUB});if(r.dropped)notify(it)}catch(e){it.error="Something went wrong. We will try again."}
+  if(offers&&it.price!=null&&!it.trackersAt){try{await DW.trackerHistory(it)}catch{}}
   it.busy=false;save();render();
 }
 $("m-go").onclick=async()=>{

@@ -354,5 +354,69 @@ function mergePublic(it, pub) {
   it.publicHistory = m.history.length;
 }
 
-window.DW = { normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
+// ---- History from other trackers (read-only, only on request, public pages that robots.txt allows) ----
+const CCC = { com: ["camelcamelcamel.com", "USD"], "com.au": ["au.camelcamelcamel.com", "AUD"], "co.uk": ["uk.camelcamelcamel.com", "GBP"], ca: ["ca.camelcamelcamel.com", "CAD"], de: ["de.camelcamelcamel.com", "EUR"], fr: ["fr.camelcamelcamel.com", "EUR"], es: ["es.camelcamelcamel.com", "EUR"], it: ["it.camelcamelcamel.com", "EUR"] };
+const money = (t) => { const m = String(t ?? "").replace(/\s/g, "").match(/[\d.,]+/); if (!m) return; let v = m[0]; if (/,\d{1,2}$/.test(v)) v = v.replace(/\./g, "").replace(",", "."); else v = v.replace(/,/g, ""); const n = parseFloat(v); return n > 0 ? n : undefined; };
+const toks = (t) => String(t ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").split(" ").filter((w) => w.length > 1);
+/** Share of the product's words found in a tracker page title; every model number must appear. */
+function titleCover(ref, title) {
+  const a = [...new Set(toks(ref))], b = new Set(toks(title));
+  if (!a.length) return 0;
+  const hit = a.filter((w) => b.has(w));
+  if (a.some((w) => /\d/.test(w) && w.length >= 3 && !b.has(w))) return 0;
+  return hit.length / a.length;
+}
+function asinOf(it) {
+  const urls = [it.url, ...(it.offers || []).map((o) => o.url)].filter(Boolean);
+  for (const u of urls) { const m = String(u).match(/^https?:\/\/(?:www\.)?amazon\.(com\.au|com|co\.uk|ca|de|fr|es|it)\/(?:.*?\/)?(?:dp|gp\/product)\/([A-Z0-9]{10})/); if (m) return { tld: m[1], asin: m[2] }; }
+}
+function parseCCC(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const row = doc.querySelector("tr.pt.amazon") || doc.querySelector("tr.pt");
+  if (!row) return null;
+  const c = [...row.querySelectorAll("td")].slice(1).map((td) => ({ v: money(td.textContent), d: td.querySelector("small")?.textContent.replace(/[()]/g, "").trim() }));
+  if (c.length < 4 || !c[0].v) return null;
+  const asOf = (doc.querySelector('th span[title^="Last checked"]')?.getAttribute("title") || "").replace(/^Last checked\s*/, "").replace(/\.$/, "");
+  return { low: c[0].v, lowDate: c[0].d, high: c[1].v, highDate: c[1].d, current: c[2].v, avg: c[3].v, asOf, title: (doc.querySelector("h1,title")?.textContent || "").trim() };
+}
+function parsePH(html) {
+  const d = html.match(/Lowest Price:\s*([^\s|]+)\s*\|\s*Average Price:\s*([^\s|]+)\s*\|\s*Highest Price:\s*([^\s|]+)/);
+  if (!d) return null;
+  const cur = html.match(/Price in India on (\d\d\/\d\d\/\d{4}):\s*([^\s.|<]+)/);
+  const title = (html.match(/<title>([^<]*)<\/title>/i)?.[1] || "").replace(/\s*-\s*Price History\s*$/i, "");
+  return { low: money(d[1]), avg: money(d[2]), high: money(d[3]), current: money(cur?.[2]), asOf: cur?.[1], title };
+}
+/** Good / okay / wait by comparing the price you see now with the tracker's own low, average and high. A rule, not a forecast. */
+function trackerVerdict(s, now) {
+  if (!s || now == null || !s.low || !s.avg) return null;
+  if (now <= s.low * 1.03) return { level: "good", label: "At or near its lowest price on record" };
+  if (now <= s.avg * 0.9) return { level: "good", label: "Well below its usual price" };
+  if (now <= s.avg * 1.05) return { level: "ok", label: "Around its usual price" };
+  return { level: "wait", label: "Above its usual price" };
+}
+async function trackerHistory(it) {
+  const out = [], ref = matchTitle(it);
+  const am = asinOf(it);
+  if (am) {
+    const [host, currency] = CCC[am.tld];
+    const url = `https://${host}/product/${am.asin}`;
+    const html = await fetchHtml(url);
+    const s = html && parseCCC(html);
+    if (s) out.push({ source: "CamelCamelCamel", url, currency, ...s, note: "Amazon price history, as reported by CamelCamelCamel." });
+  }
+  if ((it.storeCountry ?? it.country) === "IN" && ref) {
+    const q = `site:pricehistory.app ${ref.split(/\s+/).slice(0, 12).join(" ")}`;
+    const res = await fetchHtml(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&kl=in-en`);
+    const links = res ? [...res.matchAll(/href=["'][^"']*uddg=([^"'&]+)/gi)].map((m) => { try { return decodeURIComponent(m[1]); } catch { return ""; } }).filter((u) => /^https:\/\/pricehistory\.app\/p\//.test(u)) : [];
+    for (const url of links.slice(0, 2)) {
+      const html = await fetchHtml(url);
+      const s = html && parsePH(html);
+      if (s && titleCover(ref, s.title) >= 0.6) { out.push({ source: "pricehistory.app", url, currency: "INR", ...s, note: "Amazon India and Flipkart history, as reported by pricehistory.app." }); break; }
+    }
+  }
+  it.trackers = out; it.trackersAt = new Date().toISOString();
+  return out;
+}
+
+window.DW = { trackerHistory, trackerVerdict, titleCover, parseCCC, parsePH, money, normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
 })();
