@@ -221,13 +221,17 @@ async function fetchHtml(url) {
     [`https://corsproxy.io/?url=${enc}`, {}],
     [`https://r.jina.ai/${url}`, { headers: { "x-return-format": "html" } }],
   ];
-  for (const [u, opt] of tries) {
-    try {
-      const r = await fetch(u, { ...opt, signal: AbortSignal.timeout(20000) });
-      if (!r.ok) continue;
-      const h = await r.text();
-      if (h.length > 800) return h;
-    } catch {}
+  // Race all relays in parallel; the first usable page wins. One retry after a short pause.
+  const one = async ([u, opt]) => {
+    const r = await fetch(u, { ...opt, signal: AbortSignal.timeout(25000) });
+    if (!r.ok) throw new Error("bad status");
+    const h = await r.text();
+    if (h.length <= 800) throw new Error("too short");
+    return h;
+  };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try { return await Promise.any(tries.map(one)); } catch {}
+    await new Promise((r) => setTimeout(r, 3000));
   }
   return null;
 }

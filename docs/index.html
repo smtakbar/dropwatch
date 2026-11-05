@@ -109,7 +109,7 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611051604"></script>
+<script src="engine.js?v=202611051620"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -135,8 +135,10 @@ const sel=$("region");
 sel.innerHTML=COUNTRIES.map(c=>`<option value="${c[0]}">${c[2]} ${esc(c[1])} (${c[3]})</option>`).join("");
 sel.value=region;
 sel.onchange=()=>{region=sel.value;try{localStorage.setItem("region",region)}catch{}render()};
-if(!hadRegion)fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
-  if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;sel.value=region;try{localStorage.setItem("region",region)}catch{}render();toast("Showing prices for "+(COUNTRIES.find(c=>c[0]===region)||[])[1]+" (from your location).")}}).catch(()=>{});
+const regionReady=hadRegion?Promise.resolve():Promise.race([
+  fetch("https://ipwho.is/?fields=success,country_code").then(r=>r.json()).then(j=>{
+    if(j&&j.success&&COUNTRIES.some(c=>c[0]===j.country_code)){region=j.country_code;sel.value=region;try{localStorage.setItem("region",region)}catch{}return region}}).catch(()=>{}),
+  new Promise(r=>setTimeout(r,1200))]);
 
 const RANGE={};
 window.setRange=(id,d)=>{RANGE[id]=d;render()};
@@ -260,9 +262,11 @@ window.removeItem=id=>{if(!confirm("Stop tracking this product?"))return;ITEMS=I
 async function sweep(){
   for(const it of ITEMS){if(it.busy)continue;if(!it.checkedAt||Date.now()-Date.parse(it.checkedAt)>3600e3)await refresh(it,false)}
 }
-render();
-DW.loadPublic().then(p=>{PUB=p;renderPub()});
-DW.getRates().then(r=>{RATES=r;render();renderPub()}).finally(()=>{sweep();setInterval(sweep,15*60e3)});
+// First paint waits (briefly) for region, public data and rates so nothing jumps around afterwards.
+let painted=false;
+const firstPaint=()=>{if(painted)return;painted=true;render();renderPub();sweep();setInterval(sweep,15*60e3)};
+setTimeout(firstPaint,2500);
+Promise.all([regionReady,DW.loadPublic().then(p=>{PUB=p}),DW.getRates().then(r=>{RATES=r})]).finally(()=>{firstPaint();if(!hadRegion&&region)toast("Showing prices for "+((COUNTRIES.find(c=>c[0]===region)||[])[1]||region)+" (from your location).")});
 </script>
 </body>
 </html>
