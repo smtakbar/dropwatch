@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DropWatch</title>
+<meta name="description" content="Track a product, see its price history across Australian stores, and get a clear buy-or-wait verdict. No sign-in: your list stays in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231a1a18%27/%3E%3Cpath d=%27M8 11l5 6 4-4 7 8%27 stroke=%27%23fff%27 stroke-width=%273%27 fill=%27none%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
 <style>
 :root{--bg:#f6f5f1;--surface:#fff;--surface2:#f1f0ea;--border:#e4e2d9;--border2:#cfcdc2;--text:#1a1a18;--text2:#5f5e58;--text3:#8d8b82;--green:#3b6d11;--green-bg:#eaf3de;--red:#a32d2d}
 @media(prefers-color-scheme:dark){:root{--bg:#161614;--surface:#1f1f1c;--surface2:#292926;--border:#33332f;--border2:#45453f;--text:#f2f1ec;--text2:#b0aea4;--text3:#7d7b72;--green:#8fc25a;--green-bg:#26361a;--red:#f09595}}
@@ -62,21 +64,41 @@ details.d summary{cursor:pointer;color:var(--text2);font-size:12px;margin-top:6p
 .best{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0;font-size:13px}
 .tabs{display:flex;gap:4px;margin-top:6px}.tabs button{border:1px solid var(--border2);background:transparent;border-radius:6px;padding:2px 8px;font-size:11px;color:var(--text2);cursor:pointer}.tabs button.on{background:var(--text);color:var(--bg)}
 .oos{font-size:11px;color:var(--red);font-weight:500}
+
+.top{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 16px}
+.logo{margin-right:auto}
+.grid{grid-template-columns:repeat(auto-fill,minmax(min(290px,100%),1fr))}
+select{max-width:100%}
+@media(pointer:coarse),(max-width:640px){.btn,select,input[type=text]{min-height:44px}.btn.small{min-height:44px;padding:8px 12px}.tabs button{min-height:36px;padding:6px 12px}}
+.wrap{padding:16px}
+.empty{padding:28px 0!important}
+.banner{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--text2);margin-bottom:12px}
+.rule{font-size:12px;margin:6px 0;padding:6px 8px;border-radius:8px;background:var(--surface2)}
+.rule.good{background:var(--green-bg);color:var(--green)}
+.rule small{display:block;color:var(--text2);margin-top:2px}
+.pub .grid{grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
+.foot{margin:28px 0 8px;font-size:12px;color:var(--text2);display:flex;gap:14px;flex-wrap:wrap}
 </style>
 </head>
 <body>
 <div class="top">
   <div class="logo">drop<b>watch</b></div><div class="sp"></div>
   <select id="region" aria-label="Region"></select>
-  <button class="btn" id="add">+ Track product</button>
+  <a class="btn ghost small" href="https://github.com/smtakbar/dropwatch" target="_blank" rel="noopener">Source</a>
 </div>
 <div class="wrap">
   <div class="hero"><h1>Track any product. Paste a link or type its name, and we watch the price across stores and tell you when to buy.</h1>
-    <input type="text" id="quick" placeholder="Product name or link, e.g. Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml"><button class="btn" id="quickGo">Track</button>
+    <input type="text" id="quick" aria-label="Product name or link" placeholder="Product name or link, e.g. Marvis Sweet &amp; Sour Rhubarb Toothpaste 75 ml"><button class="btn" id="quickGo">Track this product</button>
     <div class="muted" style="flex:1 1 100%">Private by design: no sign-in. Your list is saved only in this browser, and prices refresh whenever this page is open.</div></div>
   <div class="row" style="margin-bottom:14px"><span class="muted" id="meta"></span></div>
   <div id="pend" style="margin-bottom:12px"></div>
   <div class="grid" id="grid"></div>
+  <section class="pub" aria-labelledby="pubh" style="margin-top:24px">
+    <h2 id="pubh" style="font-size:16px;margin-bottom:4px">Sample products (real, public price log)</h2>
+    <p class="muted" style="margin-bottom:10px">A fixed set of products we check every 6 hours and publish as open data. Add any to your list to try the page. Charts and the deal rule fill in as readings accumulate. <a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/data/prices.csv" target="_blank" rel="noopener">Open the data</a></p>
+    <div class="grid" id="pubgrid"><div class="muted">Loading sample products…</div></div>
+  </section>
+  <div class="foot"><a class="link" href="https://github.com/smtakbar/dropwatch" target="_blank" rel="noopener">Source code</a><a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/PRD.md" target="_blank" rel="noopener">Product requirements</a><a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/VALIDATION.md" target="_blank" rel="noopener">Test report</a><a class="link" id="fb" href="https://github.com/smtakbar/dropwatch/issues/new?title=Feedback" target="_blank" rel="noopener">Give feedback</a></div>
 </div>
 <div class="modal" id="modal"><div class="box">
   <h2>Track a product</h2>
@@ -129,18 +151,33 @@ function chart(h,cur,r,from,id){
   <div class="ax"><span>${d(t[0])}</span><span>Low ${fmt(mn,cur)} · High ${fmt(mx,cur)}</span><span>${d(t.at(-1))}</span></div>${tabs(id)}</div>`;
 }
 
+let PUB=[];
+function renderPub(){
+  const el=$("pubgrid");if(!el)return;
+  if(!PUB.length){el.innerHTML='<div class="muted">The public price log could not be loaded right now.</div>';return}
+  const reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3];
+  el.innerHTML=PUB.map(p=>{const last=p.history.at(-1),price=last?last[1]:null,d=DW.dealRule(p.history,price);
+    const have=ITEMS.some(i=>DW.normKey(i.url)===p.key);
+    return`<div class="card"><div class="name" title="${esc(p.name)}">${esc(p.name)}</div><div class="muted">${esc(p.store)} · ${p.history.length} reading${p.history.length===1?"":"s"}</div>
+    <div style="margin:8px 0"><span class="price">${price!=null?fmt(conv(price,p.currency,cur,RATES),cur):"No price yet"}</span></div>
+    <div class="rule ${d.level==="good"?"good":""}"><b>${esc(d.label)}</b>${d.low!=null?` · 30-day low ${fmt(conv(d.low,p.currency,cur,RATES),cur)}`:""}</div>
+    <div class="row" style="margin-top:8px;justify-content:space-between"><a class="btn ghost small" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Open</a>
+    <button class="btn small" ${have?"disabled":""} onclick="addSample('${esc(p.id)}')">${have?"On your list":"Add to my list"}</button></div></div>`}).join("");
+}
+window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);ITEMS.unshift(it);save();render();renderPub();await refresh(it,true);renderPub()};
 let PEND=null,ptimer=null;
 function renderPending(){
   const el=$("pend");if(!el)return;
   if(!PEND){el.innerHTML="";return}
-  const sec=Math.round((Date.now()-PEND.start)/1000),est=25;
+  const sec=Math.round((Date.now()-PEND.start)/1000),est=45;
   el.innerHTML=`<div class="card pend"><div class="name">${esc(PEND.label)}</div><div class="bar"><i style="width:${Math.min(95,sec/est*100)}%"></i></div>
-  <div class="muted">Reading the price… ${sec}s (usually under 30s)</div></div>`;
+  <div class="muted">Reading the price… ${sec}s (usually under a minute)</div></div>`;
 }
 
 
 
 function render(){
+  try{renderPub()}catch{}
   const LIST=ITEMS,reg=COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0],cur=reg[3],r=RATES;
   const hits=LIST.filter(i=>i.price!=null&&i.targetPrice!=null&&i.price<=conv(i.targetPrice,i.targetCurrency||i.currency,i.currency,r)).length;
   document.getElementById("meta").textContent=LIST.length?`${LIST.length} on your list · saved in this browser only`:"";
@@ -168,6 +205,7 @@ function render(){
       <div style="margin:10px 0 6px">${local!=null?`<span class="price">${fmt(local,cur)}</span>${i.inStock===false?' <span class="oos">Out of stock</span>':""}${foreign?` <span class="muted">(${fmt(i.price,i.currency)} at store)</span>`:""}`:'<span class="muted">Finding the price…</span>'}</div>
       ${i.advice?`<div class="advice ${esc(i.advice.action)}"><b>${esc(i.advice.headline)}</b><span>${esc(i.advice.reason)}</span></div>
       <div class="best"><span>Cheapest found: <b>${esc(i.advice.best.store)}</b> ${fmt(conv(i.advice.best.price,i.advice.best.currency||i.currency,cur,r),cur)}${i.advice.best.own?" (your link)":""}</span><a class="btn small" href="${esc(i.advice.best.url)}" target="_blank" rel="noopener noreferrer">Go to store</a></div>`:""}
+      ${(()=>{const d=DW.dealRule(i.history,i.price);return`<div class="rule ${d.level==="good"?"good":""}"><b>Deal check: ${esc(d.label)}</b>${d.low!=null?` · now ${fmt(conv(i.price,i.currency,cur,r),cur)} vs 30-day low ${L(d.low)}, median ${L(d.median)} (${d.n} readings)`:` (${d.n} of 3 readings)`}<small>${esc(d.note)}</small></div>`})()}
       ${ins?`${i.advice?"":`<div class="verdict ${good?"good":""}">${esc(ins.verdict)}</div>`}
       <div class="stats"><div class="stat"><span class="muted">Lowest seen</span><b>${L(ins.lowest)}</b></div><div class="stat"><span class="muted">Average</span><b>${L(ins.avg)}</b></div><div class="stat"><span class="muted">Likely low (${esc(ins.bestMonth)})</span><b>${L(ins.predictedLow)}</b></div></div>
       <div class="muted">${ins.basis==="observed"?"Estimate based on this product's own price history.":"Estimate based on usual sale seasons. It gets more accurate as we collect prices."}</div>`:""}
@@ -187,7 +225,6 @@ function openModal(v){$("modal").classList.add("on");$("m-url").value=v||"";$("m
 function closeModal(){$("modal").classList.remove("on")}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeModal);
 $("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
-$("add").onclick=()=>openModal("");
 $("quickGo").onclick=()=>{const v=$("quick").value.trim();if(v)openModal(v)};
 $("quick").onkeydown=e=>{if(e.key==="Enter")$("quickGo").click()};
 $("m-url").oninput=()=>{$("m-namebox").style.display=isLink($("m-url").value.trim())?"block":"none"};
@@ -197,7 +234,7 @@ function notify(it){
 }
 async function refresh(it,offers){
   it.busy=true;render();
-  try{const r=await DW.refreshItem(it,RATES,{offers});if(r.dropped)notify(it)}catch(e){it.error="Something went wrong. We will try again."}
+  try{const r=await DW.refreshItem(it,RATES,{offers,pub:PUB});if(r.dropped)notify(it)}catch(e){it.error="Something went wrong. We will try again."}
   it.busy=false;save();render();
 }
 $("m-go").onclick=async()=>{
@@ -221,7 +258,8 @@ async function sweep(){
   for(const it of ITEMS){if(it.busy)continue;if(!it.checkedAt||Date.now()-Date.parse(it.checkedAt)>3600e3)await refresh(it,false)}
 }
 render();
-DW.getRates().then(r=>{RATES=r;render()}).finally(()=>{sweep();setInterval(sweep,15*60e3)});
+DW.loadPublic().then(p=>{PUB=p;renderPub()});
+DW.getRates().then(r=>{RATES=r;render();renderPub()}).finally(()=>{sweep();setInterval(sweep,15*60e3)});
 </script>
 </body>
 </html>

@@ -44,6 +44,9 @@ rec("A7", "First run", "Demo mode or sample data offered on an empty list", hasD
 const repoLink = await page.evaluate(() => [...document.querySelectorAll("a")].some((a) => /github\.com\/smtakbar\/dropwatch/.test(a.href)));
 rec("A8", "Credibility", "Link to the source repository on the page", repoLink, "major");
 rec("A9", "Hygiene", "No console errors on load", consoleErrors.length === 0, "minor", consoleErrors.slice(0, 3).join(" | "));
+const pubN = await page.locator("#pubgrid .card").count();
+rec("A10", "First run", "Public sample products listed with real logged prices", pubN >= 1, "major", `${pubN} sample product(s)`);
+if (pubN) { await page.locator("#pubgrid button:not([disabled])").first().click(); let added = true; try { await page.waitForSelector(".grid#grid .card .price", { timeout: 75000 }); } catch { added = false; } rec("A11", "First run", "'Add to my list' on a sample product produces a priced card", added, "major"); await page.evaluate(() => localStorage.removeItem("dw_items")); await page.reload({ waitUntil: "load" }); await page.waitForTimeout(800); }
 await page.screenshot({ path: `${OUT}/screenshots/01-first-load-desktop.png` });
 
 // ---- B. Track real products (price fetch)
@@ -67,6 +70,7 @@ rec("B0", "Price fetch", "At least 5 of 6 real products return a price in the br
 await page.waitForTimeout(3000);
 await page.screenshot({ path: `${OUT}/screenshots/02-after-tracking-desktop.png`, fullPage: true });
 const cardInfo = await page.evaluate(() => [...document.querySelectorAll(".card:not(.pend)")].map((c) => ({ hasImg: !!c.querySelector("img.thumb"), advice: c.querySelector(".advice b")?.textContent ?? null, offers: c.querySelectorAll("table tr").length - 1 })));
+rec("B6b", "Features", "Cards show the transparent deal-check rule line", await page.locator(".card .rule").count() > 0, "minor");
 rec("B7", "Features", "Cards show a buy/wait verdict", cardInfo.some((c) => c.advice), "minor", `${cardInfo.filter((c) => c.advice).length}/${cardInfo.length} cards`);
 rec("B8", "Features", "Cards show a product image", cardInfo.some((c) => c.hasImg), "minor", `${cardInfo.filter((c) => c.hasImg).length}/${cardInfo.length} cards`);
 rec("B9", "Features", "Cross-store comparison found at least one other store", cardInfo.some((c) => c.offers >= 1), "minor", `${cardInfo.filter((c) => c.offers >= 1).length}/${cardInfo.length} cards`);
@@ -93,7 +97,7 @@ await pA.fill("#quick", PRODUCTS[0][1]); await pA.click("#quickGo"); await pA.cl
 let readOk = true; try { await pA.waitForSelector(".card .price", { timeout: 75000 }); } catch { readOk = false; }
 if (readOk) {
   await pA.waitForTimeout(2500);
-  await pA.evaluate(() => { const it = JSON.parse(localStorage.getItem("dw_items")); it[0].price = Math.round(it[0].price * 1.5 * 100) / 100; it[0].checkedAt = new Date(Date.now() - 2 * 3600e3).toISOString(); localStorage.setItem("dw_items", JSON.stringify(it)); });
+  await pA.evaluate(() => { const it = JSON.parse(localStorage.getItem("dw_items")); it[0].price = Math.round(it[0].price * 1.5 * 100) / 100; it[0].history = it[0].history.map(([t, p]) => [new Date(Date.parse(t) - 25 * 3600e3).toISOString(), p]); it[0].checkedAt = new Date(Date.now() - 2 * 3600e3).toISOString(); localStorage.setItem("dw_items", JSON.stringify(it)); });
   await pA.reload({ waitUntil: "load" });
   await pA.waitForTimeout(25000);
   const notes = await pA.evaluate(() => window.__notes);

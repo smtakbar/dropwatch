@@ -280,7 +280,7 @@ async function findOffers(it, { max = 6 } = {}) {
 }
 
 /** Refresh one item. Returns {item, dropped} where dropped is true when the price fell at least 10%. */
-async function refreshItem(it, rates, { offers = false } = {}) {
+async function refreshItem(it, rates, { offers = false, pub = null } = {}) {
   const now = new Date().toISOString();
   const prev = it.price;
   it.checkedAt = now;
@@ -305,10 +305,46 @@ async function refreshItem(it, rates, { offers = false } = {}) {
     } else if (!it.url && !it.price) it.error = "No matching listing found at trusted stores yet. A product link works best.";
     it.image = it.image ?? it.offers.find((o) => o.image)?.image ?? null;
   }
+  if (pub) mergePublic(it, pub);
   if (it.price) { it.insight = insight(it.history, it.price, it.storeCountry); it.advice = advise(it, rates); }
   const dropped = prev != null && it.price != null && it.price <= prev * 0.9;
   return { item: it, dropped };
 }
 
-window.DW = { CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
+/** Transparent deal rule. Not a prediction: it only compares today's price with the last 30 days of readings. */
+function dealRule(history, price, now = Date.now()) {
+  const pts = (history ?? []).map(([t, p]) => [Date.parse(t), p]).filter(([t, p]) => now - t <= 30 * 864e5 && p > 0);
+  const note = "Rule: Good deal if the price is within 3% of the 30-day low; Fair if at or below the 30-day median; otherwise Above usual. It needs 3 or more readings. This is a rule, not a forecast.";
+  if (!price || pts.length < 3) return { level: "none", label: "Not enough history yet", n: pts.length, note };
+  const v = pts.map((x) => x[1]), low = Math.min(...v), med = median(v);
+  const level = price <= low * 1.03 ? "good" : price <= med ? "fair" : "above";
+  return { level, label: { good: "Good deal", fair: "Fair price", above: "Above usual" }[level], low, median: med, n: pts.length, note };
+}
+
+const normUrl = (u) => { try { const x = new URL(u); return (x.origin + x.pathname).replace(/\/$/, "").toLowerCase(); } catch { return String(u).toLowerCase(); } };
+const REPO = (typeof location !== "undefined" && location.hostname.endsWith(".github.io")) ? `${location.hostname.split(".")[0]}/${location.pathname.split("/")[1]}` : "smtakbar/dropwatch";
+
+/** Public, openly licensed price log kept by the project's scheduled job. */
+async function loadPublic() {
+  try {
+    const base = `https://raw.githubusercontent.com/${REPO}/main/data/`;
+    const [seed, csv] = await Promise.all([fetch(base + "seed.json").then((r) => r.json()), fetch(base + "prices.csv").then((r) => r.text())]);
+    const hist = {};
+    for (const line of csv.split("\n").slice(1)) {
+      const [ts, id, store, price, cur, stock] = line.split(",");
+      if (!id || !(+price > 0)) continue;
+      (hist[id] ??= { currency: cur, rows: [] }).rows.push([ts, +price, stock]);
+    }
+    return seed.map((p) => ({ ...p, currency: hist[p.id]?.currency ?? "AUD", history: (hist[p.id]?.rows ?? []).map(([t, v]) => [t, v]), inStock: hist[p.id]?.rows.at(-1)?.[2] === "0" ? false : true, key: normUrl(p.url) }));
+  } catch { return []; }
+}
+function mergePublic(it, pub) {
+  const m = (pub ?? []).find((p) => p.key === normUrl(it.url));
+  if (!m || !m.history.length) return;
+  const seen = new Set(it.history.map((h) => h[0]));
+  it.history = [...it.history, ...m.history.filter((h) => !seen.has(h[0]))].sort((a, b) => Date.parse(a[0]) - Date.parse(b[0])).slice(-300);
+  it.publicHistory = m.history.length;
+}
+
+window.DW = { normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
 })();
