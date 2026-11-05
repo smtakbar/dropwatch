@@ -1,8 +1,8 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T09:44:35.560Z",
- "totalChecks": 44,
- "passed": 43,
+ "ranAt": "2026-11-05T09:51:45.924Z",
+ "totalChecks": 45,
+ "passed": 45,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
@@ -17,7 +17,7 @@
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 47
+   "secs": 33
   },
   {
    "store": "Umart",
@@ -27,12 +27,12 @@
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 46
+   "secs": 45
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 29
+   "secs": 52
   }
  ],
  "results": [
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "47s"
+   "detail": "33s"
   },
   {
    "id": "B4",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "46s"
+   "detail": "45s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "29s"
+   "detail": "52s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 46s"
+   "detail": "6/6 succeeded; median 45s"
   },
   {
    "id": "B6b",
@@ -239,10 +239,18 @@
   {
    "id": "D1",
    "area": "Alerts",
-   "check": "Alert test could not run (price fetch failed)",
-   "pass": false,
-   "severity": "major",
-   "detail": "price not read in 75s {\"region\":\"US\",\"items\":[{\"c\":\"AU\",\"p\":29,\"e\":null,\"r\":\"JB Hi-Fi\"}],\"pend\":\"\",\"meta\":\"\",\"grid\":\"Nothing tracked in United States yet. Type a product name or paste a link above, or pick one below. Your list stays in this browser and is private to you.\"} | console: Failed to load resource: the server responded with a status of 429 () | Access to fetch at 'https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.woolworths.com.au%2Fshop%2Fproductdetails%2F1122495357%2Fremington-pg6024au-all-in-1-ti | Failed to load resource: net::ERR_FAILED"
+   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
+   "pass": true,
+   "severity": "-",
+   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
+  },
+  {
+   "id": "D2",
+   "area": "History",
+   "check": "Price history accumulates across refreshes",
+   "pass": true,
+   "severity": "-",
+   "detail": "12 point(s)"
   },
   {
    "id": "E1",
