@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T04:51:25.937Z",
- "totalChecks": 27,
- "passed": 19,
+ "ranAt": "2026-11-05T05:03:43.400Z",
+ "totalChecks": 29,
+ "passed": 16,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 62
+   "secs": 54
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 57
+   "secs": 61
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 33
+   "secs": 60
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 33
+   "secs": 59
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 36
+   "secs": 7
   },
   {
    "store": "Scorptec (2)",
-   "ok": true,
-   "secs": 37
+   "ok": false,
+   "secs": 75
   }
  ],
  "results": [
@@ -109,12 +109,20 @@
    "detail": "Failed to load resource: the server responded with a status of 404 ()"
   },
   {
+   "id": "A10",
+   "area": "First run",
+   "check": "Public sample products listed with real logged prices",
+   "pass": false,
+   "severity": "major",
+   "detail": "0 sample product(s)"
+  },
+  {
    "id": "B1",
    "area": "Price fetch",
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "62s"
+   "detail": "54s"
   },
   {
    "id": "B2",
@@ -122,7 +130,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "57s"
+   "detail": "61s"
   },
   {
    "id": "B3",
@@ -130,7 +138,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "33s"
+   "detail": "60s"
   },
   {
    "id": "B4",
@@ -138,7 +146,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "33s"
+   "detail": "59s"
   },
   {
    "id": "B5",
@@ -146,15 +154,15 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "36s"
+   "detail": "7s"
   },
   {
    "id": "B6",
    "area": "Price fetch",
    "check": "Track Scorptec (2) product and read a price",
-   "pass": true,
-   "severity": "-",
-   "detail": "37s"
+   "pass": false,
+   "severity": "major",
+   "detail": "no price within 75s"
   },
   {
    "id": "B0",
@@ -162,7 +170,15 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 37s"
+   "detail": "5/6 succeeded; median 59s"
+  },
+  {
+   "id": "B6b",
+   "area": "Features",
+   "check": "Cards show the transparent deal-check rule line",
+   "pass": false,
+   "severity": "minor",
+   "detail": ""
   },
   {
    "id": "B7",
@@ -170,7 +186,7 @@
    "check": "Cards show a buy/wait verdict",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 cards"
+   "detail": "5/6 cards"
   },
   {
    "id": "B8",
@@ -178,7 +194,7 @@
    "check": "Cards show a product image",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 cards"
+   "detail": "5/6 cards"
   },
   {
    "id": "B9",
@@ -186,22 +202,22 @@
    "check": "Cross-store comparison found at least one other store",
    "pass": true,
    "severity": "-",
-   "detail": "3/6 cards"
+   "detail": "2/6 cards"
   },
   {
    "id": "C1",
    "area": "Persistence",
    "check": "List survives a reload",
-   "pass": true,
-   "severity": "-",
-   "detail": "6 before, 6 after"
+   "pass": false,
+   "severity": "blocker",
+   "detail": "6 before, 0 after"
   },
   {
    "id": "C2",
    "area": "Privacy",
    "check": "A fresh visitor does not see another visitor's list",
-   "pass": true,
-   "severity": "-",
+   "pass": false,
+   "severity": "blocker",
    "detail": ""
   },
   {
@@ -216,9 +232,9 @@
    "id": "D1",
    "area": "Alerts",
    "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
-   "pass": true,
-   "severity": "-",
-   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
+   "pass": false,
+   "severity": "major",
+   "detail": "0 notification(s): null"
   },
   {
    "id": "D2",
@@ -226,15 +242,15 @@
    "check": "Price history accumulates across refreshes",
    "pass": false,
    "severity": "minor",
-   "detail": "1 point(s)"
+   "detail": "0 point(s)"
   },
   {
    "id": "E1",
    "area": "Mobile",
    "check": "No horizontal scroll at 375px",
-   "pass": false,
-   "severity": "major",
-   "detail": "scrollWidth 519 vs 375"
+   "pass": true,
+   "severity": "-",
+   "detail": "scrollWidth 375 vs 375"
   },
   {
    "id": "E2",
@@ -242,7 +258,7 @@
    "check": "Tap targets at least 40px tall",
    "pass": false,
    "severity": "minor",
-   "detail": "[{\"t\":\"🇦🇺 Australia (AUD)\",\"w\":221,\"h\":32},{\"t\":\"+ Track product\",\"w\":139,\"h\":36},{\"t\":\"Track\",\"w\":65,\"h\":36}]"
+   "detail": "[{\"t\":\"Open the data\",\"w\":86,\"h\":14},{\"t\":\"Source code\",\"w\":74,\"h\":17},{\"t\":\"Product requirements\",\"w\":130,\"h\":17},{\"t\":\"Test report\",\"w\":64,\"h\":17},{\"t\":\"Give feedback\",\"w\":86,\"h\":17}]"
   },
   {
    "id": "F1",
