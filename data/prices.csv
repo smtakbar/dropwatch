@@ -76,3 +76,33 @@ timestamp,id,store,price,currency,in_stock
 2026-11-05T06:16:29.380Z,kr-danawa-mx3s,Danawa (lowest listed),129300,KRW,
 2026-11-05T06:16:29.380Z,jp-kakaku-xm5,Kakaku.com (lowest listed),30671,JPY,
 2026-11-05T06:16:29.380Z,jp-kakaku-mx3s,Kakaku.com (lowest listed),16200,JPY,
+2026-11-05T07:40:48.567Z,jb-remington-all-in-1,JB Hi-Fi,29,AUD,1
+2026-11-05T07:40:48.567Z,sc-990pro-1tb,Scorptec,379,AUD,1
+2026-11-05T07:40:48.567Z,tgg-sony-xm5,The Good Guys,549,AUD,1
+2026-11-05T07:40:48.567Z,jb-ps5-slim,JB Hi-Fi,999,AUD,1
+2026-11-05T07:40:48.567Z,sc-crucial-t500-2tb,Scorptec,549,AUD,0
+2026-11-05T07:40:48.567Z,sc-corsair-ddr5-6000,Scorptec,999,AUD,0
+2026-11-05T07:40:48.567Z,sc-corsair-ddr5-5200,Scorptec,699,AUD,1
+2026-11-05T07:40:48.567Z,um-990pro-2tb,Umart,769,AUD,1
+2026-11-05T07:40:48.567Z,um-g502-lightspeed,Umart,139,AUD,1
+2026-11-05T07:40:48.567Z,um-g502x-black,Umart,77,AUD,1
+2026-11-05T07:40:48.567Z,in-vs-xm5,Vijay Sales,19999,INR,1
+2026-11-05T07:40:48.567Z,in-vs-mx3s,Vijay Sales,9999,INR,0
+2026-11-05T07:40:48.567Z,in-vs-ps5-disc,Vijay Sales,69990,INR,0
+2026-11-05T07:40:48.567Z,in-vs-ps5-digital,Vijay Sales,64990,INR,0
+2026-11-05T07:40:48.567Z,in-vs-airpods5,Vijay Sales,14490,INR,1
+2026-11-05T07:40:48.567Z,sg-courts-xm5,Courts,329,SGD,1
+2026-11-05T07:40:48.567Z,sg-courts-mx3s,Courts,125,SGD,0
+2026-11-05T07:40:48.567Z,sg-courts-990,Courts,440,SGD,0
+2026-11-05T07:40:48.567Z,sg-ch-xm5,Challenger,309,SGD,1
+2026-11-05T07:40:48.567Z,sg-ch-mx3s,Challenger,182,SGD,0
+2026-11-05T07:40:48.567Z,sg-ch-990,Challenger,415,SGD,1
+2026-11-05T07:40:48.567Z,fr-ldlc-xm5,LDLC,279.95,EUR,1
+2026-11-05T07:40:48.567Z,fr-ldlc-990-1,LDLC,269.95,EUR,1
+2026-11-05T07:40:48.567Z,fr-ldlc-990-2,LDLC,549.95,EUR,1
+2026-11-05T07:40:48.567Z,br-kabum-xm5,KaBuM,2499.99,BRL,1
+2026-11-05T07:40:48.567Z,br-kabum-990-1,KaBuM,2599.99,BRL,0
+2026-11-05T07:40:48.567Z,br-kabum-990-2,KaBuM,4259,BRL,1
+2026-11-05T07:40:48.567Z,br-kabum-mx3s,KaBuM,586.99,BRL,0
+2026-11-05T07:40:48.567Z,jp-kakaku-xm5,Kakaku.com (lowest listed),30669,JPY,
+2026-11-05T07:40:48.567Z,jp-kakaku-mx3s,Kakaku.com (lowest listed),16200,JPY,
