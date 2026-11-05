@@ -2,7 +2,7 @@
  {
   "id": "empty-table-header",
   "impact": "minor",
-  "nodes": 3,
+  "nodes": 4,
   "help": "Table header text should not be empty"
  },
  {

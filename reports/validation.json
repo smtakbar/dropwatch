@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T08:20:33.931Z",
- "totalChecks": 42,
+ "ranAt": "2026-11-05T09:37:35.166Z",
+ "totalChecks": 44,
  "passed": 42,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 2
+   "secs": 3
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 47
+   "secs": 8
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 46
+   "secs": 29
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 47
+   "secs": 48
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 47
+   "secs": 20
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 32
+   "secs": 29
   }
  ],
  "results": [
@@ -72,9 +72,9 @@
    "id": "A5",
    "area": "A11y",
    "check": "Every input has a placeholder",
-   "pass": true,
-   "severity": "-",
-   "detail": "[]"
+   "pass": false,
+   "severity": "minor",
+   "detail": "[\"b-date\"]"
   },
   {
    "id": "A6",
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "2s"
+   "detail": "3s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "47s"
+   "detail": "8s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "46s"
+   "detail": "29s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "47s"
+   "detail": "48s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "47s"
+   "detail": "20s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "32s"
+   "detail": "29s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 47s"
+   "detail": "6/6 succeeded; median 29s"
   },
   {
    "id": "B6b",
@@ -210,7 +210,7 @@
    "check": "Cross-store comparison found at least one other store",
    "pass": true,
    "severity": "-",
-   "detail": "3/6 cards"
+   "detail": "4/6 cards"
   },
   {
    "id": "C1",
@@ -239,18 +239,10 @@
   {
    "id": "D1",
    "area": "Alerts",
-   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
-   "pass": true,
-   "severity": "-",
-   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
-  },
-  {
-   "id": "D2",
-   "area": "History",
-   "check": "Price history accumulates across refreshes",
-   "pass": true,
-   "severity": "-",
-   "detail": "12 point(s)"
+   "check": "Alert test could not run (price fetch failed)",
+   "pass": false,
+   "severity": "major",
+   "detail": "price not read in 75s {\"region\":\"US\",\"items\":[{\"c\":\"AU\",\"p\":29,\"e\":null,\"r\":\"JB Hi-Fi\"}],\"pend\":\"\",\"meta\":\"\",\"grid\":\"Nothing tracked in United States yet. Type a product name or paste a link above, or pick one below. Your list stays in this browser and is private to you.\"} | console: Access to fetch at 'https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.thegoodguys.com.au%2Fremington-5-in-1-titanium-multi-grooming-kit-pg6024au' from origin | Failed to load resource: net::ERR_FAILED | Access to fetch at 'https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.woolworths.com.au%2Fshop%2Fproductdetails%2F1122495357%2Fremington-pg6024au-all-in-1-ti"
   },
   {
    "id": "E1",
@@ -363,6 +355,30 @@
    "pass": true,
    "severity": "-",
    "detail": "9 tiles, scored=true"
+  },
+  {
+   "id": "I1",
+   "area": "Price protection",
+   "check": "'I bought this' shows a claim banner when the price fell below what you paid inside the window",
+   "pass": true,
+   "severity": "-",
+   "detail": "Price protection: it dropped $40.00 since you paid $130.00"
+  },
+  {
+   "id": "I2",
+   "area": "Price protection",
+   "check": "Purchase record survives a reload",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "I3",
+   "area": "Price protection",
+   "check": "No claim banner when the price is above what you paid; shows 'protection on'",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
   },
   {
    "id": "F1",
