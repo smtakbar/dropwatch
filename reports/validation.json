@@ -1,18 +1,18 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T08:14:10.302Z",
- "totalChecks": 41,
- "passed": 40,
+ "ranAt": "2026-11-05T08:20:33.931Z",
+ "totalChecks": 42,
+ "passed": 42,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 3
+   "secs": 2
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 49
+   "secs": 47
   },
   {
    "store": "The Good Guys",
@@ -22,17 +22,17 @@
   {
    "store": "Umart",
    "ok": true,
-   "secs": 46
+   "secs": 47
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 42
+   "secs": 47
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 46
+   "secs": 32
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "3s"
+   "detail": "2s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "49s"
+   "detail": "47s"
   },
   {
    "id": "B3",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "46s"
+   "detail": "47s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "42s"
+   "detail": "47s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "46s"
+   "detail": "32s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 46s"
+   "detail": "6/6 succeeded; median 47s"
   },
   {
    "id": "B6b",
@@ -239,10 +239,18 @@
   {
    "id": "D1",
    "area": "Alerts",
-   "check": "Alert test could not run (price fetch failed)",
-   "pass": false,
-   "severity": "major",
-   "detail": "price not read in 75s"
+   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
+   "pass": true,
+   "severity": "-",
+   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
+  },
+  {
+   "id": "D2",
+   "area": "History",
+   "check": "Price history accumulates across refreshes",
+   "pass": true,
+   "severity": "-",
+   "detail": "12 point(s)"
   },
   {
    "id": "E1",
