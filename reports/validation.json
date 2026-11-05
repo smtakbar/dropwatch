@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T06:45:08.971Z",
- "totalChecks": 39,
- "passed": 39,
+ "ranAt": "2026-11-05T08:06:48.570Z",
+ "totalChecks": 41,
+ "passed": 40,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 3
+   "secs": 2
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 36
+   "secs": 45
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 35
+   "secs": 49
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 46
+   "secs": 53
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 34
+   "secs": 48
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 38
+   "secs": 49
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "3s"
+   "detail": "2s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "36s"
+   "detail": "45s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "35s"
+   "detail": "49s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "46s"
+   "detail": "53s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "34s"
+   "detail": "48s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "38s"
+   "detail": "49s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 36s"
+   "detail": "6/6 succeeded; median 49s"
   },
   {
    "id": "B6b",
@@ -239,18 +239,10 @@
   {
    "id": "D1",
    "area": "Alerts",
-   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
-   "pass": true,
-   "severity": "-",
-   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
-  },
-  {
-   "id": "D2",
-   "area": "History",
-   "check": "Price history accumulates across refreshes",
-   "pass": true,
-   "severity": "-",
-   "detail": "10 point(s)"
+   "check": "Alert test could not run (price fetch failed)",
+   "pass": false,
+   "severity": "major",
+   "detail": "price not read in 75s"
   },
   {
    "id": "E1",
@@ -339,6 +331,30 @@
    "pass": true,
    "severity": "-",
    "detail": "[{\"s\":\"pricehistory.app\",\"low\":31490,\"avg\":51198,\"high\":61151}]"
+  },
+  {
+   "id": "H1",
+   "area": "Regions",
+   "check": "A Myntra link is classified as an Indian store and the page switches to India",
+   "pass": true,
+   "severity": "-",
+   "detail": "{\"c\":\"IN\",\"s\":\"IN\",\"r\":\"IN\"}"
+  },
+  {
+   "id": "H2",
+   "area": "Engagement",
+   "check": "A game is offered while the price is being read",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "H3",
+   "area": "Engagement",
+   "check": "Game shows 9 tiles and tapping a green drop scores a point",
+   "pass": true,
+   "severity": "-",
+   "detail": "9 tiles, scored=true"
   },
   {
    "id": "F1",
