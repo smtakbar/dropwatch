@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T05:03:43.400Z",
- "totalChecks": 29,
- "passed": 16,
+ "ranAt": "2026-11-05T05:07:14.225Z",
+ "totalChecks": 30,
+ "passed": 23,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 54
+   "secs": 0
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 61
+   "secs": 0
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 60
+   "secs": 0
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 59
+   "secs": 0
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 7
+   "secs": 0
   },
   {
    "store": "Scorptec (2)",
-   "ok": false,
-   "secs": 75
+   "ok": true,
+   "secs": 0
   }
  ],
  "results": [
@@ -64,9 +64,9 @@
    "id": "A4",
    "area": "UX",
    "check": "Single primary 'Track' call to action",
-   "pass": false,
-   "severity": "minor",
-   "detail": "2 found: [\"+ Track product\",\"Track\"]"
+   "pass": true,
+   "severity": "-",
+   "detail": "1 found: [\"Track this product\"]"
   },
   {
    "id": "A5",
@@ -80,41 +80,49 @@
    "id": "A6",
    "area": "A11y",
    "check": "Every input has a label or aria-label",
-   "pass": false,
-   "severity": "minor",
-   "detail": "[\"quick\"]"
+   "pass": true,
+   "severity": "-",
+   "detail": "[]"
   },
   {
    "id": "A7",
    "area": "First run",
    "check": "Demo mode or sample data offered on an empty list",
-   "pass": false,
-   "severity": "major",
-   "detail": "empty list shows only a text prompt"
+   "pass": true,
+   "severity": "-",
+   "detail": ""
   },
   {
    "id": "A8",
    "area": "Credibility",
    "check": "Link to the source repository on the page",
-   "pass": false,
-   "severity": "major",
+   "pass": true,
+   "severity": "-",
    "detail": ""
   },
   {
    "id": "A9",
    "area": "Hygiene",
    "check": "No console errors on load",
-   "pass": false,
-   "severity": "minor",
-   "detail": "Failed to load resource: the server responded with a status of 404 ()"
+   "pass": true,
+   "severity": "-",
+   "detail": ""
   },
   {
    "id": "A10",
    "area": "First run",
    "check": "Public sample products listed with real logged prices",
-   "pass": false,
-   "severity": "major",
-   "detail": "0 sample product(s)"
+   "pass": true,
+   "severity": "-",
+   "detail": "12 sample product(s)"
+  },
+  {
+   "id": "A11",
+   "area": "First run",
+   "check": "'Add to my list' on a sample product produces a priced card",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
   },
   {
    "id": "B1",
@@ -122,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "54s"
+   "detail": "0s"
   },
   {
    "id": "B2",
@@ -130,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "61s"
+   "detail": "0s"
   },
   {
    "id": "B3",
@@ -138,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "60s"
+   "detail": "0s"
   },
   {
    "id": "B4",
@@ -146,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "59s"
+   "detail": "0s"
   },
   {
    "id": "B5",
@@ -154,15 +162,15 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "7s"
+   "detail": "0s"
   },
   {
    "id": "B6",
    "area": "Price fetch",
    "check": "Track Scorptec (2) product and read a price",
-   "pass": false,
-   "severity": "major",
-   "detail": "no price within 75s"
+   "pass": true,
+   "severity": "-",
+   "detail": "0s"
   },
   {
    "id": "B0",
@@ -170,47 +178,47 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "5/6 succeeded; median 59s"
+   "detail": "6/6 succeeded; median 0s"
   },
   {
    "id": "B6b",
    "area": "Features",
    "check": "Cards show the transparent deal-check rule line",
-   "pass": false,
-   "severity": "minor",
+   "pass": true,
+   "severity": "-",
    "detail": ""
   },
   {
    "id": "B7",
    "area": "Features",
    "check": "Cards show a buy/wait verdict",
-   "pass": true,
-   "severity": "-",
-   "detail": "5/6 cards"
+   "pass": false,
+   "severity": "minor",
+   "detail": "0/18 cards"
   },
   {
    "id": "B8",
    "area": "Features",
    "check": "Cards show a product image",
-   "pass": true,
-   "severity": "-",
-   "detail": "5/6 cards"
+   "pass": false,
+   "severity": "minor",
+   "detail": "0/18 cards"
   },
   {
    "id": "B9",
    "area": "Features",
    "check": "Cross-store comparison found at least one other store",
-   "pass": true,
-   "severity": "-",
-   "detail": "2/6 cards"
+   "pass": false,
+   "severity": "minor",
+   "detail": "0/18 cards"
   },
   {
    "id": "C1",
    "area": "Persistence",
    "check": "List survives a reload",
-   "pass": false,
-   "severity": "blocker",
-   "detail": "6 before, 0 after"
+   "pass": true,
+   "severity": "-",
+   "detail": "18 before, 18 after"
   },
   {
    "id": "C2",
@@ -258,7 +266,7 @@
    "check": "Tap targets at least 40px tall",
    "pass": false,
    "severity": "minor",
-   "detail": "[{\"t\":\"Open the data\",\"w\":86,\"h\":14},{\"t\":\"Source code\",\"w\":74,\"h\":17},{\"t\":\"Product requirements\",\"w\":130,\"h\":17},{\"t\":\"Test report\",\"w\":64,\"h\":17},{\"t\":\"Give feedback\",\"w\":86,\"h\":17}]"
+   "detail": "[{\"t\":\"Open the data\",\"w\":86,\"h\":14}]"
   },
   {
    "id": "F1",
