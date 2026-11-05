@@ -63,6 +63,8 @@ Each card has a "Price history on other trackers" panel. It lists lookup links f
 `data/prices.csv` (timestamp, id, store, price, currency, in_stock) and `data/fetch-log.csv` are public. Prices belong to the retailers; the log is for research and demonstration.
 
 ## Run the tests
+`node tests/country.mjs` checks store-country detection (a regression table that includes the zara.com/au and myntra.com cases). It runs on every change to `docs/engine.js`.
+
 `validate.yml` runs on GitHub. To run locally: `npm i playwright-core axe-core lighthouse chrome-launcher`, then `node tests/e2e.mjs` and `node tests/lighthouse.mjs`.
 
 ## Documents

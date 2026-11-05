@@ -23,9 +23,21 @@ function detectFromUrl(raw) {
   for (const k of [...u.searchParams.keys()]) if (/^(utm_|ref|fbclid|gclid|msclkid|tag$|linkcode|th$|psc$|smid|sprefix|cid$)/i.test(k)) u.searchParams.delete(k);
   const host = u.hostname.replace(/^www\./, "");
   const DOM = [[/(^|\.)(ldlc|fnac|darty|boulanger|cdiscount)\.com$/, "FR"], [/(^|\.)kakaku\.com$/, "JP"], [/(^|\.)danawa\.com$/, "KR"], [/(^|\.)(memoryexpress|canadacomputers)\.com$/, "CA"], [/(^|\.)(noon|sharafdg)\.com$/, "AE"], [/(^|\.)(vijaysales|myntra|flipkart|nykaa|tatacliq|croma|ajio|bigbasket|snapdeal|jiomart|meesho|firstcry|pepperfry|lenskart)\.com$/, "IN"], [/(^|\.)(courts|challenger)\.com\.sg$/, "SG"]];
-  let country = DOM.find(([re]) => re.test(host))?.[1] ?? TLD.find(([re]) => re.test(host))?.[1] ?? (/\.com$/.test(host) ? "US" : null);
+  // Country comes only from explicit signals: known store, country domain, a locale in the path or subdomain, or the US store list.
+  // A bare .com is NOT assumed to be American (global shops such as zara.com serve every country from one domain).
+  const CC = { au: "AU", us: "US", gb: "GB", uk: "GB", ca: "CA", de: "DE", fr: "FR", jp: "JP", in: "IN", sg: "SG", nz: "NZ", ae: "AE", br: "BR", kr: "KR" };
+  const pathLocale = () => {
+    const seg = u.pathname.split("/").filter(Boolean)[0]?.toLowerCase() ?? "";
+    let m = seg.match(/^([a-z]{2})$/); if (m && CC[m[1]]) return CC[m[1]];
+    m = seg.match(/^[a-z]{2}[-_]([a-z]{2})$/); if (m && CC[m[1]]) return CC[m[1]];
+    m = seg.match(/^([a-z]{2})[-_][a-z]{2}$/); if (m && CC[m[1]]) return CC[m[1]];
+    return null;
+  };
+  const subLocale = () => { const parts = host.split("."); return parts.length > 2 && CC[parts[0].toLowerCase()] ? CC[parts[0].toLowerCase()] : null; };
+  const explicit = DOM.find(([re]) => re.test(host))?.[1] ?? TLD.find(([re]) => re.test(host))?.[1] ?? pathLocale() ?? subLocale() ?? null;
+  const country = explicit ?? (isTrusted(u.toString(), "US") && !isTrusted(u.toString(), "AU") ? "US" : null);
   const retailer = RETAILERS.find(([re]) => re.test(host))?.[1] ?? host;
-  return { url: u.toString(), retailer, country };
+  return { url: u.toString(), retailer, country, explicit: !!explicit };
 }
 
 
@@ -268,8 +280,8 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 function makeItem(input, name, region) {
   const v = input.trim();
   const d = /^https?:\/\//i.test(v) || (/^[^\s]+\.[a-z]{2,}(\/|$)/i.test(v) && !/\s/.test(v)) ? detectFromUrl(v) : null;
-  // A bare .com is guessed as US; if the store is on the visitor's own region list, trust the region instead.
-  if (d && region && isTrusted(d.url, region)) d.country = region;
+  // A country stated by the link (store, country domain, /au/ in the path) always wins. Otherwise assume the visitor pasted it from their own region.
+  if (d && !d.explicit && region && (d.country == null || isTrusted(d.url, region))) d.country = region;
   if (d) return { id: uid(), url: d.url, name: (name || "").trim().slice(0, 120), retailer: d.retailer, storeCountry: d.country ?? region, country: d.country ?? region, history: [], offers: [], addedAt: new Date().toISOString() };
   return { id: uid(), url: "", name: v.slice(0, 120), retailer: null, storeCountry: region, country: region, history: [], offers: [], addedAt: new Date().toISOString() };
 }
