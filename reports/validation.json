@@ -1,0 +1,256 @@
+{
+ "site": "https://smtakbar.github.io/dropwatch/",
+ "ranAt": "2026-11-05T04:51:25.937Z",
+ "totalChecks": 27,
+ "passed": 19,
+ "fetchTimings": [
+  {
+   "store": "JB Hi-Fi",
+   "ok": true,
+   "secs": 62
+  },
+  {
+   "store": "Scorptec",
+   "ok": true,
+   "secs": 57
+  },
+  {
+   "store": "The Good Guys",
+   "ok": true,
+   "secs": 33
+  },
+  {
+   "store": "Umart",
+   "ok": true,
+   "secs": 33
+  },
+  {
+   "store": "JB Hi-Fi (2)",
+   "ok": true,
+   "secs": 36
+  },
+  {
+   "store": "Scorptec (2)",
+   "ok": true,
+   "secs": 37
+  }
+ ],
+ "results": [
+  {
+   "id": "A1",
+   "area": "Load",
+   "check": "Site returns HTTP 200",
+   "pass": true,
+   "severity": "-",
+   "detail": "status 200"
+  },
+  {
+   "id": "A2",
+   "area": "Hygiene",
+   "check": "Page has a sensible <title>",
+   "pass": true,
+   "severity": "-",
+   "detail": "\"DropWatch\""
+  },
+  {
+   "id": "A3",
+   "area": "Hygiene",
+   "check": "No head tags visible as text",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "A4",
+   "area": "UX",
+   "check": "Single primary 'Track' call to action",
+   "pass": false,
+   "severity": "minor",
+   "detail": "2 found: [\"+ Track product\",\"Track\"]"
+  },
+  {
+   "id": "A5",
+   "area": "A11y",
+   "check": "Every input has a placeholder",
+   "pass": true,
+   "severity": "-",
+   "detail": "[]"
+  },
+  {
+   "id": "A6",
+   "area": "A11y",
+   "check": "Every input has a label or aria-label",
+   "pass": false,
+   "severity": "minor",
+   "detail": "[\"quick\"]"
+  },
+  {
+   "id": "A7",
+   "area": "First run",
+   "check": "Demo mode or sample data offered on an empty list",
+   "pass": false,
+   "severity": "major",
+   "detail": "empty list shows only a text prompt"
+  },
+  {
+   "id": "A8",
+   "area": "Credibility",
+   "check": "Link to the source repository on the page",
+   "pass": false,
+   "severity": "major",
+   "detail": ""
+  },
+  {
+   "id": "A9",
+   "area": "Hygiene",
+   "check": "No console errors on load",
+   "pass": false,
+   "severity": "minor",
+   "detail": "Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "id": "B1",
+   "area": "Price fetch",
+   "check": "Track JB Hi-Fi product and read a price",
+   "pass": true,
+   "severity": "-",
+   "detail": "62s"
+  },
+  {
+   "id": "B2",
+   "area": "Price fetch",
+   "check": "Track Scorptec product and read a price",
+   "pass": true,
+   "severity": "-",
+   "detail": "57s"
+  },
+  {
+   "id": "B3",
+   "area": "Price fetch",
+   "check": "Track The Good Guys product and read a price",
+   "pass": true,
+   "severity": "-",
+   "detail": "33s"
+  },
+  {
+   "id": "B4",
+   "area": "Price fetch",
+   "check": "Track Umart product and read a price",
+   "pass": true,
+   "severity": "-",
+   "detail": "33s"
+  },
+  {
+   "id": "B5",
+   "area": "Price fetch",
+   "check": "Track JB Hi-Fi (2) product and read a price",
+   "pass": true,
+   "severity": "-",
+   "detail": "36s"
+  },
+  {
+   "id": "B6",
+   "area": "Price fetch",
+   "check": "Track Scorptec (2) product and read a price",
+   "pass": true,
+   "severity": "-",
+   "detail": "37s"
+  },
+  {
+   "id": "B0",
+   "area": "Price fetch",
+   "check": "At least 5 of 6 real products return a price in the browser",
+   "pass": true,
+   "severity": "-",
+   "detail": "6/6 succeeded; median 37s"
+  },
+  {
+   "id": "B7",
+   "area": "Features",
+   "check": "Cards show a buy/wait verdict",
+   "pass": true,
+   "severity": "-",
+   "detail": "6/6 cards"
+  },
+  {
+   "id": "B8",
+   "area": "Features",
+   "check": "Cards show a product image",
+   "pass": true,
+   "severity": "-",
+   "detail": "6/6 cards"
+  },
+  {
+   "id": "B9",
+   "area": "Features",
+   "check": "Cross-store comparison found at least one other store",
+   "pass": true,
+   "severity": "-",
+   "detail": "3/6 cards"
+  },
+  {
+   "id": "C1",
+   "area": "Persistence",
+   "check": "List survives a reload",
+   "pass": true,
+   "severity": "-",
+   "detail": "6 before, 6 after"
+  },
+  {
+   "id": "C2",
+   "area": "Privacy",
+   "check": "A fresh visitor does not see another visitor's list",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "D0",
+   "area": "Alerts",
+   "check": "Test setup: fresh context starts empty",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "D1",
+   "area": "Alerts",
+   "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
+   "pass": true,
+   "severity": "-",
+   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
+  },
+  {
+   "id": "D2",
+   "area": "History",
+   "check": "Price history accumulates across refreshes",
+   "pass": false,
+   "severity": "minor",
+   "detail": "1 point(s)"
+  },
+  {
+   "id": "E1",
+   "area": "Mobile",
+   "check": "No horizontal scroll at 375px",
+   "pass": false,
+   "severity": "major",
+   "detail": "scrollWidth 519 vs 375"
+  },
+  {
+   "id": "E2",
+   "area": "Mobile",
+   "check": "Tap targets at least 40px tall",
+   "pass": false,
+   "severity": "minor",
+   "detail": "[{\"t\":\"🇦🇺 Australia (AUD)\",\"w\":221,\"h\":32},{\"t\":\"+ Track product\",\"w\":139,\"h\":36},{\"t\":\"Track\",\"w\":65,\"h\":36}]"
+  },
+  {
+   "id": "F1",
+   "area": "A11y",
+   "check": "No critical or serious axe violations",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  }
+ ]
+}
