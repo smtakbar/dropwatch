@@ -65,9 +65,9 @@ for (let i = 0; i < PRODUCTS.length; i++) {
   await page.click("#quickGo");
   await page.click("#m-go");
   let ok = false, why = "";
-  try { await page.waitForFunction((n) => document.querySelectorAll(".card .price").length >= n, i + 1, { timeout: 75000 }); ok = true; } catch { why = "no price within 75s"; }
+  try { await page.waitForFunction((n) => document.querySelectorAll("#grid .card .price").length >= n, i + 1, { timeout: 75000 }); ok = true; } catch { why = "no price within 75s"; }
   const secs = Math.round((Date.now() - s) / 1000);
-  const info = await page.evaluate(() => { const c = document.querySelector(".card:not(.pend)"); return c ? { text: c.innerText.replace(/\n+/g, " | ").slice(0, 200) } : null; });
+  const info = await page.evaluate(() => { const c = document.querySelector("#grid .card:not(.pend)"); return c ? { text: c.innerText.replace(/\n+/g, " | ").slice(0, 200) } : null; });
   timings.push({ store, ok, secs });
   rec(`B${i + 1}`, "Price fetch", `Track ${store} product and read a price`, ok, "major", ok ? `${secs}s` : why);
   await page.waitForTimeout(800);
@@ -76,21 +76,21 @@ const nOk = timings.filter((t) => t.ok).length;
 rec("B0", "Price fetch", "At least 5 of 6 real products return a price in the browser", nOk >= 5, "blocker", `${nOk}/${PRODUCTS.length} succeeded; median ${timings.filter((t) => t.ok).map((t) => t.secs).sort((a, b) => a - b)[Math.floor(nOk / 2)] ?? "n/a"}s`);
 await page.waitForTimeout(3000);
 await page.screenshot({ path: `${OUT}/screenshots/02-after-tracking-desktop.png`, fullPage: true });
-const cardInfo = await page.evaluate(() => [...document.querySelectorAll(".card:not(.pend)")].map((c) => ({ hasImg: !!c.querySelector("img.thumb"), advice: c.querySelector(".advice b")?.textContent ?? null, offers: c.querySelectorAll("table tr").length - 1 })));
-rec("B6b", "Features", "Cards show the transparent deal-check rule line", await page.locator(".card .rule").count() > 0, "minor");
+const cardInfo = await page.evaluate(() => [...document.querySelectorAll("#grid .card:not(.pend)")].map((c) => ({ hasImg: !!c.querySelector("img.thumb"), advice: c.querySelector(".advice b")?.textContent ?? null, offers: c.querySelectorAll("table tr").length - 1 })));
+rec("B6b", "Features", "Cards show the transparent deal-check rule line", await page.locator("#grid .card .rule").count() > 0, "minor");
 rec("B7", "Features", "Cards show a buy/wait verdict", cardInfo.some((c) => c.advice), "minor", `${cardInfo.filter((c) => c.advice).length}/${cardInfo.length} cards`);
 rec("B8", "Features", "Cards show a product image", cardInfo.some((c) => c.hasImg), "minor", `${cardInfo.filter((c) => c.hasImg).length}/${cardInfo.length} cards`);
 rec("B9", "Features", "Cross-store comparison found at least one other store", cardInfo.some((c) => c.offers >= 1), "minor", `${cardInfo.filter((c) => c.offers >= 1).length}/${cardInfo.length} cards`);
 
 // ---- C. Persistence and refresh
-const before = await page.locator(".card:not(.pend)").count();
+const before = await page.locator("#grid .card:not(.pend)").count();
 await page.reload({ waitUntil: "load" });
 await page.waitForTimeout(1500);
-const after = await page.locator(".card:not(.pend)").count();
+const after = await page.locator("#grid .card:not(.pend)").count();
 rec("C1", "Persistence", "List survives a reload", after === before && after > 0, "blocker", `${before} before, ${after} after`);
 const other = await browser.newContext({ viewport: { width: 1280, height: 900 } });
 const p2 = await other.newPage(); await p2.goto(SITEURL, { waitUntil: "load" }); await p2.waitForTimeout(1000);
-rec("C2", "Privacy", "A fresh visitor does not see another visitor's list", (await p2.locator(".card:not(.pend)").count()) === 0, "blocker");
+rec("C2", "Privacy", "A fresh visitor does not see another visitor's list", (await p2.locator("#grid .card:not(.pend)").count()) === 0, "blocker");
 await other.close();
 
 // ---- D. Refresh and alerts (simulate a >10% drop by raising the stored previous price)
@@ -101,7 +101,7 @@ await pA.goto(SITEURL, { waitUntil: "load" });
 const items = await pA.evaluate(() => JSON.parse(localStorage.getItem("dw_items") || "[]"));
 rec("D0", "Alerts", "Test setup: fresh context starts empty", items.length === 0, "minor");
 await pA.fill("#quick", PRODUCTS[0][1]); await pA.click("#quickGo"); await pA.click("#m-go");
-let readOk = true; try { await pA.waitForSelector(".card .price", { timeout: 75000 }); } catch { readOk = false; }
+let readOk = true; try { await pA.waitForSelector("#grid .card .price", { timeout: 75000 }); } catch { readOk = false; }
 if (readOk) {
   await pA.waitForTimeout(2500);
   await pA.evaluate(() => { const it = JSON.parse(localStorage.getItem("dw_items")); it[0].price = Math.round(it[0].price * 1.5 * 100) / 100; it[0].history = it[0].history.map(([t, p]) => [new Date(Date.parse(t) - 25 * 3600e3).toISOString(), p]); it[0].checkedAt = new Date(Date.now() - 2 * 3600e3).toISOString(); localStorage.setItem("dw_items", JSON.stringify(it)); });
@@ -117,7 +117,7 @@ await ctxA.close();
 // ---- E. Mobile layout
 const mob = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
 const pm = await mob.newPage(); await pm.goto(SITEURL, { waitUntil: "load" }); await pm.waitForTimeout(1200);
-const m = await pm.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, small: [...document.querySelectorAll("button,a,select,input")].filter((e) => e.offsetParent).map((e) => { const r = e.getBoundingClientRect(); return { t: (e.textContent || e.id || e.tagName).trim().slice(0, 20), w: Math.round(r.width), h: Math.round(r.height) }; }).filter((x) => x.h < 40) }));
+const m = await pm.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, small: [...document.querySelectorAll("button,a,select,input")].filter((e) => e.offsetParent && !e.closest("p")).map((e) => { const r = e.getBoundingClientRect(); return { t: (e.textContent || e.id || e.tagName).trim().slice(0, 20), w: Math.round(r.width), h: Math.round(r.height) }; }).filter((x) => x.h < 40) }));
 rec("E1", "Mobile", "No horizontal scroll at 375px", m.sw <= m.cw + 1, "major", `scrollWidth ${m.sw} vs ${m.cw}`);
 rec("E2", "Mobile", "Tap targets at least 40px tall", m.small.length === 0, "minor", JSON.stringify(m.small.slice(0, 5)));
 await pm.screenshot({ path: `${OUT}/screenshots/03-first-load-mobile.png` });

@@ -11,6 +11,7 @@ for (const form of ["mobile", "desktop"]) {
   out[form] = {
     scores: Object.fromEntries(Object.entries(lhr.categories).map(([k, v]) => [k, Math.round(v.score * 100)])),
     metrics: { fcp_ms: Math.round(lhr.audits["first-contentful-paint"].numericValue), lcp_ms: Math.round(lhr.audits["largest-contentful-paint"].numericValue), cls: +lhr.audits["cumulative-layout-shift"].numericValue.toFixed(3), tbt_ms: Math.round(lhr.audits["total-blocking-time"].numericValue) },
+    layoutShifts: (lhr.audits["layout-shifts"]?.details?.items ?? []).slice(0, 6).map((i) => ({ score: +(i.score ?? 0).toFixed(3), node: i.node?.selector ?? i.node?.nodeLabel ?? "?" })),
     failedAudits: Object.values(lhr.audits).filter((a) => a.score !== null && a.score < 0.9 && a.scoreDisplayMode === "binary").map((a) => a.id),
   };
 }
