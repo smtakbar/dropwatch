@@ -94,5 +94,189 @@
     "category": "computer-accessories",
     "url": "https://www.centrecom.com.au/logitech-mx-master-3s-performance-wireless-mouse-for-macosipados-pale-gray",
     "country": "AU"
+  },
+  {
+    "id": "in-vs-xm5",
+    "store": "Vijay Sales",
+    "name": "Sony WH-1000XM5 Wireless Noise Cancelling Headphones (Black)",
+    "category": "audio",
+    "url": "https://www.vijaysales.com/p/P206834/206834/sony-wh-1000xm5-wireless-industry-leading-noise-canceling-headphones-with-auto-noise-canceling-up-to-30-hours-battery-life-black",
+    "country": "IN"
+  },
+  {
+    "id": "in-vs-mx3s",
+    "store": "Vijay Sales",
+    "name": "Logitech MX Master 3S Wireless Mouse (Graphite)",
+    "category": "computing",
+    "url": "https://www.vijaysales.com/p/239381/logitech-mx-master-3s-wireless-performance-mouse-8k-dpi-ultra-fast-scrolling-quiet-clicks-track-on-glass-usb-c-bluetooth-multi-device-compatibility-graphite",
+    "country": "IN"
+  },
+  {
+    "id": "in-vs-ps5-disc",
+    "store": "Vijay Sales",
+    "name": "Sony PlayStation 5 Slim Disc Edition Console",
+    "category": "gaming",
+    "url": "https://www.vijaysales.com/p/259648/sony-playstationr5-sa-e-disc-edition-gaming-console-ps5r-slim",
+    "country": "IN"
+  },
+  {
+    "id": "in-vs-ps5-digital",
+    "store": "Vijay Sales",
+    "name": "Sony PlayStation 5 Digital Edition (Slim) Console",
+    "category": "gaming",
+    "url": "https://www.vijaysales.com/p/260756/sony-playstation-5-digital-edition-slim-console-video-game",
+    "country": "IN"
+  },
+  {
+    "id": "in-vs-airpods5",
+    "store": "Vijay Sales",
+    "name": "Apple AirPods 5 with Standard Case",
+    "category": "audio",
+    "url": "https://www.vijaysales.com/p/P261027/261027/apple-airpods-5",
+    "country": "IN"
+  },
+  {
+    "id": "sg-courts-xm5",
+    "store": "Courts",
+    "name": "Sony WH-1000XM5 Wireless Headphones (Black)",
+    "category": "audio",
+    "url": "https://www.courts.com.sg/sony-wh-1000xm5-bme-wireless-noise-cancellation-headphones-black-ip176694",
+    "country": "SG"
+  },
+  {
+    "id": "sg-courts-mx3s",
+    "store": "Courts",
+    "name": "Logitech MX Master 3S Wireless Mouse (Graphite)",
+    "category": "computing",
+    "url": "https://www.courts.com.sg/logitech-910-006561-mx-master-3s-wireless-mouse-graphite-ip176956",
+    "country": "SG"
+  },
+  {
+    "id": "sg-courts-990",
+    "store": "Courts",
+    "name": "Samsung 990 Pro 1TB NVMe with Heatsink",
+    "category": "storage",
+    "url": "https://www.courts.com.sg/samsung-990-pro-1tb-nvme-2.0-with-heatsink-mz-v9p1t0cw-IP184102.html",
+    "country": "SG"
+  },
+  {
+    "id": "sg-ch-xm5",
+    "store": "Challenger",
+    "name": "Sony WH-1000XM5 Wireless Noise Cancelling Headphones (Blue)",
+    "category": "audio",
+    "url": "https://online.challenger.sg/products/sony-wh-1000xm5-wireless-noise-cancelling-headphones-blue",
+    "country": "SG"
+  },
+  {
+    "id": "sg-ch-mx3s",
+    "store": "Challenger",
+    "name": "Logitech MX Master 3S Wireless Silent Mouse",
+    "category": "computing",
+    "url": "https://online.challenger.sg/products/logitech-mx-master-3s-wireless-silent-mouse",
+    "country": "SG"
+  },
+  {
+    "id": "sg-ch-990",
+    "store": "Challenger",
+    "name": "Samsung 990 Pro 1TB NVMe M.2 SSD",
+    "category": "storage",
+    "url": "https://online.challenger.sg/products/samsung-990-pro-1tb-nvme-m-2-ssd",
+    "country": "SG"
+  },
+  {
+    "id": "fr-ldlc-xm5",
+    "store": "LDLC",
+    "name": "Sony WH-1000XM5 Black",
+    "category": "audio",
+    "url": "https://www.ldlc.com/en/product/PB00535836.html",
+    "country": "FR"
+  },
+  {
+    "id": "fr-ldlc-990-1",
+    "store": "LDLC",
+    "name": "Samsung SSD 990 PRO M.2 PCIe NVMe 1TB",
+    "category": "storage",
+    "url": "https://www.ldlc.com/en/product/PB00512844.html",
+    "country": "FR"
+  },
+  {
+    "id": "fr-ldlc-990-2",
+    "store": "LDLC",
+    "name": "Samsung SSD 990 PRO M.2 PCIe NVMe 2TB",
+    "category": "storage",
+    "url": "https://www.ldlc.com/en/product/PB00512964.html",
+    "country": "FR"
+  },
+  {
+    "id": "fr-ldlc-mx3",
+    "store": "LDLC",
+    "name": "Logitech MX Master 3 (Graphite)",
+    "category": "computing",
+    "url": "https://www.ldlc.com/en/product/PB00278033.html",
+    "country": "FR"
+  },
+  {
+    "id": "br-kabum-xm5",
+    "store": "KaBuM",
+    "name": "Sony WH-1000XM5 Over-ear (Preto)",
+    "category": "audio",
+    "url": "https://www.kabum.com.br/produto/462802/fone-de-ouvido-sony-bluetooth-wh-1000xm5-over-ear-cancelamento-de-ruido-preto-wh-1000xm5-b",
+    "country": "BR"
+  },
+  {
+    "id": "br-kabum-990-1",
+    "store": "KaBuM",
+    "name": "SSD Samsung 990 PRO 1TB NVMe",
+    "category": "storage",
+    "url": "https://www.kabum.com.br/produto/999227/ssd-samsung-990-pro-1tb-m-2-nvme-pcie-gen-4-0-leitura-7450mb-s-gravacao-6900mb-s-mz-v9p1t0b-am",
+    "country": "BR"
+  },
+  {
+    "id": "br-kabum-990-2",
+    "store": "KaBuM",
+    "name": "SSD Samsung 990 PRO 2TB NVMe",
+    "category": "storage",
+    "url": "https://www.kabum.com.br/produto/576204/ssd-samsung-990-pro-2tb-m-2-nvme-pcie-4-0-leitura-7450mbps-gravacao-6900mbps-mz-v9p2t0bw",
+    "country": "BR"
+  },
+  {
+    "id": "br-kabum-mx3s",
+    "store": "KaBuM",
+    "name": "Mouse Logitech MX Master 3S",
+    "category": "computing",
+    "url": "https://www.kabum.com.br/produto/359636/mouse-sem-fio-logitech-mx-master-3s-8000-dpi-bluetooth-usb-para-uso-em-qualquer-superficie-clique-silencioso-grafite-910-006561",
+    "country": "BR"
+  },
+  {
+    "id": "kr-danawa-990",
+    "store": "Danawa (lowest listed)",
+    "name": "Samsung 990 PRO M.2 NVMe 1TB",
+    "category": "storage",
+    "url": "https://prod.danawa.com/info/?pcode=18297002",
+    "country": "KR"
+  },
+  {
+    "id": "kr-danawa-mx3s",
+    "store": "Danawa (lowest listed)",
+    "name": "Logitech MX Master 3S (Black)",
+    "category": "computing",
+    "url": "https://prod.danawa.com/info/?pcode=17171645",
+    "country": "KR"
+  },
+  {
+    "id": "jp-kakaku-xm5",
+    "store": "Kakaku.com (lowest listed)",
+    "name": "Sony WH-1000XM5 (Black)",
+    "category": "audio",
+    "url": "https://kakaku.com/item/J0000038619/",
+    "country": "JP"
+  },
+  {
+    "id": "jp-kakaku-mx3s",
+    "store": "Kakaku.com (lowest listed)",
+    "name": "Logitech MX Master 3S Advanced Wireless Mouse",
+    "category": "computing",
+    "url": "https://kakaku.com/item/J0000038697/",
+    "country": "JP"
   }
 ]
