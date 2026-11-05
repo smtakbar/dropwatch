@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T05:07:14.225Z",
+ "ranAt": "2026-11-05T05:18:57.227Z",
  "totalChecks": 30,
- "passed": 23,
+ "passed": 24,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 0
+   "secs": 62
   },
   {
    "store": "Scorptec",
-   "ok": true,
-   "secs": 0
+   "ok": false,
+   "secs": 75
   },
   {
    "store": "The Good Guys",
-   "ok": true,
-   "secs": 0
+   "ok": false,
+   "secs": 75
   },
   {
    "store": "Umart",
-   "ok": true,
-   "secs": 0
+   "ok": false,
+   "secs": 75
   },
   {
    "store": "JB Hi-Fi (2)",
-   "ok": true,
-   "secs": 0
+   "ok": false,
+   "secs": 75
   },
   {
    "store": "Scorptec (2)",
-   "ok": true,
-   "secs": 0
+   "ok": false,
+   "secs": 75
   }
  ],
  "results": [
@@ -130,55 +130,55 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "0s"
+   "detail": "62s"
   },
   {
    "id": "B2",
    "area": "Price fetch",
    "check": "Track Scorptec product and read a price",
-   "pass": true,
-   "severity": "-",
-   "detail": "0s"
+   "pass": false,
+   "severity": "major",
+   "detail": "no price within 75s"
   },
   {
    "id": "B3",
    "area": "Price fetch",
    "check": "Track The Good Guys product and read a price",
-   "pass": true,
-   "severity": "-",
-   "detail": "0s"
+   "pass": false,
+   "severity": "major",
+   "detail": "no price within 75s"
   },
   {
    "id": "B4",
    "area": "Price fetch",
    "check": "Track Umart product and read a price",
-   "pass": true,
-   "severity": "-",
-   "detail": "0s"
+   "pass": false,
+   "severity": "major",
+   "detail": "no price within 75s"
   },
   {
    "id": "B5",
    "area": "Price fetch",
    "check": "Track JB Hi-Fi (2) product and read a price",
-   "pass": true,
-   "severity": "-",
-   "detail": "0s"
+   "pass": false,
+   "severity": "major",
+   "detail": "no price within 75s"
   },
   {
    "id": "B6",
    "area": "Price fetch",
    "check": "Track Scorptec (2) product and read a price",
-   "pass": true,
-   "severity": "-",
-   "detail": "0s"
+   "pass": false,
+   "severity": "major",
+   "detail": "no price within 75s"
   },
   {
    "id": "B0",
    "area": "Price fetch",
    "check": "At least 5 of 6 real products return a price in the browser",
-   "pass": true,
-   "severity": "-",
-   "detail": "6/6 succeeded; median 0s"
+   "pass": false,
+   "severity": "blocker",
+   "detail": "1/6 succeeded; median 62s"
   },
   {
    "id": "B6b",
@@ -192,25 +192,25 @@
    "id": "B7",
    "area": "Features",
    "check": "Cards show a buy/wait verdict",
-   "pass": false,
-   "severity": "minor",
-   "detail": "0/18 cards"
+   "pass": true,
+   "severity": "-",
+   "detail": "5/6 cards"
   },
   {
    "id": "B8",
    "area": "Features",
    "check": "Cards show a product image",
-   "pass": false,
-   "severity": "minor",
-   "detail": "0/18 cards"
+   "pass": true,
+   "severity": "-",
+   "detail": "5/6 cards"
   },
   {
    "id": "B9",
    "area": "Features",
    "check": "Cross-store comparison found at least one other store",
-   "pass": false,
-   "severity": "minor",
-   "detail": "0/18 cards"
+   "pass": true,
+   "severity": "-",
+   "detail": "2/6 cards"
   },
   {
    "id": "C1",
@@ -218,14 +218,14 @@
    "check": "List survives a reload",
    "pass": true,
    "severity": "-",
-   "detail": "18 before, 18 after"
+   "detail": "6 before, 6 after"
   },
   {
    "id": "C2",
    "area": "Privacy",
    "check": "A fresh visitor does not see another visitor's list",
-   "pass": false,
-   "severity": "blocker",
+   "pass": true,
+   "severity": "-",
    "detail": ""
   },
   {
@@ -240,17 +240,17 @@
    "id": "D1",
    "area": "Alerts",
    "check": "Stale item refreshes on reopen and fires a drop notification when price fell 10%+",
-   "pass": false,
-   "severity": "major",
-   "detail": "0 notification(s): null"
+   "pass": true,
+   "severity": "-",
+   "detail": "1 notification(s): [\"Price drop: Remington All-in\",\"$29.00 at JB Hi-Fi\"]"
   },
   {
    "id": "D2",
    "area": "History",
    "check": "Price history accumulates across refreshes",
-   "pass": false,
-   "severity": "minor",
-   "detail": "0 point(s)"
+   "pass": true,
+   "severity": "-",
+   "detail": "6 point(s)"
   },
   {
    "id": "E1",
@@ -264,9 +264,9 @@
    "id": "E2",
    "area": "Mobile",
    "check": "Tap targets at least 40px tall",
-   "pass": false,
-   "severity": "minor",
-   "detail": "[{\"t\":\"Open the data\",\"w\":86,\"h\":14}]"
+   "pass": true,
+   "severity": "-",
+   "detail": "[]"
   },
   {
    "id": "F1",
