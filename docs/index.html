@@ -110,7 +110,7 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="m-go">Start tracking</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611051730"></script>
+<script src="engine.js?v=202611051739"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -207,7 +207,8 @@ function renderPub(){
   wireIdeas(el);
 }
 function wireIdeas(el){el.querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>openModal(b.dataset.idea))}
-window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);ITEMS.unshift(it);save();render();renderPub();await refresh(it,true);renderPub()};
+window.addSample=async id=>{const p=PUB.find(x=>x.id===id);if(!p)return;const it=DW.makeItem(p.url,p.name,region);if(p.country){it.country=it.storeCountry=p.country}ITEMS.unshift(it);followItem(it);save();render();renderPub();await refresh(it,true);renderPub()};
+function followItem(it){const c=it.country||it.storeCountry;if(c&&c!==region&&COUNTRIES.some(x=>x[0]===c)){region=c;sel.value=c;SHOWALL=false;try{localStorage.setItem("region",c)}catch{}applyRegion();toast("Switched to "+cname()+" because that is where this store is.")}}
 let PEND=null,ptimer=null;
 function renderPending(){
   const el=$("pend");if(!el)return;
@@ -297,7 +298,7 @@ $("m-go").onclick=async()=>{
   if(/^(github_pat_|ghp_|gho_|ghs_|sk-)/i.test(v)){toast("That looks like a secret key, not a product.");return}
   const it=DW.makeItem(v,$("m-name").value,region);
   closeModal();$("quick").value="";
-  ITEMS.unshift(it);save();
+  ITEMS.unshift(it);followItem(it);save();
   try{if("Notification" in window&&Notification.permission==="default")Notification.requestPermission()}catch{}
   PEND={label:it.name||it.url,start:Date.now()};renderPending();
   clearInterval(ptimer);ptimer=setInterval(renderPending,1000);

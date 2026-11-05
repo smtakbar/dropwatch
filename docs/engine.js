@@ -22,7 +22,7 @@ function detectFromUrl(raw) {
   try { u = new URL(/^https?:\/\//i.test(raw.trim()) ? raw.trim() : `https://${raw.trim()}`); } catch { return null; }
   for (const k of [...u.searchParams.keys()]) if (/^(utm_|ref|fbclid|gclid|msclkid|tag$|linkcode|th$|psc$|smid|sprefix|cid$)/i.test(k)) u.searchParams.delete(k);
   const host = u.hostname.replace(/^www\./, "");
-  const DOM = [[/(^|\.)(ldlc|fnac|darty|boulanger|cdiscount)\.com$/, "FR"], [/(^|\.)kakaku\.com$/, "JP"], [/(^|\.)danawa\.com$/, "KR"], [/(^|\.)(memoryexpress|canadacomputers)\.com$/, "CA"], [/(^|\.)(noon|sharafdg)\.com$/, "AE"], [/(^|\.)(courts|challenger)\.com\.sg$/, "SG"]];
+  const DOM = [[/(^|\.)(ldlc|fnac|darty|boulanger|cdiscount)\.com$/, "FR"], [/(^|\.)kakaku\.com$/, "JP"], [/(^|\.)danawa\.com$/, "KR"], [/(^|\.)(memoryexpress|canadacomputers)\.com$/, "CA"], [/(^|\.)(noon|sharafdg)\.com$/, "AE"], [/(^|\.)vijaysales\.com$/, "IN"], [/(^|\.)(courts|challenger)\.com\.sg$/, "SG"]];
   let country = DOM.find(([re]) => re.test(host))?.[1] ?? TLD.find(([re]) => re.test(host))?.[1] ?? (/\.com$/.test(host) ? "US" : null);
   const retailer = RETAILERS.find(([re]) => re.test(host))?.[1] ?? host;
   return { url: u.toString(), retailer, country };
