@@ -1,0 +1,62 @@
+[
+ {
+  "page": "vs",
+  "relay": "allorigins",
+  "status": 200,
+  "len": 838637,
+  "ms": 21629,
+  "hasTable": false,
+  "hasPrice": true,
+  "head": " <!DOCTYPE HTML> <html lang=\"en\"> <head> <meta charset=\"UTF-8\"/> <title>Sony WH-1000XM5 Wireless Nois"
+ },
+ {
+  "page": "vs",
+  "relay": "corsproxy",
+  "status": 401,
+  "len": 81,
+  "ms": 44,
+  "hasTable": false,
+  "hasPrice": false,
+  "head": "{\"error\":\"A valid API key is required. Get one at https://console.corsproxy.io/\"}"
+ },
+ {
+  "page": "vs",
+  "relay": "jina",
+  "status": 200,
+  "len": 839559,
+  "ms": 941,
+  "hasTable": false,
+  "hasPrice": true,
+  "head": "<html lang=\"en\"> <head> <meta charset=\"UTF-8\"> <title>Sony WH-1000XM5 Wireless Noise-Canceling Headphones w"
+ },
+ {
+  "page": "ccc",
+  "relay": "allorigins",
+  "status": 500,
+  "len": 177,
+  "ms": 11621,
+  "hasTable": false,
+  "hasPrice": false,
+  "head": "<html> <head><title>500 Internal Server Error</title></head> <body> <center><h1>500 Internal Server Error</h1></cente"
+ },
+ {
+  "page": "ccc",
+  "relay": "corsproxy",
+  "status": 401,
+  "len": 81,
+  "ms": 34,
+  "hasTable": false,
+  "hasPrice": false,
+  "head": "{\"error\":\"A valid API key is required. Get one at https://console.corsproxy.io/\"}"
+ },
+ {
+  "page": "ccc",
+  "relay": "jina",
+  "status": 200,
+  "len": 5891,
+  "ms": 209,
+  "hasTable": false,
+  "hasPrice": false,
+  "head": "<html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-"
+ }
+]
