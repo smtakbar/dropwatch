@@ -1,0 +1,177 @@
+{
+ "generatedAt": "2026-11-06T03:28:21.463Z",
+ "method": "Bootstrap Monte Carlo. Each simulated path resamples this product's own observed log price changes between consecutive readings, with replacement, for the horizon. We report the share of paths that touch a price at least 10% below the latest price within 14 days.",
+ "assumptions": [
+  "Future price changes look like past ones for the same product (stationary, independent of time of year).",
+  "Readings are roughly evenly spaced (every 6 hours).",
+  "Sale events such as Black Friday are not modelled separately, so results understate drop risk during sales if the history has none.",
+  "Seeded random numbers: results are reproducible."
+ ],
+ "validation": "Not yet validated. Calibration check planned: compare predicted probabilities with what happened over the following 14 days once at least 60 days of history exist.",
+ "minimumData": {
+  "days": 14,
+  "readings": 40
+ },
+ "products": {
+  "jb-remington-all-in-1": {
+   "status": "insufficient_data",
+   "readings": 8,
+   "spanDays": 0.9
+  },
+  "sc-990pro-1tb": {
+   "status": "insufficient_data",
+   "readings": 8,
+   "spanDays": 0.9
+  },
+  "tgg-sony-xm5": {
+   "status": "insufficient_data",
+   "readings": 8,
+   "spanDays": 0.9
+  },
+  "jb-ps5-slim": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "sc-crucial-t500-2tb": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "sc-corsair-ddr5-6000": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "sc-corsair-ddr5-5200": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "um-990pro-2tb": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "um-g502-lightspeed": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "um-g502x-black": {
+   "status": "insufficient_data",
+   "readings": 7,
+   "spanDays": 0.9
+  },
+  "in-vs-xm5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "in-vs-mx3s": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "in-vs-ps5-disc": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "in-vs-ps5-digital": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "in-vs-airpods5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "sg-courts-xm5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "sg-courts-mx3s": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "sg-courts-990": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "sg-ch-xm5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "sg-ch-mx3s": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "sg-ch-990": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "fr-ldlc-xm5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "fr-ldlc-990-1": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "fr-ldlc-990-2": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "br-kabum-xm5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "br-kabum-990-1": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "br-kabum-990-2": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "br-kabum-mx3s": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "kr-danawa-990": {
+   "status": "insufficient_data",
+   "readings": 5,
+   "spanDays": 0.8
+  },
+  "kr-danawa-mx3s": {
+   "status": "insufficient_data",
+   "readings": 5,
+   "spanDays": 0.8
+  },
+  "jp-kakaku-xm5": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  },
+  "jp-kakaku-mx3s": {
+   "status": "insufficient_data",
+   "readings": 6,
+   "spanDays": 0.8
+  }
+ }
+}
