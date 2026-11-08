@@ -1,24 +1,20 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T12:28:53.989Z",
+ "ranAt": "2026-11-08T15:07:06.462Z",
  "mobile": {
   "scores": {
-   "performance": 82,
+   "performance": 100,
    "accessibility": 100,
    "best-practices": 100,
    "seo": 100
   },
   "metrics": {
-   "fcp_ms": 902,
-   "lcp_ms": 902,
-   "cls": 0.373,
+   "fcp_ms": 928,
+   "lcp_ms": 928,
+   "cls": 0.01,
    "tbt_ms": 0
   },
   "layoutShifts": [
-   {
-    "score": 0.363,
-    "node": "body > div.wrap"
-   },
    {
     "score": 0.01,
     "node": "body > div.wrap > section.pub"
@@ -34,15 +30,19 @@
    "seo": 100
   },
   "metrics": {
-   "fcp_ms": 903,
-   "lcp_ms": 1683,
-   "cls": 0.007,
+   "fcp_ms": 950,
+   "lcp_ms": 1707,
+   "cls": 0.008,
    "tbt_ms": 0
   },
   "layoutShifts": [
    {
     "score": 0.007,
     "node": "body > div.wrap > section.pub"
+   },
+   {
+    "score": 0.001,
+    "node": "body > div.top > select#region"
    }
   ],
   "failedAudits": []

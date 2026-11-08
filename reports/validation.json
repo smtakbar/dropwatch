@@ -1,38 +1,38 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-05T12:28:39.567Z",
- "totalChecks": 45,
- "passed": 45,
+ "ranAt": "2026-11-08T15:06:51.939Z",
+ "totalChecks": 48,
+ "passed": 48,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
    "ok": true,
-   "secs": 3
+   "secs": 2
   },
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 54
+   "secs": 50
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 50
+   "secs": 70
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 49
+   "secs": 59
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 48
+   "secs": 50
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 49
+   "secs": 18
   }
  ],
  "results": [
@@ -130,7 +130,7 @@
    "check": "Track JB Hi-Fi product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "3s"
+   "detail": "2s"
   },
   {
    "id": "B2",
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "54s"
+   "detail": "50s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "50s"
+   "detail": "70s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "49s"
+   "detail": "59s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "48s"
+   "detail": "50s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "49s"
+   "detail": "18s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 49s"
+   "detail": "6/6 succeeded; median 50s"
   },
   {
    "id": "B6b",
@@ -250,7 +250,7 @@
    "check": "Price history accumulates across refreshes",
    "pass": true,
    "severity": "-",
-   "detail": "12 point(s)"
+   "detail": "38 point(s)"
   },
   {
    "id": "E1",
@@ -338,7 +338,7 @@
    "check": "pricehistory.app adapter finds and reads an Indian product by name",
    "pass": true,
    "severity": "-",
-   "detail": "[{\"s\":\"pricehistory.app\",\"low\":31490,\"avg\":51198,\"high\":61151}]"
+   "detail": "[{\"s\":\"pricehistory.app\",\"low\":19489,\"avg\":28248,\"high\":83999}]"
   },
   {
    "id": "H1",
@@ -384,6 +384,30 @@
    "id": "I3",
    "area": "Price protection",
    "check": "No claim banner when the price is above what you paid; shows 'protection on'",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "J1",
+   "area": "Blocked stores",
+   "check": "A blocked store says so plainly and offers price entry",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "J2",
+   "area": "Blocked stores",
+   "check": "Entering the price you see saves it and shows it",
+   "pass": true,
+   "severity": "-",
+   "detail": "📦 Blocked store test 🇦🇺 Chemist Warehouse · checked just now $89.99 Deal check: Not enough history yet (1 of 3 readin"
+  },
+  {
+   "id": "J3",
+   "area": "Blocked stores",
+   "check": "A Google share link is explained, not silently tracked",
    "pass": true,
    "severity": "-",
    "detail": ""
