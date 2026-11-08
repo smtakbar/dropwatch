@@ -107,6 +107,10 @@ select{max-width:100%}
   <section class="pub" aria-labelledby="pubh" style="margin-top:24px">
     <h2 id="pubh" style="font-size:16px;margin-bottom:4px">Sample products</h2>
     <p class="muted" style="margin-bottom:10px">A fixed set of products we check every 6 hours and publish as open data. Add any to your list to try the page. Charts and the deal rule fill in as readings accumulate. <a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/data/prices.csv" target="_blank" rel="noopener">Open the data</a></p>
+    <details class="d" id="bmbox" style="margin-top:12px"><summary>A store blocks DropWatch? Add it from your own browser</summary>
+      <p class="muted" style="margin:8px 0">Some stores show automated visitors a bot check, so DropWatch cannot read them. Your own browser is allowed in. Drag the button below to your bookmarks bar (desktop). On a store product page, click it: it reads the price already shown on that page and sends it to your DropWatch list. Click it again later to record a new price. Nothing is sent to any server; it opens this page with the price in the address.</p>
+      <a class="btn small" id="bmlink" href="javascript:(function(){try{var d={u:location.href,n:document.title,p:null,c:null,i:null};function w(x){if(!x)return;if(Array.isArray(x))return x.forEach(w);if(typeof x!==&quot;object&quot;)return;var t=[].concat(x[&quot;@type&quot;]||[]).join();if(/Product/.test(t)){d.n=x.name||d.n;var im=[].concat(x.image||[])[0];d.i=(im&amp;&amp;im.url)||im||d.i;var o=[].concat(x.offers||[])[0];if(o&amp;&amp;!d.p){var p=o.price||o.lowPrice||(o.priceSpecification&amp;&amp;o.priceSpecification.price);if(p){d.p=parseFloat(String(p).replace(/[^0-9.]/g,&quot;&quot;));d.c=o.priceCurrency||d.c}}}if(x[&quot;@graph&quot;])w(x[&quot;@graph&quot;])}var s=document.querySelectorAll('script[type=&quot;application/ld+json&quot;]');for(var k=0;k<s.length;k++){try{w(JSON.parse(s[k].textContent))}catch(e){}}if(!d.p){var m=document.querySelector('meta[property=&quot;product:price:amount&quot;],meta[property=&quot;og:price:amount&quot;],[itemprop=price]');if(m){d.p=parseFloat(String(m.content||m.textContent).replace(/[^0-9.]/g,&quot;&quot;));var c=document.querySelector('meta[property=&quot;product:price:currency&quot;],meta[property=&quot;og:price:currency&quot;],[itemprop=priceCurrency]');d.c=c&amp;&amp;(c.content||c.textContent)}}if(!d.p||!(d.p>0)){alert(&quot;DropWatch could not find a price on this page. Use Save price on the card instead.&quot;);return}window.open(&quot;https://smtakbar.github.io/dropwatch/#add=&quot;+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(d))))),&quot;_blank&quot;)}catch(e){alert(&quot;DropWatch: &quot;+e.message)}})()" onclick="event.preventDefault();toast('Drag this button to your bookmarks bar instead of clicking it.')">+ DropWatch price</a>
+    </details>
     <div class="grid" id="pubgrid"><div class="muted">Loading sample products…</div></div>
   </section>
   <div class="foot"><a class="link" href="https://github.com/smtakbar/dropwatch" target="_blank" rel="noopener">Source code</a><a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/PRD.md" target="_blank" rel="noopener">Product requirements</a><a class="link" href="https://github.com/smtakbar/dropwatch/blob/main/VALIDATION.md" target="_blank" rel="noopener">Test report</a><a class="link" id="fb" href="https://github.com/smtakbar/dropwatch/issues/new?title=Feedback" target="_blank" rel="noopener">Give feedback</a></div>
@@ -126,7 +130,7 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-bclose>Cancel</button><button class="btn" id="b-go">Start watching</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611090159"></script>
+<script src="engine.js?v=202611090210"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -240,6 +244,22 @@ $("b-go").onclick=()=>{const it=ITEMS.find(x=>x.id===BID);if(!it)return;
   if(!(price>0)||!d){toast("Enter the price you paid and the purchase date.");return}
   it.bought={price,currency:it.currency||(COUNTRIES.find(c=>c[0]===region)||COUNTRIES[0])[3],date:new Date(d+"T12:00:00").toISOString(),days};it.protSeen=false;
   $("bm").classList.remove("on");save();render();toast("Watching this price for "+days+" days.")};
+// ---- Import from the bookmarklet (#add=...). Untrusted input: validated, never rendered as HTML. ----
+function importHash(){
+  let m=location.hash.match(/^#add=(.+)$/);if(!m)return;
+  try{history.replaceState(null,"",location.pathname+location.search)}catch{}
+  let d;try{d=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))))}catch{toast("That import link was not readable.");return}
+  const price=Number(d&&d.p),url=String((d&&d.u)||"");
+  if(!(price>0&&price<1e8)||!/^https:\/\//i.test(url)){toast("That import link had no usable price or address.");return}
+  const name=String(d.n||"").replace(/[<>]/g,"").slice(0,120),cur=/^[A-Z]{3}$/.test(String(d.c||"").toUpperCase())?String(d.c).toUpperCase():null;
+  let it=ITEMS.find(x=>x.url&&DW.normKey(x.url)===DW.normKey(url));
+  if(!it){it=DW.makeItem(url,name,region);if(!it){toast("Could not add that page.");return}ITEMS.unshift(it)}
+  if(cur)it.currency=cur;
+  if(/^https:\/\//i.test(String(d.i||"")))it.image=String(d.i);
+  DW.setManualPrice(it,price);it.manualSource="browser";it.checkedAt=new Date().toISOString();
+  followItem(it);save();render();toast("Saved "+(name||"the product")+" from your browser.");
+}
+
 let PEND=null,ptimer=null;
 // ---- Optional mini game while a price is being read (no data collected; best score stays in this browser) ----
 const GAME={on:false,score:0,t:0,spawn:null,clock:null,best:0};
@@ -332,7 +352,7 @@ function render(){
         return`<details class="d" ${TOPEN.has(i.id)?"open":""} ontoggle="toggleTrk('${esc(i.id)}',this.open)"><summary>Price history on other trackers</summary>${rows}${msg}
         <div class="row" style="margin-top:8px"><button class="btn ghost small" onclick="checkTrackers('${esc(i.id)}')" ${i.trkBusy?"disabled":""}>${i.trkBusy?"Checking…":(i.trackersAt?"Check again":"Check trackers")}</button></div>
         <div class="muted" style="margin-top:6px">Look it up yourself: ${links}</div></details>`})()}
-      ${i.blocked?`<div class="rule"><b>${esc(i.retailer||"This store")} blocks automated price reads.</b> ${i.manual?"The price shown is the one you entered.":(i.priceFrom?"The price shown is the cheapest readable one, from "+esc(i.priceFrom)+".":"No price could be read.")} Prices at other stores are compared below.<div class="row" style="margin-top:6px"><input type="number" step="0.01" min="0" id="mp-${esc(i.id)}" placeholder="Price you see on the store page" aria-label="Price you see on the store page" style="max-width:220px"><button class="btn ghost small" onclick="manualPrice('${esc(i.id)}')">Save price</button></div></div>`:(i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:"")}
+      ${i.blocked?`<div class="rule"><b>${esc(i.retailer||"This store")} blocks automated price reads.</b> ${i.manual?(i.manualSource==="browser"?"The price shown was captured from your own browser. Use the bookmark button again to update it.":"The price shown is the one you entered."):(i.priceFrom?"The price shown is the cheapest readable one, from "+esc(i.priceFrom)+".":"No price could be read.")} Prices at other stores are compared below.<div class="row" style="margin-top:6px"><input type="number" step="0.01" min="0" id="mp-${esc(i.id)}" placeholder="Price you see on the store page" aria-label="Price you see on the store page" style="max-width:220px"><button class="btn ghost small" onclick="manualPrice('${esc(i.id)}')">Save price</button></div><div class="muted" style="margin-top:6px">Or add it with the bookmark button from the page <a class="link" href="#bmbox" onclick="document.getElementById('bmbox').open=true">below</a>.</div></div>`:(i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:"")}
       ${i.busy?`<div class="muted">Refreshing…</div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
         <span class="muted">${i.targetPrice!=null?`Target: <b style="color:var(--text)">${fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur)}</b>`:"We notify you here when the price drops"}</span>
@@ -382,7 +402,7 @@ async function sweep(){
   for(const it of ITEMS){if(it.busy)continue;if(!it.checkedAt||Date.now()-Date.parse(it.checkedAt)>3600e3)await refresh(it,false)}
 }
 // First paint waits (briefly) for region, public data and rates so nothing jumps around afterwards.
-const firstPaint=()=>{if(painted)return;painted=true;applyRegion();render();renderPub();sweep();setInterval(sweep,15*60e3)};
+const firstPaint=()=>{if(painted)return;painted=true;applyRegion();render();importHash();renderPub();sweep();setInterval(sweep,15*60e3)};
 setTimeout(firstPaint,2500);
 Promise.all([regionReady,DW.loadPublic().then(p=>{PUB=p}),DW.getRates().then(r=>{RATES=r})]).finally(()=>{firstPaint();if(!hadRegion&&region)toast("Showing prices for "+((COUNTRIES.find(c=>c[0]===region)||[])[1]||region)+" (from your location).")});
 </script>

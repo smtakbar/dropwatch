@@ -235,6 +235,31 @@ await jp.fill("#quick", "https://share.google/Tny9b1kWTMk21j4O2"); await jp.clic
 rec("J3", "Blocked stores", "A Google share link is explained, not silently tracked", (await jp.evaluate(() => JSON.parse(localStorage.getItem("dw_items") || "[]").length)) === 1 && /Google share link/.test(await jp.locator("#toast").innerText()), "minor");
 await jctx.close();
 
+// ---- K. Browser capture for stores that block bots (bookmarklet + #add import)
+const kctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU" });
+await kctx.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); } catch {} });
+const kp = await kctx.newPage();
+await kp.goto(SITEURL, { waitUntil: "load" }); await kp.waitForTimeout(2000);
+const bmHref = await kp.getAttribute("#bmlink", "href");
+rec("K1", "Browser capture", "Bookmarklet button is on the page", !!bmHref && bmHref.startsWith("javascript:"), "major");
+const sp = await kctx.newPage();
+await sp.route("https://store.test/**", (r) => r.fulfill({ contentType: "text/html", body: '<html><head><title>Store</title><script type="application/ld+json">{"@type":"Product","name":"Jimmy Choo Test EDP 100ml","image":"https://example.com/i.jpg","offers":{"@type":"Offer","price":"79.99","priceCurrency":"AUD"}}</script></head><body>x</body></html>' }));
+await sp.goto("https://store.test/p/1");
+const opened = await sp.evaluate((code) => { let got = null; window.open = (u) => { got = u; }; try { new Function(code)(); } catch (e) { return "ERR " + e.message; } return got; }, bmHref.slice("javascript:".length));
+rec("K2", "Browser capture", "Bookmarklet reads the product price on a store page and opens DropWatch with it", typeof opened === "string" && opened.includes("#add="), "major", String(opened).slice(0, 100));
+const base = SITEURL.split("#")[0];
+await kp.goto(base + "#add=" + (opened || "").split("#add=")[1], { waitUntil: "load" }); await kp.waitForTimeout(2500);
+const kt = await kp.locator("#grid .card").first().innerText().catch(() => "");
+rec("K3", "Browser capture", "Importing the captured price adds the product with that price", /79\.99/.test(kt) && /Jimmy Choo Test/.test(kt), "major", kt.slice(0, 100).replace(/\n/g, " "));
+const again = Buffer.from(JSON.stringify({ u: "https://store.test/p/1", n: "Jimmy Choo Test EDP 100ml", p: 74.99, c: "AUD" })).toString("base64");
+await kp.goto(base + "#add=" + encodeURIComponent(again), { waitUntil: "load" }); await kp.waitForTimeout(2500);
+const n2 = await kp.locator("#grid .card").count(), kt2 = await kp.locator("#grid .card").first().innerText().catch(() => "");
+rec("K4", "Browser capture", "A second capture updates the same product instead of adding a duplicate", n2 === 1 && /74\.99/.test(kt2), "major", `${n2} card(s)`);
+const kbad = Buffer.from(JSON.stringify({ u: "javascript:alert(1)", n: "<img src=x onerror=alert(1)>", p: -5 })).toString("base64");
+await kp.goto(base + "#add=" + encodeURIComponent(kbad), { waitUntil: "load" }); await kp.waitForTimeout(2000);
+rec("K5", "Browser capture", "A malicious or invalid import is rejected", (await kp.locator("#grid .card").count()) === 1 && !(await kp.locator("#grid img[src='x']").count()), "major");
+await kctx.close();
+
 // ---- F. Accessibility (axe-core) on the populated desktop page
 await page.addScriptTag({ content: axe.source });
 const ax = await page.evaluate(async () => { const r = await window.axe.run(document, { resultTypes: ["violations"] }); return r.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, help: v.help })); });

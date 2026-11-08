@@ -44,6 +44,9 @@ The region selector (13 countries) changes the whole page: currency and number f
 ## Stores that block automated reads
 Some stores (for example Chemist Warehouse, tested 9 Nov 2026) show every automated request a Cloudflare bot check, including requests through the public relays. DropWatch detects that page, says so on the card, does not try to get around it, compares the same product at other stores, and lets you type the price you see. A pasted Google share link (share.google) only redirects, so the page asks for the store address or the product name instead.
 
+### Add from your own browser
+Under "A store blocks DropWatch?" there is a bookmark button. Drag it to your bookmarks bar, open a product page on the blocked store, and click it. It reads the price already shown on that page (from the page's product data) and opens DropWatch with that price. Your own browser is allowed in, so this does not get around any bot check. It runs only when you click it, sends nothing to a server, and the import link is validated before use. It works only where the page publishes its price in machine-readable product data; I have not been able to confirm that for Chemist Warehouse, because I cannot load its pages. Desktop only.
+
 ## Exact matching and price protection
 - **Barcode match.** When both pages publish a barcode (GTIN) or manufacturer part number in their product data, other-store offers are matched on that, not on the title. A different barcode rejects the offer, even if the titles look alike. Without identifiers on both sides, the strict title rule still applies. Offers matched by identifier are tagged "exact match".
 - **"I bought this".** Enter what you paid, the date and your store's window (default 14 days). DropWatch watches the price and tells you if it falls 2% or more below what you paid while the window is open. Whether a store pays the difference depends on its own policy, which DropWatch does not know. The record stays in this browser.
