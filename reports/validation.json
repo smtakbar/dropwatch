@@ -1,8 +1,8 @@
 {
  "site": "https://smtakbar.github.io/dropwatch/",
- "ranAt": "2026-11-08T15:06:51.939Z",
- "totalChecks": 48,
- "passed": 48,
+ "ranAt": "2026-11-08T15:19:03.296Z",
+ "totalChecks": 53,
+ "passed": 50,
  "fetchTimings": [
   {
    "store": "JB Hi-Fi",
@@ -12,27 +12,27 @@
   {
    "store": "Scorptec",
    "ok": true,
-   "secs": 50
+   "secs": 47
   },
   {
    "store": "The Good Guys",
    "ok": true,
-   "secs": 70
+   "secs": 49
   },
   {
    "store": "Umart",
    "ok": true,
-   "secs": 59
+   "secs": 46
   },
   {
    "store": "JB Hi-Fi (2)",
    "ok": true,
-   "secs": 50
+   "secs": 29
   },
   {
    "store": "Scorptec (2)",
    "ok": true,
-   "secs": 18
+   "secs": 43
   }
  ],
  "results": [
@@ -138,7 +138,7 @@
    "check": "Track Scorptec product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "50s"
+   "detail": "47s"
   },
   {
    "id": "B3",
@@ -146,7 +146,7 @@
    "check": "Track The Good Guys product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "70s"
+   "detail": "49s"
   },
   {
    "id": "B4",
@@ -154,7 +154,7 @@
    "check": "Track Umart product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "59s"
+   "detail": "46s"
   },
   {
    "id": "B5",
@@ -162,7 +162,7 @@
    "check": "Track JB Hi-Fi (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "50s"
+   "detail": "29s"
   },
   {
    "id": "B6",
@@ -170,7 +170,7 @@
    "check": "Track Scorptec (2) product and read a price",
    "pass": true,
    "severity": "-",
-   "detail": "18s"
+   "detail": "43s"
   },
   {
    "id": "B0",
@@ -178,7 +178,7 @@
    "check": "At least 5 of 6 real products return a price in the browser",
    "pass": true,
    "severity": "-",
-   "detail": "6/6 succeeded; median 50s"
+   "detail": "6/6 succeeded; median 46s"
   },
   {
    "id": "B6b",
@@ -410,6 +410,46 @@
    "check": "A Google share link is explained, not silently tracked",
    "pass": true,
    "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "K1",
+   "area": "Browser capture",
+   "check": "Bookmarklet button is on the page",
+   "pass": true,
+   "severity": "-",
+   "detail": ""
+  },
+  {
+   "id": "K2",
+   "area": "Browser capture",
+   "check": "Bookmarklet reads the product price on a store page and opens DropWatch with it",
+   "pass": true,
+   "severity": "-",
+   "detail": "https://smtakbar.github.io/dropwatch/#add=eyJ1IjoiaHR0cHM6Ly9zdG9yZS50ZXN0L3AvMSIsIm4iOiJKaW1teSBDaG"
+  },
+  {
+   "id": "K3",
+   "area": "Browser capture",
+   "check": "Importing the captured price adds the product with that price",
+   "pass": false,
+   "severity": "major",
+   "detail": ""
+  },
+  {
+   "id": "K4",
+   "area": "Browser capture",
+   "check": "A second capture updates the same product instead of adding a duplicate",
+   "pass": false,
+   "severity": "major",
+   "detail": "0 card(s)"
+  },
+  {
+   "id": "K5",
+   "area": "Browser capture",
+   "check": "A malicious or invalid import is rejected",
+   "pass": false,
+   "severity": "major",
    "detail": ""
   },
   {
