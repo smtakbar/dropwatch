@@ -1,0 +1,98 @@
+[
+ {
+  "label": "share-direct",
+  "url": "https://share.google/Tny9b1kWTMk21j4O2",
+  "status": 403,
+  "final": "https://www.chemistwarehouse.com.au/buy/64974/jimmy-choo-eau-de-parfum-100ml",
+  "len": 5680,
+  "ms": 525,
+  "name": "Just a moment...",
+  "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+  "hasLD": false,
+  "challenge": true
+ },
+ {
+  "label": "cw-honest-ua",
+  "url": "https://www.chemistwarehouse.com.au/buy/109778/jimmy-choo-i-want-choo-eau-de-parfum-100ml",
+  "status": 403,
+  "final": "https://www.chemistwarehouse.com.au/buy/109778/jimmy-choo-i-want-choo-eau-de-parfum-100ml",
+  "len": 5847,
+  "ms": 45,
+  "name": "Just a moment...",
+  "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+  "hasLD": false,
+  "challenge": true
+ },
+ {
+  "label": "cw-allorigins",
+  "url": "https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.chemistwarehouse.com.au%2Fbuy%2F109778%2Fjimmy-choo-i-wan",
+  "status": 522,
+  "final": "https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.chemistwarehouse.com.au%2Fbuy%2F109778%2Fjimmy-choo-i-want-choo-eau-de-parfum-100ml",
+  "len": 7261,
+  "ms": 19588,
+  "name": "allorigins.win | 522: Connection timed out",
+  "head": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if IE 7]> <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endi",
+  "hasLD": false,
+  "challenge": false
+ },
+ {
+  "label": "cw-jina",
+  "url": "https://r.jina.ai/https://www.chemistwarehouse.com.au/buy/109778/jimmy-choo-i-want-choo-eau-de-parfum-100ml",
+  "status": 200,
+  "final": "https://r.jina.ai/https://www.chemistwarehouse.com.au/buy/109778/jimmy-choo-i-want-choo-eau-de-parfum-100ml",
+  "len": 6093,
+  "ms": 411,
+  "name": "Just a moment...",
+  "head": "<html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" co",
+  "hasLD": false,
+  "challenge": true
+ },
+ {
+  "label": "cw-honest-ua",
+  "url": "https://www.chemistwarehouse.com.au/buy/64974/jimmy-choo-eau-de-parfum-spray-100ml",
+  "status": 403,
+  "final": "https://www.chemistwarehouse.com.au/buy/64974/jimmy-choo-eau-de-parfum-spray-100ml",
+  "len": 5826,
+  "ms": 47,
+  "name": "Just a moment...",
+  "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+  "hasLD": false,
+  "challenge": true
+ },
+ {
+  "label": "cw-allorigins",
+  "url": "https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.chemistwarehouse.com.au%2Fbuy%2F64974%2Fjimmy-choo-eau-de",
+  "status": 408,
+  "final": "https://api.allorigins.win/raw?url=https%3A%2F%2Fwww.chemistwarehouse.com.au%2Fbuy%2F64974%2Fjimmy-choo-eau-de-parfum-spray-100ml",
+  "len": 24,
+  "ms": 8736,
+  "name": "",
+  "head": "Oops... Request Timeout.",
+  "hasLD": false,
+  "challenge": false
+ },
+ {
+  "label": "cw-jina",
+  "url": "https://r.jina.ai/https://www.chemistwarehouse.com.au/buy/64974/jimmy-choo-eau-de-parfum-spray-100ml",
+  "status": 200,
+  "final": "https://r.jina.ai/https://www.chemistwarehouse.com.au/buy/64974/jimmy-choo-eau-de-parfum-spray-100ml",
+  "len": 6072,
+  "ms": 344,
+  "name": "Just a moment...",
+  "head": "<html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" co",
+  "hasLD": false,
+  "challenge": true
+ },
+ {
+  "label": "share-jina",
+  "url": "https://r.jina.ai/https://share.google/Tny9b1kWTMk21j4O2",
+  "status": 200,
+  "final": "https://r.jina.ai/https://share.google/Tny9b1kWTMk21j4O2",
+  "len": 6033,
+  "ms": 338,
+  "name": "Just a moment...",
+  "head": "<html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" co",
+  "hasLD": false,
+  "challenge": true
+ }
+]
