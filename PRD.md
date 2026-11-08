@@ -85,3 +85,4 @@ Every term is an **[assumption]** until measured: [MAU], [click-through share], 
 | 5 Nov 2026 | Indian .com stores (for example Myntra) classified as India; optional "Price Catch" mini game on the loading card (engagement is untested until there are users). |
 | 5 Nov 2026 | Barcode (GTIN) and part-number matching for cross-store offers; "I bought this" price protection with a window and alert. |
 | 5 Nov 2026 | Store country is now read only from explicit signals (known store, country domain, /au/ style path locale, subdomain). A bare .com is no longer assumed to be the US; unknown stores fall back to the visitor's region. Regression table added. |
+- 2026-11-09: Stores with bot checks (for example Chemist Warehouse) are not bypassed. DropWatch says so, accepts a typed price, and offers a bookmark button that sends the price your own browser already loaded. Desktop only; unverified on Chemist Warehouse's real pages.

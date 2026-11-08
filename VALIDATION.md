@@ -4,7 +4,7 @@ Run: 2026-11-05T09:51:45.924Z against https://smtakbar.github.io/dropwatch/ (hea
 
 ## Result
 
-45 of 45 checks pass. This is one run, not a guarantee: store pages and the public relays change, so price fetch can fail on another day. Price tests used 6 real products from 4 Australian retailers plus one Indian retailer (Vijay Sales).
+53 of 53 checks pass. This is one run, not a guarantee: store pages and the public relays change, so price fetch can fail on another day. Price tests used 6 real products from 4 Australian retailers plus one Indian retailer (Vijay Sales).
 
 ## History of this suite
 
@@ -13,6 +13,7 @@ Run: 2026-11-05T09:51:45.924Z against https://smtakbar.github.io/dropwatch/ (hea
 | First live run | 19 of 27 | duplicate Track CTA, missing label, no sample data, no repo link, 404 console error, mobile overflow, small tap targets |
 | After bug fixes | 30 of 30 | none |
 | After region switching, mini game, price protection (45 checks) | 35 of 38, 39 of 39, 40 of 41 (twice), 42 of 42, 43 of 44, then 45 of 45 | first run: items from a store in another country were hidden by the new region filter (D1, G6, G7). Fix: adding an item switches to its store's region. The alert test (D1) then failed intermittently. Debug capture showed the real cause: adding a product in the first second after opening the page let the late location lookup switch the region back and hide the item. Fixed by pinning the region once an item is added (a real user-facing bug, not just slow relays) |
+| Bot-check detection, manual price, browser capture (53 checks) | 48 of 48 (blocked stores), 48 of 53 (capture), then 53 of 53 | first capture run: opening a capture link in a tab that was already open did nothing, because only a full page load read the link (K3 to K5). Fix: the page now also reacts to address changes. A real user-facing bug found by the test. The capture test uses a made-up store page, not Chemist Warehouse, whose real markup is unverified |
 
 ## Regions (checks G1 to G9)
 
