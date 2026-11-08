@@ -126,7 +126,7 @@ select{max-width:100%}
   <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-bclose>Cancel</button><button class="btn" id="b-go">Start watching</button></div>
 </div></div>
 <div class="toast" id="toast" style="max-width:90vw"></div>
-<script src="engine.js?v=202611052321"></script>
+<script src="engine.js?v=202611090159"></script>
 <script>
 if(!(window.DW&&DW.dealRule&&DW.loadPublic)){document.body.insertAdjacentHTML("afterbegin","<p style='padding:16px'>DropWatch is updating. Please reload this page.</p>");throw new Error("engine out of date")}
 const COUNTRIES=[["AU","Australia","🇦🇺","AUD"],["US","United States","🇺🇸","USD"],["GB","United Kingdom","🇬🇧","GBP"],["CA","Canada","🇨🇦","CAD"],["DE","Germany","🇩🇪","EUR"],["FR","France","🇫🇷","EUR"],["JP","Japan","🇯🇵","JPY"],["IN","India","🇮🇳","INR"],["SG","Singapore","🇸🇬","SGD"],["NZ","New Zealand","🇳🇿","NZD"],["AE","UAE","🇦🇪","AED"],["BR","Brazil","🇧🇷","BRL"],["KR","South Korea","🇰🇷","KRW"]];
@@ -201,6 +201,7 @@ function chart(h,cur,r,from,id){
 
 const TOPEN=new Set();
 window.toggleTrk=(id,o)=>{o?TOPEN.add(id):TOPEN.delete(id)};
+window.manualPrice=id=>{const it=ITEMS.find(x=>x.id===id),el=$("mp-"+id);if(!it||!el)return;if(!DW.setManualPrice(it,el.value)){toast("Enter the price as a number.");return}save();render();toast("Saved. We will keep comparing other stores.")};
 window.checkTrackers=async id=>{const it=ITEMS.find(x=>x.id===id);if(!it)return;it.trkBusy=true;TOPEN.add(id);render();
   try{await DW.trackerHistory(it)}catch{it.trackers=[];it.trackersAt=new Date().toISOString()}
   it.trkBusy=false;save();render()};
@@ -331,7 +332,7 @@ function render(){
         return`<details class="d" ${TOPEN.has(i.id)?"open":""} ontoggle="toggleTrk('${esc(i.id)}',this.open)"><summary>Price history on other trackers</summary>${rows}${msg}
         <div class="row" style="margin-top:8px"><button class="btn ghost small" onclick="checkTrackers('${esc(i.id)}')" ${i.trkBusy?"disabled":""}>${i.trkBusy?"Checking…":(i.trackersAt?"Check again":"Check trackers")}</button></div>
         <div class="muted" style="margin-top:6px">Look it up yourself: ${links}</div></details>`})()}
-      ${i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:""}
+      ${i.blocked?`<div class="rule"><b>${esc(i.retailer||"This store")} blocks automated price reads.</b> ${i.manual?"The price shown is the one you entered.":(i.priceFrom?"The price shown is the cheapest readable one, from "+esc(i.priceFrom)+".":"No price could be read.")} Prices at other stores are compared below.<div class="row" style="margin-top:6px"><input type="number" step="0.01" min="0" id="mp-${esc(i.id)}" placeholder="Price you see on the store page" aria-label="Price you see on the store page" style="max-width:220px"><button class="btn ghost small" onclick="manualPrice('${esc(i.id)}')">Save price</button></div></div>`:(i.error&&i.price==null?`<div class="err">We couldn't read a price from this store yet.<details class="d"><summary>Details</summary>${esc(i.error)}</details></div>`:"")}
       ${i.busy?`<div class="muted">Refreshing…</div>`:""}
       <div class="row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);justify-content:space-between">
         <span class="muted">${i.targetPrice!=null?`Target: <b style="color:var(--text)">${fmt(conv(i.targetPrice,i.targetCurrency||cur,cur,r),cur)}</b>`:"We notify you here when the price drops"}</span>
@@ -362,6 +363,7 @@ async function refresh(it,offers){
 $("m-go").onclick=async()=>{
   const v=$("m-url").value.trim();if(!v)return;
   if(/^(github_pat_|ghp_|gho_|ghs_|sk-)/i.test(v)){toast("That looks like a secret key, not a product.");return}
+  if(/^(https?:\/\/)?(share\.google|g\.co|goo\.gl|share\.app\.goo\.gl)\//i.test(v)){toast("That is a Google share link, which only redirects. Open it, then paste the store page address, or type the product name.");return}
   const it=DW.makeItem(v,$("m-name").value,region);
   closeModal();$("quick").value="";
   ITEMS.unshift(it);followItem(it);save();

@@ -41,6 +41,9 @@ The region selector (13 countries) changes the whole page: currency and number f
 - **United States, United Kingdom, Canada, Germany, New Zealand and UAE** have no logged sample products. The retailers tested (for example Newegg, Argos, MediaMarkt, PB Tech, Sharaf DG) refused automated requests, and I do not disguise the logger. Those regions show tap-to-search ideas instead, and your own history builds from your visits.
 - Typed searches use the selected country's store allowlist. End-to-end price reads were tested on Australian retailers and on one Indian retailer. The other regions are tested for what the page shows, not for every store's price read. See `VALIDATION.md`.
 
+## Stores that block automated reads
+Some stores (for example Chemist Warehouse, tested 9 Nov 2026) show every automated request a Cloudflare bot check, including requests through the public relays. DropWatch detects that page, says so on the card, does not try to get around it, compares the same product at other stores, and lets you type the price you see. A pasted Google share link (share.google) only redirects, so the page asks for the store address or the product name instead.
+
 ## Exact matching and price protection
 - **Barcode match.** When both pages publish a barcode (GTIN) or manufacturer part number in their product data, other-store offers are matched on that, not on the title. A different barcode rejects the offer, even if the titles look alike. Without identifiers on both sides, the strict title rule still applies. Offers matched by identifier are tagged "exact match".
 - **"I bought this".** Enter what you paid, the date and your store's window (default 14 days). DropWatch watches the price and tells you if it falls 2% or more below what you paid while the window is open. Whether a store pays the difference depends on its own policy, which DropWatch does not know. The record stays in this browser.

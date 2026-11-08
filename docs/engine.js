@@ -241,6 +241,8 @@ const FALLBACK_RATES = { USD: 1, AUD: 1.53, GBP: 0.79, EUR: 0.92, JPY: 150, CAD:
 
 /** Browsers cannot read other sites directly, so pages are fetched through public read-only relays (first one that answers wins). */
 // At most 3 relay requests at once, so the free relays do not rate-limit us when several pages load together.
+const _blocked = new Set();
+const hostBlocked = (u) => { try { return _blocked.has(new URL(u).hostname.replace(/^www\d?\./, "")); } catch { return false; } };
 let _active = 0; const _wait = [];
 const _slot = () => new Promise((res) => { const go = () => { _active++; res(); }; _active < 3 ? go() : _wait.push(go); });
 const _free = () => { _active--; const n = _wait.shift(); if (n) n(); };
@@ -260,6 +262,8 @@ async function fetchHtmlInner(url) {
     if (!r.ok) throw new Error("bad status");
     const h = await r.text();
     if (h.length <= 800) throw new Error("too short");
+    // A bot-check page is not the product page. Say so instead of pretending the store is just slow.
+    if (h.length < 30000 && /<title>\s*(Just a moment|Attention Required|Access Denied|Robot or human|Pardon Our Interruption)|cf-chl-|_Incapsula_Resource|px-captcha/i.test(h)) { try { _blocked.add(new URL(url).hostname.replace(/^www\d?\./, "")); } catch {} throw new Error("blocked"); }
     return h;
   };
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -327,7 +331,11 @@ async function refreshItem(it, rates, { offers = false, pub = null } = {}) {
   it.checkedAt = now;
   if (it.url) {
     const html = await fetchHtml(it.url);
-    if (!html) it.error = "Could not reach this store right now. We will try again.";
+    if (!html && hostBlocked(it.url)) {
+      it.blocked = true;
+      it.error = `${it.retailer || "This store"} blocks automated price reads (it shows a bot check). DropWatch does not bypass that. You can type the price you see, and other stores are still compared.`;
+    }
+    else if (!html) it.error = "Could not reach this store right now. We will try again.";
     else {
       const r = parseHtml(html, it.storeCountry, it.url);
       if (r.name) it.matchName = String(r.name).replace(/^buy\s+/i, "").replace(/\s*[|\-–]\s*[^|\-–]*$/, "").trim() || it.matchName;
@@ -335,12 +343,16 @@ async function refreshItem(it, rates, { offers = false, pub = null } = {}) {
       if (r.gtin) it.gtin = r.gtin;
       if (r.mpn) it.mpn = r.mpn;
       if (r.inStock !== undefined) it.inStock = r.inStock;
-      if (r.price) { it.price = r.price; it.currency = r.currency ?? it.currency ?? CUR[it.storeCountry] ?? "USD"; it.error = null; pushHistory(it, r.price, now); }
+      if (r.price) { it.price = r.price; it.currency = r.currency ?? it.currency ?? CUR[it.storeCountry] ?? "USD"; it.error = null; it.blocked = false; it.manual = false; it.priceFrom = null; pushHistory(it, r.price, now); }
       else it.error = "We could not read a price from this store.";
     }
   }
   if (offers || !it.offersAt || Date.now() - Date.parse(it.offersAt) > 12 * 3600e3) {
     try { it.offers = await findOffers(it); it.offersAt = now; } catch {}
+    if (it.blocked && !it.manual && it.offers.length) {
+      const best = [...it.offers].filter((o) => !o.own).sort((a, b) => convert(a.price, a.currency, "USD", rates) - convert(b.price, b.currency, "USD", rates))[0];
+      if (best) { it.price = best.price; it.currency = best.currency; it.priceFrom = best.store; it.image = it.image ?? best.image; pushHistory(it, best.price, now); }
+    }
     if (!it.url && it.offers.length) {
       const best = [...it.offers].sort((a, b) => convert(a.price, a.currency, "USD", rates) - convert(b.price, b.currency, "USD", rates))[0];
       it.retailer = best.store; it.price = best.price; it.currency = best.currency; it.image = it.image ?? best.image; it.error = null;
@@ -456,5 +468,10 @@ async function trackerHistory(it) {
   return out;
 }
 
-window.DW = { protection, matchOffer, normGtin, normMpn, trackerHistory, trackerVerdict, titleCover, parseCCC, parsePH, money, normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
+function setManualPrice(it, price) {
+  const v = parseFloat(price); if (!(v > 0)) return false;
+  it.price = v; it.currency = it.currency || CUR[it.storeCountry] || "USD"; it.manual = true; it.priceFrom = null; it.error = null;
+  pushHistory(it, v, new Date().toISOString()); return true;
+}
+window.DW = { setManualPrice, protection, matchOffer, normGtin, normMpn, trackerHistory, trackerVerdict, titleCover, parseCCC, parsePH, money, normKey: normUrl, dealRule, loadPublic, mergePublic, CUR, detectFromUrl, parseHtml, insight, advise, similarity, matchTitle, isTrusted, convert, fmt, getRates, makeItem, refreshItem, findOffers, fetchHtml, tokens };
 })();

@@ -222,6 +222,19 @@ await ip.click("#grid .card button:has-text('Edit purchase')"); await ip.fill("#
 rec("I3", "Price protection", "No claim banner when the price is above what you paid; shows 'protection on'", /Price protection on/.test(await ip.locator("#grid .card").first().innerText()), "major");
 await ictx.close();
 
+// ---- J. Stores that block bots: honest message, manual price, share links
+const jctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "en-AU" });
+await jctx.addInitScript(() => { try { if (!localStorage.getItem("region")) localStorage.setItem("region", "AU"); if (!localStorage.getItem("dw_items")) { const n = new Date().toISOString(); localStorage.setItem("dw_items", JSON.stringify([{ id: "b1", url: "https://example.invalid/p", name: "Blocked store test", retailer: "Chemist Warehouse", storeCountry: "AU", country: "AU", price: null, currency: "AUD", history: [], offers: [], offersAt: n, checkedAt: n, addedAt: n, blocked: true, error: "x" }])); } } catch {} });
+const jp = await jctx.newPage();
+await jp.goto(SITEURL, { waitUntil: "load" }); await jp.waitForTimeout(2500);
+rec("J1", "Blocked stores", "A blocked store says so plainly and offers price entry", /blocks automated price reads/.test(await jp.locator("#grid .card").first().innerText()) && (await jp.locator("#grid .card input[aria-label='Price you see on the store page']").count()) === 1, "major");
+await jp.fill("#grid .card input[aria-label='Price you see on the store page']", "89.99"); await jp.click("#grid .card button:has-text('Save price')"); await jp.waitForTimeout(600);
+const jt = await jp.locator("#grid .card").first().innerText();
+rec("J2", "Blocked stores", "Entering the price you see saves it and shows it", /89\.99/.test(jt) && /price shown is the one you entered/.test(jt), "major", jt.slice(0, 120).replace(/\n/g, " "));
+await jp.fill("#quick", "https://share.google/Tny9b1kWTMk21j4O2"); await jp.click("#quickGo"); await jp.fill("#m-url", "https://share.google/Tny9b1kWTMk21j4O2"); await jp.click("#m-go"); await jp.waitForTimeout(600);
+rec("J3", "Blocked stores", "A Google share link is explained, not silently tracked", (await jp.evaluate(() => JSON.parse(localStorage.getItem("dw_items") || "[]").length)) === 1 && /Google share link/.test(await jp.locator("#toast").innerText()), "minor");
+await jctx.close();
+
 // ---- F. Accessibility (axe-core) on the populated desktop page
 await page.addScriptTag({ content: axe.source });
 const ax = await page.evaluate(async () => { const r = await window.axe.run(document, { resultTypes: ["violations"] }); return r.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, help: v.help })); });
