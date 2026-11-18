@@ -1727,3 +1727,31 @@ timestamp,id,store,price,currency,in_stock
 2026-11-18T01:42:05.175Z,kr-danawa-mx3s,Danawa (lowest listed),119470,KRW,
 2026-11-18T01:42:05.175Z,jp-kakaku-xm5,Kakaku.com (lowest listed),31800,JPY,
 2026-11-18T01:42:05.175Z,jp-kakaku-mx3s,Kakaku.com (lowest listed),16200,JPY,
+2026-11-18T07:41:14.966Z,jb-remington-all-in-1,JB Hi-Fi,29,AUD,1
+2026-11-18T07:41:14.966Z,sc-990pro-1tb,Scorptec,379,AUD,1
+2026-11-18T07:41:14.966Z,tgg-sony-xm5,The Good Guys,395,AUD,1
+2026-11-18T07:41:14.966Z,jb-ps5-slim,JB Hi-Fi,999,AUD,1
+2026-11-18T07:41:14.966Z,sc-crucial-t500-2tb,Scorptec,549,AUD,0
+2026-11-18T07:41:14.966Z,sc-corsair-ddr5-6000,Scorptec,999,AUD,0
+2026-11-18T07:41:14.966Z,sc-corsair-ddr5-5200,Scorptec,899,AUD,0
+2026-11-18T07:41:14.966Z,um-990pro-2tb,Umart,769,AUD,1
+2026-11-18T07:41:14.966Z,um-g502-lightspeed,Umart,139,AUD,1
+2026-11-18T07:41:14.966Z,um-g502x-black,Umart,77,AUD,1
+2026-11-18T07:41:14.966Z,in-vs-xm5,Vijay Sales,28990,INR,1
+2026-11-18T07:41:14.966Z,in-vs-mx3s,Vijay Sales,9999,INR,0
+2026-11-18T07:41:14.966Z,in-vs-ps5-disc,Vijay Sales,69990,INR,0
+2026-11-18T07:41:14.966Z,in-vs-ps5-digital,Vijay Sales,64990,INR,0
+2026-11-18T07:41:14.966Z,in-vs-airpods5,Vijay Sales,14490,INR,1
+2026-11-18T07:41:14.966Z,sg-courts-xm5,Courts,329,SGD,1
+2026-11-18T07:41:14.966Z,sg-courts-mx3s,Courts,125,SGD,0
+2026-11-18T07:41:14.966Z,sg-courts-990,Courts,440,SGD,0
+2026-11-18T07:41:14.966Z,sg-ch-xm5,Challenger,309,SGD,1
+2026-11-18T07:41:14.966Z,sg-ch-mx3s,Challenger,182,SGD,0
+2026-11-18T07:41:14.966Z,sg-ch-990,Challenger,415,SGD,1
+2026-11-18T07:41:14.966Z,fr-ldlc-xm5,LDLC,259.95,EUR,1
+2026-11-18T07:41:14.966Z,fr-ldlc-990-1,LDLC,269.95,EUR,1
+2026-11-18T07:41:14.966Z,fr-ldlc-990-2,LDLC,599.95,EUR,1
+2026-11-18T07:41:14.966Z,kr-danawa-990,Danawa (lowest listed),382940,KRW,
+2026-11-18T07:41:14.966Z,kr-danawa-mx3s,Danawa (lowest listed),118260,KRW,
+2026-11-18T07:41:14.966Z,jp-kakaku-xm5,Kakaku.com (lowest listed),31799,JPY,
+2026-11-18T07:41:14.966Z,jp-kakaku-mx3s,Kakaku.com (lowest listed),16200,JPY,
