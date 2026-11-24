@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-23T11:14:48.582Z",
+ "generatedAt": "2026-11-24T12:55:04.753Z",
  "method": "Bootstrap Monte Carlo. Each simulated path resamples this product's own observed log price changes between consecutive readings, with replacement, for the horizon. We report the share of paths that touch a price at least 10% below the latest price within 14 days.",
  "assumptions": [
   "Future price changes look like past ones for the same product (stationary, independent of time of year).",
@@ -15,97 +15,97 @@
  "products": {
   "jb-remington-all-in-1": {
    "status": "ok",
-   "probability": 0.54,
+   "probability": 0.513,
    "current": 23,
    "target": 20.7,
    "horizonDays": 14,
-   "steps": 54,
-   "readings": 71,
-   "spanDays": 18.1,
+   "steps": 52,
+   "readings": 73,
+   "spanDays": 19.2,
    "nonzeroChanges": 1
   },
   "sc-990pro-1tb": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "tgg-sony-xm5": {
    "status": "ok",
-   "probability": 0.537,
+   "probability": 0.518,
    "current": 395,
    "target": 355.5,
    "horizonDays": 14,
-   "steps": 54,
-   "readings": 71,
-   "spanDays": 18.1,
+   "steps": 52,
+   "readings": 73,
+   "spanDays": 19.2,
    "nonzeroChanges": 1
   },
   "jb-ps5-slim": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "sc-crucial-t500-2tb": {
    "status": "no_price_changes_observed",
-   "readings": 67,
-   "spanDays": 18.1
+   "readings": 69,
+   "spanDays": 19.2
   },
   "sc-corsair-ddr5-6000": {
    "status": "no_price_changes_observed",
-   "readings": 67,
-   "spanDays": 18.1
+   "readings": 69,
+   "spanDays": 19.2
   },
   "sc-corsair-ddr5-5200": {
    "status": "ok",
    "probability": 0,
-   "current": 899,
-   "target": 809.1,
+   "current": 1099,
+   "target": 989.1,
    "horizonDays": 14,
-   "steps": 51,
-   "readings": 67,
-   "spanDays": 18.1,
-   "nonzeroChanges": 1
+   "steps": 50,
+   "readings": 69,
+   "spanDays": 19.2,
+   "nonzeroChanges": 2
   },
   "um-990pro-2tb": {
    "status": "no_price_changes_observed",
-   "readings": 70,
-   "spanDays": 18.1
+   "readings": 72,
+   "spanDays": 19.2
   },
   "um-g502-lightspeed": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "um-g502x-black": {
    "status": "no_price_changes_observed",
-   "readings": 70,
-   "spanDays": 18.1
+   "readings": 72,
+   "spanDays": 19.2
   },
   "in-vs-xm5": {
    "status": "ok",
-   "probability": 0.395,
+   "probability": 0.384,
    "current": 24990,
    "target": 22491,
    "horizonDays": 14,
-   "steps": 53,
-   "readings": 69,
-   "spanDays": 18.1,
+   "steps": 51,
+   "readings": 71,
+   "spanDays": 19.2,
    "nonzeroChanges": 3
   },
   "in-vs-mx3s": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "in-vs-ps5-disc": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "in-vs-ps5-digital": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "in-vs-airpods5": {
    "status": "ok",
@@ -113,36 +113,36 @@
    "current": 14490,
    "target": 13041,
    "horizonDays": 14,
-   "steps": 53,
-   "readings": 69,
-   "spanDays": 18.1,
+   "steps": 51,
+   "readings": 71,
+   "spanDays": 19.2,
    "nonzeroChanges": 3
   },
   "sg-courts-xm5": {
    "status": "ok",
-   "probability": 0.548,
-   "current": 289,
-   "target": 260.1,
+   "probability": 0.415,
+   "current": 329,
+   "target": 296.1,
    "horizonDays": 14,
-   "steps": 53,
-   "readings": 69,
-   "spanDays": 18.1,
-   "nonzeroChanges": 1
+   "steps": 51,
+   "readings": 71,
+   "spanDays": 19.2,
+   "nonzeroChanges": 2
   },
   "sg-courts-mx3s": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "sg-courts-990": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "sg-ch-xm5": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "sg-ch-mx3s": {
    "status": "no_price_changes_observed",
@@ -151,24 +151,24 @@
   },
   "sg-ch-990": {
    "status": "no_price_changes_observed",
-   "readings": 69,
-   "spanDays": 18.1
+   "readings": 71,
+   "spanDays": 19.2
   },
   "fr-ldlc-xm5": {
    "status": "ok",
-   "probability": 0.18,
+   "probability": 0.164,
    "current": 259.95,
    "target": 233.95,
    "horizonDays": 14,
-   "steps": 52,
-   "readings": 68,
-   "spanDays": 18.1,
+   "steps": 50,
+   "readings": 70,
+   "spanDays": 19.2,
    "nonzeroChanges": 1
   },
   "fr-ldlc-990-1": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "fr-ldlc-990-2": {
    "status": "ok",
@@ -176,74 +176,74 @@
    "current": 599.95,
    "target": 539.96,
    "horizonDays": 14,
-   "steps": 52,
-   "readings": 68,
-   "spanDays": 18.1,
+   "steps": 50,
+   "readings": 70,
+   "spanDays": 19.2,
    "nonzeroChanges": 1
   },
   "br-kabum-xm5": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "br-kabum-990-1": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "br-kabum-990-2": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "br-kabum-mx3s": {
    "status": "no_price_changes_observed",
-   "readings": 68,
-   "spanDays": 18.1
+   "readings": 70,
+   "spanDays": 19.2
   },
   "kr-danawa-990": {
    "status": "ok",
    "probability": 0,
-   "current": 382700,
-   "target": 344430,
+   "current": 382980,
+   "target": 344682,
    "horizonDays": 14,
-   "steps": 50,
-   "readings": 66,
-   "spanDays": 18.1,
-   "nonzeroChanges": 33
+   "steps": 49,
+   "readings": 68,
+   "spanDays": 19.2,
+   "nonzeroChanges": 35
   },
   "kr-danawa-mx3s": {
    "status": "ok",
-   "probability": 0.206,
-   "current": 124710,
-   "target": 112239,
+   "probability": 0.181,
+   "current": 125390,
+   "target": 112851,
    "horizonDays": 14,
-   "steps": 50,
-   "readings": 65,
-   "spanDays": 18.1,
-   "nonzeroChanges": 36
+   "steps": 48,
+   "readings": 67,
+   "spanDays": 19.2,
+   "nonzeroChanges": 38
   },
   "jp-kakaku-xm5": {
    "status": "ok",
-   "probability": 0,
-   "current": 31799,
-   "target": 28619.1,
+   "probability": 0.002,
+   "current": 32000,
+   "target": 28800,
    "horizonDays": 14,
-   "steps": 53,
-   "readings": 69,
-   "spanDays": 18.1,
-   "nonzeroChanges": 33
+   "steps": 51,
+   "readings": 71,
+   "spanDays": 19.2,
+   "nonzeroChanges": 35
   },
   "jp-kakaku-mx3s": {
    "status": "ok",
-   "probability": 0.427,
-   "current": 16200,
-   "target": 14580,
+   "probability": 0.333,
+   "current": 18800,
+   "target": 16920,
    "horizonDays": 14,
-   "steps": 53,
-   "readings": 69,
-   "spanDays": 18.1,
-   "nonzeroChanges": 3
+   "steps": 51,
+   "readings": 71,
+   "spanDays": 19.2,
+   "nonzeroChanges": 4
   }
  }
 }
